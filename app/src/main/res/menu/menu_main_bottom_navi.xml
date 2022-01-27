@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/homeFragment"
+        android:icon="@drawable/ic_baseline_analytics_24"
+        android:title="@string/string_home" />
+
+    <item
+        android:id="@id/countryFragment"
+        android:icon="@drawable/ic_baseline_country_24"
+        android:title="@string/string_country" />
+
+    <item
+        android:id="@id/mapFragment"
+        android:icon="@drawable/ic_baseline_map_24"
+        android:title="@string/string_map" />
+
+    <item
+        android:id="@id/newsFragment"
+        android:icon="@drawable/ic_baseline_fiber_new_24"
+        android:title="@string/string_news" />
+</menu>

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Kovid</string>
+
+    <string name="string_home">홈</string>
+    <string name="string_country">세계별</string>
+    <string name="string_map">지도</string>
+    <string name="string_news">뉴스</string>
 </resources>
