@@ -70,4 +70,12 @@ dependencies {
     //코틀린 원형그래프, 파이 그래프
     //https://github.com/PhilJay/MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+
+    //OkHttp: 통신 로그 확인하기 위함
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
 }
