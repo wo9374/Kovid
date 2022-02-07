@@ -78,4 +78,10 @@ dependencies {
     //OkHttp: 통신 로그 확인하기 위함
     implementation 'com.squareup.okhttp3:okhttp:4.4.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
+
+    //xml parser
+    implementation 'com.tickaroo.tikxml:annotation:0.8.13'
+    implementation 'com.tickaroo.tikxml:core:0.8.13'
+    implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
+    kapt 'com.tickaroo.tikxml:processor:0.8.13'
 }

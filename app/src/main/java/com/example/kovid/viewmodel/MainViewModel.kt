@@ -3,12 +3,15 @@ package com.example.kovid.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.kovid.CovidRepository
+import com.example.kovid.model.CovidBody
+import com.example.kovid.model.CovidItem
 
-class MainViewModel(application: Application, repository : CovidRepository) : AndroidViewModel(application){
+class MainViewModel(application: Application) : AndroidViewModel(application){
 
-    /*var openFlag: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val covidRepo : CovidRepository = CovidRepository(application)
+    private val covidItem = covidRepo.getCovidData()
 
-    fun floatingOnClick(){
-        openFlag.value = openFlag.value?.not()
-    }*/
+    fun getCovidData():LiveData<List<CovidItem>>{
+        return covidItem
+    }
 }
