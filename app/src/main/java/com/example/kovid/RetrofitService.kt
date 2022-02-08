@@ -1,25 +1,20 @@
 package com.example.kovid
 
-import com.tickaroo.tikxml.TikXml
-import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-object RetrofitAPI {
+object RetrofitService {
     private var instance : Retrofit? = null
 
-    fun getRetrofitXmlParsing(baseUrl : String) : Retrofit{
+    fun getRetrofitXmlParsing() : Retrofit {
         if (instance == null){
             instance = Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(
-                    TikXmlConverterFactory.create(
-                        TikXml.Builder().exceptionOnUnreadXml(false).build()
-                    )
-                )
+                .baseUrl(CovidAPI.COVID_19_URL)
                 .client(createOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }
         return instance!!
