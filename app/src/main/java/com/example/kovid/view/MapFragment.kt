@@ -52,11 +52,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     //GoogleMap Setting
     override fun onMapReady(googleMap : GoogleMap) {
         mGoogleMap = googleMap
-        currentLatLng = LatLng(
+
+        currentLatLng /*= LatLng(
             viewModel.getCurrentPlace().placeLongitude,
             viewModel.getCurrentPlace().placeLatitude
         )
-
+*/
         val markerOption = MarkerOptions().apply {
             position(currentLatLng)
             title("사용자")

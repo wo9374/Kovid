@@ -55,16 +55,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun permissionCheck() {
-        if (viewModel.checkCoarseLocationPermission(this) && viewModel.checkFineLocationPermission(this))
+        if (viewModel.permissionCheck())
             tedPermission()
         else
-            viewModel.getLocation(this)
+            viewModel.getLocation()
     }
 
     private fun tedPermission() {
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
-                viewModel.getLocation(this@MainActivity)
+                viewModel.getLocation()
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
