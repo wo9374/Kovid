@@ -1,8 +1,10 @@
 package com.example.kovid.view
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
@@ -10,6 +12,8 @@ import androidx.navigation.ui.NavigationUI
 import com.example.kovid.R
 import com.example.kovid.databinding.ActivityMainBinding
 import com.example.kovid.viewmodel.MainViewModel
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -24,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        permissionCheck()
 
         setNavigationInit()
     }
@@ -46,5 +52,33 @@ class MainActivity : AppCompatActivity() {
                 else -> binding.bottomNavigationView.visibility = View.GONE
             }*/
         }
+    }
+
+    private fun permissionCheck() {
+        if (viewModel.checkCoarseLocationPermission(this) && viewModel.checkFineLocationPermission(this))
+            tedPermission()
+        else
+            viewModel.getLocation(this)
+    }
+
+    private fun tedPermission() {
+        val permissionListener = object : PermissionListener {
+            override fun onPermissionGranted() {
+                viewModel.getLocation(this@MainActivity)
+            }
+
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                Toast.makeText(this@MainActivity, "설정에서 권한을 허가 해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        TedPermission.create()
+            .setPermissionListener(permissionListener)
+            .setRationaleMessage("서비스 사용을 위해서 몇가지 권한이 필요합니다.")
+            .setDeniedMessage("[설정] > [권한] 에서 권한을 설정할 수 있습니다.")
+            .setPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ).check()
     }
 }
