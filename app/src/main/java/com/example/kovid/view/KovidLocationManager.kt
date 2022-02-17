@@ -11,8 +11,12 @@ import com.google.android.gms.maps.model.LatLng
 import java.util.*
 
 class KovidLocationManager(private val context: Context){
-    lateinit var locationManager: LocationManager
     val TAG = KovidLocationManager::class.java.name
+
+    lateinit var locationManager: LocationManager
+
+    private val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10
+    private val MIN_TIME_BW_UPDATES = (1000 * 10 * 1).toLong()
 
     fun get(): KovidPlace{
         setLocationManager()

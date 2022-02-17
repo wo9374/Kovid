@@ -1,5 +1,7 @@
 package com.example.kovid.view
 
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,15 +23,29 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment(), OnMapReadyCallback {
-    lateinit var binding : FragmentMapBinding
-    lateinit var navController : NavController
+    lateinit var binding: FragmentMapBinding
+    lateinit var navController: NavController
 
     //activity 의 ViewModel 을 따름
     private val viewModel: MainViewModel by activityViewModels()
 
     private lateinit var mGoogleMap: GoogleMap
-    private lateinit var currentLatLng : LatLng
-    private lateinit var currentPoint : Marker
+    private lateinit var currentPoint: Marker
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView.onDestroy()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false)
@@ -50,28 +66,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     //GoogleMap Setting
-    override fun onMapReady(googleMap : GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
 
-        currentLatLng /*= LatLng(
-            viewModel.getCurrentPlace().placeLongitude,
-            viewModel.getCurrentPlace().placeLatitude
-        )
-*/
-        val markerOption = MarkerOptions().apply {
-            position(currentLatLng)
-            title("사용자")
-            snippet("현재 위치 GPS")
-            icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_room_24))
+        viewModel.myLocation.observe(this) {
+            val markerOption = MarkerOptions().apply {
+                position(LatLng(it.placeLongitude, it.placeLatitude))
+                title("사용자")
+                snippet("현재 위치 GPS")
+                icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_room_24))
+            }
+
+            //사용자 현위치 마커 추가
+            currentPoint = mGoogleMap.addMarker(markerOption)!! //TODO  !! Null 위험성 유추되는곳
+
+            mGoogleMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(LatLng(it.placeLongitude, it.placeLatitude), 15F)
+            )
         }
-
-        //사용자 현위치 마커 추가
-        currentPoint = mGoogleMap.addMarker(markerOption)!! //TODO  !! Null 위험성 유추되는곳
-
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15F))
     }
 
-    fun refreshMarker(){
-        currentPoint.remove()
+    fun test(){
+        val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 }

@@ -82,8 +82,12 @@ dependencies {
 
     //구글맵
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    //구글맵플랫폼 API
+    implementation "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
 
     //TedPerMission 퍼미션 체크 라이브러리
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
     implementation 'io.github.ParkSangGwon:tedpermission-coroutine:3.3.0'
+
+
 }
