@@ -1,4 +1,4 @@
-package com.example.kovid
+package com.example.kovid.map
 
 import android.Manifest
 import android.app.Application
@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import com.example.kovid.model.KovidPlace
-import com.example.kovid.view.KovidLocationManager
 
 class LocationRepository(application: Application) {
     private val locationLoader = KovidLocationManager(application)

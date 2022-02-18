@@ -5,6 +5,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -28,7 +30,12 @@
         </activity>
 
         <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCbrvgNGvRde1ZtkN1lGTylfRx7l16Ja6E"/>
     </application>
+
 </manifest>

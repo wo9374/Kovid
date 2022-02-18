@@ -6,19 +6,19 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.kovid.view.HomeFragment"
+        android:name="com.example.kovid.home.HomeFragment"
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/countryFragment"
-        android:name="com.example.kovid.view.CountryFragment"
+        android:name="com.example.kovid.country.CountryFragment"
         android:label="CountryFragment" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.kovid.view.MapFragment"
+        android:name="com.example.kovid.map.MapFragment"
         android:label="MapFragment" />
     <fragment
         android:id="@+id/newsFragment"
-        android:name="com.example.kovid.view.NewsFragment"
+        android:name="com.example.kovid.news.NewsFragment"
         android:label="NewsFragment" />
 
 </navigation>

@@ -1,4 +1,4 @@
-package com.example.kovid.view
+package com.example.kovid.map
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,9 +15,6 @@ class KovidLocationManager(private val context: Context){
 
     lateinit var locationManager: LocationManager
 
-    private val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 10
-    private val MIN_TIME_BW_UPDATES = (1000 * 10 * 1).toLong()
-
     fun get(): KovidPlace{
         setLocationManager()
         return setMyLocation(getLastLocation())
@@ -31,10 +28,12 @@ class KovidLocationManager(private val context: Context){
     // Permission 은 해당 클래스를 사용해주는 Class 에서 처리, 따라서 MissingPermission 을 Suppress.
     @SuppressLint("MissingPermission")
     private fun getLastLocation(): Location? =
-        if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        } else {
+        if(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!= null){
+            Log.d(TAG, "Used NETWORK_PROVIDER")
             locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        }else{
+            Log.d(TAG, "Used GPS_PROVIDER")
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         }
 
     // location 변수에서 latitude, longitude 추출
@@ -42,21 +41,14 @@ class KovidLocationManager(private val context: Context){
         return if (location != null) {
             val latLng = LatLng(location.latitude, location.longitude)
 
-            return KovidPlace(
-                getAddress(latLng),
-                "",
-                latLng.latitude,
-                latLng.longitude
-            )
+            return KovidPlace(getAddress(latLng),"", latLng.latitude, latLng.longitude, location.accuracy)
         } else {
-            Log.d(TAG,"setMyLocation() location null @@@@")
+            Log.d(TAG,"location null 임시서울역 구성")
 
             //임시 서울역
             KovidPlace(
-                "KovidLocationManager",
-                "location null 오류",
-                37.554891,
-                126.970814
+                "KovidLocationManager", "location null 오류",
+                37.554891, 126.970814, 0F
             )
         }
     }
@@ -69,15 +61,15 @@ class KovidLocationManager(private val context: Context){
 
         //GRPC 오류? try catch 문으로 오류 대처
         try {
-            addr = geoCoder.getFromLocation(
-                position.latitude,
-                position.longitude,
-                1)
+            addr = geoCoder.getFromLocation(position.latitude, position.longitude, 1)
                 .first().getAddressLine(0)
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return addr
+    }
+
+    interface locationManagerCallBack{
+        fun onLocationCallBack()
     }
 }

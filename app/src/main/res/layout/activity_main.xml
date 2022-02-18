@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="com.example.kovid.viewmodel.MainViewModel" />
+            name="mainViewModel"
+            type="com.example.kovid.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
