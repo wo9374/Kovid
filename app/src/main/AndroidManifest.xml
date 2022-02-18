@@ -16,9 +16,9 @@
         android:theme="@style/Theme.Kovid"
         android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_config"
-        tools:targetApi="m">
+        tools:targetApi="n">
         <activity
-            android:name=".view.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +29,6 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value=""/>
+            android:value="AIzaSyCbrvgNGvRde1ZtkN1lGTylfRx7l16Ja6E"/>
     </application>
 </manifest>

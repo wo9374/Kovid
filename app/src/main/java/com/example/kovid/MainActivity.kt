@@ -1,4 +1,4 @@
-package com.example.kovid.view
+package com.example.kovid
 
 import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
@@ -9,13 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.kovid.R
+import com.example.kovid.base.BaseActivity
 import com.example.kovid.databinding.ActivityMainBinding
 import com.example.kovid.viewmodel.MainViewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 
-class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private val viewModel: MainViewModel by viewModels()
     //by viewModels() 사용 안할때
@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
