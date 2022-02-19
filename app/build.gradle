@@ -4,6 +4,11 @@ plugins {
     id 'kotlin-kapt'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+def google_map_api_key = properties.getProperty('googlemap.api.key')
+
 android {
     compileSdk 32
 
@@ -16,7 +21,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders["GOOGLE_API_KEY"] = "AIzaSyCbrvgNGvRde1ZtkN1lGTylfRx7l16Ja6E"
+        manifestPlaceholders = [GoogleMapApiKey:google_map_api_key]
     }
 
     buildTypes {
