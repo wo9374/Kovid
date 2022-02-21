@@ -1,4 +1,4 @@
-package com.example.kovid.home
+package com.example.kovid.function.home
 
 import com.example.kovid.model.KoreaCovidCount
 import retrofit2.Response

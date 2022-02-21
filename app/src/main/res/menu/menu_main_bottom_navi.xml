@@ -6,7 +6,7 @@
         android:title="@string/string_home" />
 
     <item
-        android:id="@id/countryFragment"
+        android:id="@id/worldFragment"
         android:icon="@drawable/ic_baseline_country_24"
         android:title="@string/string_country" />
 

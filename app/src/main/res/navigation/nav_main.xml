@@ -4,21 +4,21 @@
     android:id="@+id/nav_main"
     app:startDestination="@id/homeFragment">
 
-    <fragment
+    <keep_state_fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.kovid.home.HomeFragment"
+        android:name="com.example.kovid.function.home.HomeFragment"
         android:label="HomeFragment" />
-    <fragment
-        android:id="@+id/countryFragment"
-        android:name="com.example.kovid.country.CountryFragment"
-        android:label="CountryFragment" />
-    <fragment
+    <keep_state_fragment
+        android:id="@+id/worldFragment"
+        android:name="com.example.kovid.function.world.WorldFragment"
+        android:label="WorldFragment" />
+    <keep_state_fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.kovid.map.MapFragment"
+        android:name="com.example.kovid.function.map.MapFragment"
         android:label="MapFragment" />
-    <fragment
+    <keep_state_fragment
         android:id="@+id/newsFragment"
-        android:name="com.example.kovid.news.NewsFragment"
+        android:name="com.example.kovid.function.news.NewsFragment"
         android:label="NewsFragment" />
 
 </navigation>

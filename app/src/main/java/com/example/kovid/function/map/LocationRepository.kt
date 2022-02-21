@@ -1,4 +1,4 @@
-package com.example.kovid.map
+package com.example.kovid.function.map
 
 import android.Manifest
 import android.app.Application

@@ -1,4 +1,4 @@
-package com.example.kovid.map
+package com.example.kovid.function.map
 
 import android.Manifest
 import android.content.Context
@@ -11,7 +11,6 @@ import com.example.kovid.R
 import com.example.kovid.base.BaseFragment
 import com.example.kovid.databinding.FragmentMapBinding
 import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

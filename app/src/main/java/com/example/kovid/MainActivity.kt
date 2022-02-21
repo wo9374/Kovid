@@ -3,10 +3,9 @@ package com.example.kovid
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.example.kovid.base.BaseActivity
 import com.example.kovid.databinding.ActivityMainBinding
-import com.example.kovid.home.HomeViewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
@@ -19,16 +18,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         binding.lifecycleOwner = this
         binding.mainViewModel = viewModel
 
-        setNavigationInit()
+        initLayout()
     }
 
-    private fun setNavigationInit() {
+    private fun initLayout() {
         val navHostFragment = supportFragmentManager.findFragmentById(binding.mainNavHost.id) as NavHostFragment
         val navController = navHostFragment.navController
 
-        NavigationUI.setupWithNavController(
-            binding.bottomNavigationView, navController
-        )
+        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, binding.mainNavHost.id)
+        navController.navigatorProvider.addNavigator(navigator)
+        navController.setGraph(R.navigation.nav_main)
+
+        binding.bottomNavigationView.setupWithNavController(navController)
 
         //특정 프래그먼트에서 BottomNavi 숨기기용
         navController.addOnDestinationChangedListener { _, destination, _ ->

@@ -1,4 +1,4 @@
-package com.example.kovid.home
+package com.example.kovid.function.home
 
 import android.app.Application
 import androidx.lifecycle.*

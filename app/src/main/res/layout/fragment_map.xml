@@ -7,13 +7,13 @@
 
         <variable
             name="mapViewModel"
-            type="com.example.kovid.map.MapViewModel" />
+            type="com.example.kovid.function.map.MapViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.kovid.map.MapFragment">
+        tools:context=".function.map.MapFragment">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/map_view"

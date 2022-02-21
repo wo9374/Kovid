@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="mainViewModel"
             type="com.example.kovid.MainViewModel" />
@@ -21,15 +22,18 @@
             android:layout_height="0dp"
             app:defaultNavHost="true"
             app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navGraph="@navigation/nav_main" />
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--
+        Custom Navigator 사용을 위한 navGraph 제거
+        app:navGraph="@navigation/nav_main"
+        -->
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:labelVisibilityMode="labeled"
             app:itemRippleColor="@null"
+            app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H, 1 : 0.17"
             app:menu="@menu/menu_main_bottom_navi" />

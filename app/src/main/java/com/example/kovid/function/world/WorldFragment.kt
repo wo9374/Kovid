@@ -1,4 +1,4 @@
-package com.example.kovid.news
+package com.example.kovid.function.world
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.kovid.R
-import com.example.kovid.databinding.FragmentNewsBinding
+import com.example.kovid.databinding.FragmentWorldBinding
 
-class NewsFragment : Fragment() {
-    lateinit var binding : FragmentNewsBinding
+class WorldFragment : Fragment() {
+    lateinit var binding : FragmentWorldBinding
     lateinit var navController : NavController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_world, container, false)
         return binding.root
     }
 
