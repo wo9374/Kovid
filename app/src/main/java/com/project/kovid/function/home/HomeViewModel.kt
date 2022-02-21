@@ -1,15 +1,17 @@
 package com.project.kovid.function.home
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = HomeViewModel::class.java.simpleName
 
-    //private val covidRepo: CovidRepository = CovidRepository()
+    private val covidRepo: CovidRepository = CovidRepository()
 
 
-    /*fun getCovidItem() {
+    fun getCovidItem() {
         viewModelScope.launch {
             try {
                 val result = covidRepo.getCovidData()
@@ -17,5 +19,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 Log.d("MainViewModel", "fail...")
             }
         }
-    }*/
+    }
 }

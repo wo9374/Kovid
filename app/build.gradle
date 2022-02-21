@@ -13,7 +13,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.kovid"
+        applicationId "com.project.kovid"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -22,6 +22,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [GoogleMapApiKey:google_map_api_key]
+
+        buildConfigField "String", "NAVER_CLIENT_ID", properties['naver.api.client.id']
+        buildConfigField "String", "NAVER_CLIENT_SECRET", properties['naver.api.client.secret']
     }
 
     buildTypes {
@@ -81,11 +84,12 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.7.2'
     implementation 'com.squareup.retrofit2:converter-jaxb:2.7.2'
 
     //OkHttp: 통신 로그 확인하기 위함
-    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
 
     //TedPerMission 퍼미션 체크 라이브러리
@@ -102,4 +106,10 @@ dependencies {
     //구글Maps KTX
     implementation 'com.google.maps.android:maps-ktx:3.2.1'
     implementation 'com.google.maps.android:maps-utils-ktx:3.2.1'
+
+    // Airbnb Epoxy
+    implementation "com.airbnb.android:epoxy:3.9.0"
+    kapt "com.airbnb.android:epoxy-processor:3.9.0"
+    // Epoxy Databinding
+    implementation "com.airbnb.android:epoxy-databinding:3.9.0"
 }

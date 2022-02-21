@@ -11,14 +11,9 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val kovidLocationRepo : KovidLocationRepository = KovidLocationRepository(application)
 
     val myLocation = MutableLiveData<KovidPlace>()
-    val nearMarker = MutableLiveData<ArrayList<KovidPlace>>()
 
     fun getLocation(){
         myLocation.value = kovidLocationRepo.getLocation()
-    }
-
-    fun getNearKovid(){
-        nearMarker.value
     }
 
     fun permissionCheck() : Boolean{

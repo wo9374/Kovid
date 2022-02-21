@@ -3,6 +3,7 @@ package com.project.kovid
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.project.kovid.base.BaseActivity
 import com.project.kovid.databinding.ActivityMainBinding
 
