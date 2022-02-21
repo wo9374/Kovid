@@ -17,7 +17,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
         binding.lifecycleOwner = this
 
         binding.button.setOnClickListener {
-            viewModel.searchNews()
+            viewModel.searchNewsApi()
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.project.kovid.model
 
-data class KovidPlace(
+data class Place(
     val placeAddr: String,
     val placeDetailAddr: String,
     var placeLatitude: Double,   // Y 위도

@@ -5,12 +5,12 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-import com.project.kovid.model.KovidPlace
+import com.project.kovid.model.Place
 
 class KovidLocationRepository(application: Application) {
     private val locationLoader = KovidLocationManager(application)
 
-    fun getLocation() : KovidPlace{
+    fun getLocation() : Place{
         return locationLoader.get()
     }
 

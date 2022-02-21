@@ -2,7 +2,7 @@ package com.project.kovid.model
 
 import com.google.gson.annotations.SerializedName
 
-data class KovidNews(
+data class NaverNews(
     @SerializedName("lastBuildDate") var lastBuildDate: String,
     @SerializedName("total") var total: Int,
     @SerializedName("start") var start: Int,

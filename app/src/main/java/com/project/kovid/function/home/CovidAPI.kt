@@ -1,14 +1,7 @@
 package com.project.kovid.function.home
 
-import com.project.kovid.BuildConfig
-import com.project.kovid.function.news.NaverAPI
 import com.project.kovid.model.KoreaCovidCount
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 

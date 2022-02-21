@@ -6,7 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.util.Log
-import com.project.kovid.model.KovidPlace
+import com.project.kovid.model.Place
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 
@@ -15,7 +15,7 @@ class KovidLocationManager(private val context: Context){
 
     lateinit var locationManager: LocationManager
 
-    fun get(): KovidPlace{
+    fun get(): Place{
         setLocationManager()
         return setMyLocation(getLastLocation())
     }
@@ -37,16 +37,16 @@ class KovidLocationManager(private val context: Context){
         }
 
     // location 변수에서 latitude, longitude 추출
-    private fun setMyLocation(location: Location?): KovidPlace {
+    private fun setMyLocation(location: Location?): Place {
         return if (location != null) {
             val latLng = LatLng(location.latitude, location.longitude)
 
-            return KovidPlace(getAddress(latLng),"", latLng.latitude, latLng.longitude, location.accuracy)
+            return Place(getAddress(latLng),"", latLng.latitude, latLng.longitude, location.accuracy)
         } else {
             Log.d(TAG,"location null 임시서울역 구성")
 
             //임시 서울역
-            KovidPlace(
+            Place(
                 "KovidLocationManager", "location null 오류",
                 37.554891, 126.970814, 0F
             )
