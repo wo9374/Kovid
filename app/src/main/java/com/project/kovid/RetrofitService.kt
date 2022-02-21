@@ -1,6 +1,6 @@
-package com.example.kovid
+package com.project.kovid
 
-import com.example.kovid.function.home.CovidAPI
+import com.project.kovid.function.home.CovidAPI
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

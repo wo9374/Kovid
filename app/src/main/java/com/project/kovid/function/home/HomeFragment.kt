@@ -1,17 +1,13 @@
-package com.example.kovid.function.home
+package com.project.kovid.function.home
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import com.example.kovid.R
-import com.example.kovid.databinding.FragmentHomeBinding
+import androidx.fragment.app.viewModels
+import com.project.kovid.R
+import com.project.kovid.base.BaseFragment
+import com.project.kovid.databinding.FragmentHomeBinding
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -21,27 +17,19 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 
-class HomeFragment : Fragment() {
-    lateinit var binding : FragmentHomeBinding
-    lateinit var navController : NavController
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
+    //private val viewModel: HomeViewModel by activityViewModels() //activity 의 ViewModel 을 따름
+    private val viewModel: HomeViewModel by viewModels()
 
-    //activity 의 ViewModel 을 따름
-    private val viewModel: HomeViewModel by activityViewModels()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-
-        activity?.let {
-            binding.viewModel = viewModel
-            binding.lifecycleOwner = this
-        }
-
-        return binding.root
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(binding.root)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
 
         //viewModel.getCovidItem()
 

@@ -6,19 +6,19 @@
 
     <keep_state_fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.kovid.function.home.HomeFragment"
+        android:name="com.project.kovid.function.home.HomeFragment"
         android:label="HomeFragment" />
     <keep_state_fragment
         android:id="@+id/worldFragment"
-        android:name="com.example.kovid.function.world.WorldFragment"
+        android:name="com.project.kovid.function.world.WorldFragment"
         android:label="WorldFragment" />
     <keep_state_fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.kovid.function.map.MapFragment"
+        android:name="com.project.kovid.function.map.MapFragment"
         android:label="MapFragment" />
     <keep_state_fragment
         android:id="@+id/newsFragment"
-        android:name="com.example.kovid.function.news.NewsFragment"
+        android:name="com.project.kovid.function.news.NewsFragment"
         android:label="NewsFragment" />
 
 </navigation>

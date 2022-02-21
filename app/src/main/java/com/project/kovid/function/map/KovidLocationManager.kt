@@ -1,4 +1,4 @@
-package com.example.kovid.function.map
+package com.project.kovid.function.map
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,12 +6,12 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.util.Log
-import com.example.kovid.model.KovidPlace
+import com.project.kovid.model.KovidPlace
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 
 class KovidLocationManager(private val context: Context){
-    val TAG = KovidLocationManager::class.java.name
+    val TAG = LocationManager::class.java.name
 
     lateinit var locationManager: LocationManager
 

@@ -1,4 +1,4 @@
-package com.example.kovid
+package com.project.kovid
 
 import android.content.Context
 import android.os.Bundle

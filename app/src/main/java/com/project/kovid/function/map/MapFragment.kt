@@ -1,15 +1,15 @@
-package com.example.kovid.function.map
+package com.project.kovid.function.map
 
 import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.kovid.R
-import com.example.kovid.base.BaseFragment
-import com.example.kovid.databinding.FragmentMapBinding
+import com.project.kovid.R
+import com.project.kovid.base.BaseFragment
+import com.project.kovid.databinding.FragmentMapBinding
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,8 +23,8 @@ import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.flow.collect
 
 class MapFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
-    //activity 의 ViewModel 을 따름
-    private val viewModel: MapViewModel by activityViewModels()
+
+    private val viewModel: MapViewModel by viewModels()
 
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var locationCallback: LocationCallback

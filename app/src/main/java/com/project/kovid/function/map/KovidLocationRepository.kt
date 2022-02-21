@@ -1,13 +1,13 @@
-package com.example.kovid.function.map
+package com.project.kovid.function.map
 
 import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-import com.example.kovid.model.KovidPlace
+import com.project.kovid.model.KovidPlace
 
-class LocationRepository(application: Application) {
+class KovidLocationRepository(application: Application) {
     private val locationLoader = KovidLocationManager(application)
 
     fun getLocation() : KovidPlace{

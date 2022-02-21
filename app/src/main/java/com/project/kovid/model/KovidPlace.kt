@@ -1,4 +1,4 @@
-package com.example.kovid.model
+package com.project.kovid.model
 
 data class KovidPlace(
     val placeAddr: String,

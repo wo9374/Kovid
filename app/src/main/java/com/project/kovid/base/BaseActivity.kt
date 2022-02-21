@@ -1,4 +1,4 @@
-package com.example.kovid.base
+package com.project.kovid.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

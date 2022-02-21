@@ -1,11 +1,10 @@
-package com.example.kovid
+package com.project.kovid.function.home
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.*
 
-
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val TAG = MainViewModel::class.java.simpleName
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val TAG = HomeViewModel::class.java.simpleName
 
     //private val covidRepo: CovidRepository = CovidRepository()
 

@@ -1,6 +1,6 @@
-package com.example.kovid.function.home
+package com.project.kovid.function.home
 
-import com.example.kovid.model.KoreaCovidCount
+import com.project.kovid.model.KoreaCovidCount
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

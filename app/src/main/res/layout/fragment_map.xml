@@ -7,7 +7,7 @@
 
         <variable
             name="mapViewModel"
-            type="com.example.kovid.function.map.MapViewModel" />
+            type="com.project.kovid.function.map.MapViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

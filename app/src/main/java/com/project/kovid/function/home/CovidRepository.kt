@@ -1,7 +1,7 @@
-package com.example.kovid.function.home
+package com.project.kovid.function.home
 
-import com.example.kovid.RetrofitService
-import com.example.kovid.model.KoreaCovidCount
+import com.project.kovid.RetrofitService
+import com.project.kovid.model.KoreaCovidCount
 import retrofit2.Response
 import retrofit2.Retrofit
 

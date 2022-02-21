@@ -1,11 +1,10 @@
-package com.example.kovid
+package com.project.kovid
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.example.kovid.base.BaseActivity
-import com.example.kovid.databinding.ActivityMainBinding
+import com.project.kovid.base.BaseActivity
+import com.project.kovid.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
