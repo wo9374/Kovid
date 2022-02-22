@@ -1,6 +1,8 @@
-package com.project.kovid.function.news
+package com.project.kovid.repository
 
 import com.project.kovid.BuildConfig
+import com.project.kovid.function.news.NaverAPI
+import com.project.kovid.function.news.NewsAPI
 import com.project.kovid.objects.RetrofitService
 import com.project.kovid.model.NaverNews
 import com.project.kovid.model.NewsData

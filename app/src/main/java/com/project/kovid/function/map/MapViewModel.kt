@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.project.kovid.model.Place
+import com.project.kovid.repository.KovidLocationRepository
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = MapViewModel::class.java.simpleName

@@ -1,10 +1,11 @@
-package com.project.kovid.function.map
+package com.project.kovid.repository
 
 import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import com.project.kovid.function.map.KovidLocationManager
 import com.project.kovid.model.Place
 
 class KovidLocationRepository(application: Application) {

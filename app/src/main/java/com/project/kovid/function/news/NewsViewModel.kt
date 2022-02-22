@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.project.kovid.model.NewsData
+import com.project.kovid.repository.NewsRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*

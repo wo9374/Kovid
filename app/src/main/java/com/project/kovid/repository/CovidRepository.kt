@@ -1,5 +1,6 @@
-package com.project.kovid.function.home
+package com.project.kovid.repository
 
+import com.project.kovid.function.home.CovidAPI
 import com.project.kovid.objects.RetrofitService
 import com.project.kovid.model.KoreaCovidCount
 import retrofit2.Response
