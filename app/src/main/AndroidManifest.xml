@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Kovid"
         android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_config"
         tools:targetApi="n">
         <activity
             android:name="com.project.kovid.MainActivity"

@@ -9,11 +9,10 @@ import retrofit2.Retrofit
 import java.net.URLEncoder
 
 class NewsRepository {
-
     private val newsRetrofit : Retrofit = RetrofitService.getRetrofitNews()
     private val newsApi = newsRetrofit.create(NewsAPI::class.java)
 
-    suspend fun getData() : Response<News> = newsApi.getNewsResult(from = "2022-01-21", apiKey = BuildConfig.NEW_API_KEY)
+    suspend fun getNewsData(data : String) : Response<News> =newsApi.getNewsResult(from = data, apiKey = BuildConfig.NEW_API_KEY)
 
 
     private val naverRetrofit : Retrofit = RetrofitService.getRetrofitNaver()

@@ -1,12 +1,12 @@
 package com.project.kovid.model
 
-
-import com.google.gson.JsonElement
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.annotations.SerializedName
 
 data class News(
     @SerializedName("articles")
-    val articles: JsonElement,
+    val articles: List<Article>,
     @SerializedName("status")
     val status: String,
     @SerializedName("totalResults")
