@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.project.kovid.model.News
+import com.project.kovid.model.NewsData
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,7 +14,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val newsRepo: NewsRepository = NewsRepository()
 
-    var newsData = MutableLiveData<List<News.Article>>()
+    var newsData = MutableLiveData<List<NewsData.Article>>()
 
     fun searchNewsApi(){
         viewModelScope.launch {

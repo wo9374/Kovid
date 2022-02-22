@@ -1,5 +1,6 @@
-package com.project.kovid
+package com.project.kovid.objects
 
+import com.project.kovid.BuildConfig
 import com.project.kovid.function.home.CovidAPI
 import com.project.kovid.function.news.NaverAPI
 import com.project.kovid.function.news.NewsAPI

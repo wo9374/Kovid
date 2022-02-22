@@ -7,8 +7,8 @@
     <data>
 
         <variable
-            name="news"
-            type="com.project.kovid.model.News.Article" />
+            name="newsData"
+            type="com.project.kovid.model.NewsData.Article" />
 
         <variable
             name="onClickItem"
@@ -43,7 +43,7 @@
                     app:layout_constraintDimensionRatio="1.7:1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    binding:setImg="@{news.urlToImage}"
+                    binding:setImg='@{newsData.urlToImage}'
                     tools:src="@drawable/ic_launcher_background" />
 
                 <TextView
@@ -53,7 +53,7 @@
                     android:layout_margin="10dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{news.title}"
+                    android:text="@{newsData.title}"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
                     android:layout_marginBottom="8dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="@{news.description}"
+                    android:text="@{newsData.description}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/epoxy_title"
                     app:layout_constraintTop_toBottomOf="@+id/epoxy_title"

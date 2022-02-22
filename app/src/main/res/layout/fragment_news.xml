@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".function.news.NewsFragment"
-        android:background="@color/background">
+        android:background="?android:attr/colorBackground">
 
         <com.airbnb.epoxy.EpoxyRecyclerView
             android:id="@+id/epoxy_recycler"

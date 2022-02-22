@@ -1,8 +1,7 @@
 package com.project.kovid.function.news
 
-import androidx.lifecycle.MutableLiveData
 import com.project.kovid.model.NaverNews
-import com.project.kovid.model.News
+import com.project.kovid.model.NewsData
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -29,10 +28,10 @@ interface NewsAPI{
 
     @GET("everything?q=코로나 확진")
     suspend fun getNewsResult(
-        @Query("from") from:String,      //2022-01-21
+        @Query("from") from:String,      //최대 한달전까지 가능
         @Query("sortBy") sortBy:String = "publishedAt",
         @Query("apiKey") apiKey : String
-    ):Response<News>
+    ):Response<NewsData>
 }
 
 
