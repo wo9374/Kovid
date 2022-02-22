@@ -1,7 +1,5 @@
 package com.project.kovid.function.news
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.project.kovid.BuildConfig
 import com.project.kovid.RetrofitService
 import com.project.kovid.model.NaverNews
@@ -11,30 +9,11 @@ import retrofit2.Retrofit
 import java.net.URLEncoder
 
 class NewsRepository {
+
     private val newsRetrofit : Retrofit = RetrofitService.getRetrofitNews()
     private val newsApi = newsRetrofit.create(NewsAPI::class.java)
 
-    suspend fun getNewsData(){
-        newsApi.getNewsResult(
-            from = "2022-01-21",
-            apiKey = BuildConfig.NEW_API_KEY
-        )
-    }
-    suspend fun getData() : ArrayList<News.Article> {
-        val reponse = newsApi.getNewsResult(
-            from = "2022-01-21",
-            apiKey = BuildConfig.NEW_API_KEY
-        ).body()
-
-        val list = Gson().fromJson<ArrayList<News.Article>>(reponse!!.articles, object :TypeToken<ArrayList<News.Article>>() {}.type)
-        val articlelist = ArrayList<News.Article>()
-
-        for (item in list) {
-            articlelist.add(item)
-        }
-        return articlelist
-    }
-
+    suspend fun getData() : Response<News> = newsApi.getNewsResult(from = "2022-01-21", apiKey = BuildConfig.NEW_API_KEY)
 
 
     private val naverRetrofit : Retrofit = RetrofitService.getRetrofitNaver()
