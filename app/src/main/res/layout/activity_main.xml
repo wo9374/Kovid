@@ -13,6 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         tools:context=".MainActivity">
 
         <androidx.fragment.app.FragmentContainerView
@@ -32,6 +33,7 @@
             android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:itemHorizontalTranslationEnabled="true"
             app:itemRippleColor="@null"
             app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"

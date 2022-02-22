@@ -3,6 +3,7 @@ package com.project.kovid
 import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -35,13 +36,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         //특정 프래그먼트에서 BottomNavi 숨기기용
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            /*when(destination.id){
+            when(destination.id){
                 R.id.homeFragment,
-                R.id.favoriteFragment,
-                R.id.messageFragment,
-                R.id.myPageFragment -> binding.bottomNavigationView.visibility = View.VISIBLE
+                R.id.worldFragment,
+                R.id.mapFragment,
+                R.id.newsFragment -> binding.bottomNavigationView.visibility = View.VISIBLE
                 else -> binding.bottomNavigationView.visibility = View.GONE
-            }*/
+            }
         }
 
         fun isDarkTheme(activity: Activity): Boolean {

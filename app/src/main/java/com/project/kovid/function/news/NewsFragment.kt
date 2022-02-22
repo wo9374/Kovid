@@ -55,6 +55,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
                         newsData(article)
                         onClickItem { bindingModel, parentView, clickedView, position ->
                             Log.d("Epoxy", "News 항목 $bindingModel, 부모 뷰 $parentView, 클릭뷰 $clickedView $position 눌러졌다")
+                            navController.navigate(R.id.action_news_to_newsDetail)
                         }
 
                         if (index%3 ==0){
