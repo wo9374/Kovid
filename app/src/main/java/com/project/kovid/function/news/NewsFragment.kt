@@ -5,15 +5,20 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsBinding
+import com.project.kovid.databinding.FragmentNewsContainerBinding
 import com.project.kovid.headerLayout
 import com.project.kovid.newsItemLayout
 import com.project.kovid.objects.ContentsLoadingProgress
+
+//Navigation 스택관리 때문인 Container Fragment
+class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)
 
 class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
     private val viewModel: NewsViewModel by viewModels()
@@ -24,9 +29,10 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this@NewsFragment
 
+        viewModel.searchNewsApi()
+
         ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
 
-        viewModel.searchNewsApi()
         initLayout()
         subscribe(this)
     }
@@ -39,34 +45,30 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
             layoutManager = gridLayoutManager
             setHasFixedSize(true)
 
-            //구분선
-            //addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation))
+            //addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation)) //구분선
 
             withModels {
                 viewModel.newsData.value?.forEachIndexed { index, article ->
-                   /* headerLayout {
-                        id("header")
-                        title("Covid News (Month)")
-                        spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
-                    }*/
+                    /* headerLayout {
+                         id("header")
+                         title("Covid News (Month)")
+                         spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
+                     }*/
 
                     newsItemLayout {
                         id(index)
                         newsData(article)
                         onClickItem { bindingModel, parentView, clickedView, position ->
                             Log.d("Epoxy", "News 항목 $bindingModel, 부모 뷰 $parentView, 클릭뷰 $clickedView $position 눌러졌다")
-                            navController.navigate(R.id.action_news_to_newsDetail)
+                            //navController.navigate(R.id.action_news_to_newsDetail)
+                            findNavController().navigate(R.id.action_news_to_newsDetail)
                         }
 
-                        if (index%3 ==0){
-                            spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
-                        }else{
-                            spanSizeOverride { totalSpanCount, position, itemCount -> 1 }
-                        }
+                        if (index % 3 == 0) spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
+                        else spanSizeOverride { totalSpanCount, position, itemCount -> 1 }
                     }
                 }
             }//withModels
-
         }//binding.epoxyRecycler.apply
     }
 

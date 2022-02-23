@@ -25,23 +25,5 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this@NewsDetailFragment
-
-        ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
-
-        //viewModel.searchNewsApi()
-        //initLayout()
-        //subscribe(this)
-    }
-
-    private fun initLayout() {
-        val linearLayoutManager = LinearLayoutManager(mContext)
-        val gridLayoutManager = GridLayoutManager(mContext, 2)
-
-    }
-
-    private fun subscribe(owner: LifecycleOwner) {
-        viewModel.newsData.observe(owner) {
-
-        }
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_news"
+    app:startDestination="@id/newsFragment">
+
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.project.kovid.function.news.NewsFragment"
+        android:label="NewsFragment" >
+        <action
+            android:id="@+id/action_news_to_newsDetail"
+            app:destination="@id/newsDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/newsDetailFragment"
+        android:name="com.project.kovid.function.news.detail.NewsDetailFragment"
+        android:label="NewsDetailFragment" />
+
+</navigation>
