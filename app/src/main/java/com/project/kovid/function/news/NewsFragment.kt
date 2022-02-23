@@ -3,10 +3,13 @@ package com.project.kovid.function.news
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.project.kovid.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsBinding
@@ -18,19 +21,22 @@ import com.project.kovid.util.ContentsLoadingProgress
 class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)
 
 class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
-    private val viewModel: NewsViewModel by viewModels()
+
+    lateinit var newsViewModel : NewsViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        newsViewModel = ViewModelProvider(requireActivity())[NewsViewModel::class.java]
 
-        binding.viewModel = viewModel
+        binding.viewModel = newsViewModel
         binding.lifecycleOwner = this@NewsFragment
 
-        viewModel.searchNewsApi()
+        newsViewModel.searchNewsApi()
 
         ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
 
         initLayout()
+
         subscribe(this)
     }
 
@@ -45,7 +51,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
             //addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation)) //구분선
 
             withModels {
-                viewModel.newsData.value?.forEachIndexed { index, article ->
+                newsViewModel.newsData.value?.forEachIndexed { index, article ->
                     /* headerLayout {
                          id("header")
                          title("Covid News (Month)")
@@ -56,7 +62,8 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
                         id(index)
                         newsData(article)
                         onClickItem { bindingModel, parentView, clickedView, position ->
-                            Log.d("Epoxy", "News 항목 $bindingModel, 부모 뷰 $parentView, 클릭뷰 $clickedView $position 눌러졌다")
+                            Log.d("Epoxy", "News 항목 $bindingModel, 부모 뷰 $parentView, 클릭뷰 $clickedView position $position")
+                            newsViewModel.newsDetailData = bindingModel.newsData()
                             navController.navigate(R.id.action_news_to_newsDetail)
                         }
 
@@ -69,7 +76,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
     }
 
     private fun subscribe(owner: LifecycleOwner) {
-        viewModel.newsData.observe(owner) {
+        newsViewModel.newsData.observe(owner) {
             binding.epoxyRecycler.requestModelBuild()
             ContentsLoadingProgress.hideProgress(this.javaClass.name) //Progress Hide
         }

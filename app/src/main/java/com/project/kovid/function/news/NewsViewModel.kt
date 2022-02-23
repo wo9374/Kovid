@@ -18,6 +18,8 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
     var newsData = MutableLiveData<List<NewsData.Article>>()
 
+    lateinit var newsDetailData : NewsData.Article
+
     fun searchNewsApi(){
         viewModelScope.launch {
             //TODO try/catch 삭제유무 고민

@@ -1,10 +1,8 @@
 package com.project.kovid
 
-import android.app.Activity
-import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
@@ -23,8 +21,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         binding.mainViewModel = viewModel
 
         initLayout()
-    }
 
+        subscribeUI()
+    }
     private fun initLayout() {
         val navHostFragment = supportFragmentManager.findFragmentById(binding.navMainFragment.id) as NavHostFragment
 
@@ -37,15 +36,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        //특정 프래그먼트에서 BottomNavi 숨기기용
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            /*when(destination.id){
-                R.id.homeFragment,
-                R.id.worldFragment,
-                R.id.mapFragment,
-                R.id.newsFragment -> binding.bottomNavigationView.visibility = View.VISIBLE
-                else -> binding.bottomNavigationView.visibility = View.GONE
-            }*/
+        /*navController.addOnDestinationChangedListener{ _, destination, _ ->
+
+        }*/
+    }
+
+    private fun subscribeUI() {
+        viewModel.visibility.observe(this){
+            if (it){
+                binding.bottomNavigationView.visibility = View.VISIBLE
+            }else{
+                binding.bottomNavigationView.visibility = View.GONE
+            }
         }
     }
+
 }

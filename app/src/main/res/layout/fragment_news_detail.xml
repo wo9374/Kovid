@@ -7,84 +7,127 @@
     <data>
 
         <variable
-            name="newsData"
+            name="detailNewsData"
             type="com.project.kovid.model.NewsData.Article" />
-
-        <variable
-            name="viewModel"
-            type="com.project.kovid.function.news.NewsViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorBackground"
         tools:context=".function.news.detail.NewsDetailFragment">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?android:attr/colorBackground"
+                app:contentInsetStart="0dp"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <ImageView
+                    android:id="@+id/back_btn"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_baseline_arrow_back_24" />
+
+                <TextView
+                    android:id="@+id/detail_titlebar_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="1"
+                    android:padding="6dp"
+                    android:singleLine="true"
+                    android:text="@{detailNewsData.title}"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="타이틀바 텍스트" />
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            app:cardCornerRadius="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:overScrollMode="never"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="?android:attr/colorBackground">
 
-                <TextView
-                    android:id="@+id/epoxy_title"
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@{newsData.title}"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Epoxy Test This Epoxy Title, Bottom to Top of ImageView" />
-
-                <ImageView
-                    android:id="@+id/epoxy_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:gravity="center"
-                    android:scaleType="centerCrop"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintDimensionRatio="1.3:1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/epoxy_title"
-                    binding:setImg='@{newsData.urlToImage}'
-                    tools:src="@drawable/ic_launcher_background" />
-
-                <TextView
-                    android:id="@+id/epoxy_desc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textSize="16sp"
-                    android:text="@{newsData.description}"
-                    app:layout_constraintStart_toStartOf="@id/epoxy_title"
-                    app:layout_constraintTop_toBottomOf="@id/epoxy_image"
-                    tools:text='코로나19 확산 방지를 위하여 서울시내 한 영화관을 찾은 관람객이 떨어져 앉아 있다. 연합뉴스503명의 영화인이 현 정부와 각 정당 대선후보에게 한국영화 위기극복을 위한 비상정책을 제안했다.' />
-
-                <TextView
-                    android:id="@+id/epoxy_author"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="end"
-                    android:text="@{newsData.author}"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/epoxy_desc"
-                    tools:text="이선명 기자 57km@kyunghyang.com" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/detail_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@{detailNewsData.title}"
+                            android:textSize="18sp"
+                            android:textStyle="italic"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Epoxy Test This Epoxy Title, Bottom to Top of ImageView" />
+
+                        <ImageView
+                            android:id="@+id/detail_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:scaleType="centerCrop"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/detail_title"
+                            binding:setImg='@{detailNewsData.urlToImage}'
+                            tools:src="@drawable/ic_launcher_background" />
+
+                        <TextView
+                            android:id="@+id/detail_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@{detailNewsData.description}"
+                            android:textSize="15sp"
+                            app:layout_constraintStart_toStartOf="@id/detail_title"
+                            app:layout_constraintTop_toBottomOf="@id/detail_image"
+                            tools:text='코로나19 확산 방지를 위하여 서울시내 한 영화관을 찾은 관람객이 떨어져 앉아 있다. 연합뉴스503명의 영화인이 현 정부와 각 정당 대선후보에게 한국영화 위기극복을 위한 비상정책을 제안했다.' />
+
+                        <TextView
+                            android:id="@+id/detail_author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:gravity="end"
+                            android:text="@{detailNewsData.author}"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/detail_desc"
+                            tools:text="이선명 기자 57km@kyunghyang.com" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
