@@ -3,6 +3,7 @@ package com.project.kovid
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
@@ -51,4 +52,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        for(fragment: Fragment in supportFragmentManager.fragments) {
+            if (fragment.isVisible) {
+               when(fragment.id){
+                       R.id.homeFragment,
+                       R.id.worldFragment,
+                       R.id.mapFragment,
+                       R.id.newsFragment -> super.onBackPressed()
+                   else -> {
+                       supportFragmentManager.popBackStack()
+                       viewModel.onBottomNavi()
+                   }
+               }
+            }
+        }
+    }
 }

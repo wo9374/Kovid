@@ -3,7 +3,6 @@ package com.project.kovid.function.news.detail
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.project.kovid.MainViewModel
 import com.project.kovid.R
@@ -19,10 +18,6 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        newsViewModel = ViewModelProvider(requireActivity())[NewsViewModel::class.java]
-
-        binding.detailNewsData = newsViewModel.newsDetailData
-        binding.lifecycleOwner = this@NewsDetailFragment
 
         initLayout()
 
@@ -30,10 +25,16 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
     }
 
     private fun initLayout() {
+        newsViewModel = ViewModelProvider(requireActivity())[NewsViewModel::class.java]
+
+        binding.detailNewsData = newsViewModel.newsDetailData
+        binding.lifecycleOwner = this@NewsDetailFragment
+
+        binding.toolBarTitle.isSelected = true  //Marquee 처리
+
         binding.backBtn.setOnClickListener {
             navController.popBackStack()
             mainViewModel.onBottomNavi()
         }
     }
-
 }

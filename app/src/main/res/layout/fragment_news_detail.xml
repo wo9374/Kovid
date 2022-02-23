@@ -37,10 +37,11 @@
                     android:src="@drawable/ic_baseline_arrow_back_24" />
 
                 <TextView
-                    android:id="@+id/detail_titlebar_title"
+                    android:id="@+id/toolBar_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
+                    android:focusable="true"
                     android:marqueeRepeatLimit="1"
                     android:padding="6dp"
                     android:singleLine="true"
@@ -85,18 +86,16 @@
                             android:textSize="18sp"
                             android:textStyle="italic"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/detail_image"
                             tools:text="Epoxy Test This Epoxy Title, Bottom to Top of ImageView" />
 
                         <ImageView
                             android:id="@+id/detail_image"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
                             android:gravity="center"
-                            android:scaleType="centerCrop"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/detail_title"
+                            app:layout_constraintTop_toTopOf="parent"
                             binding:setImg='@{detailNewsData.urlToImage}'
                             tools:src="@drawable/ic_launcher_background" />
 
@@ -108,7 +107,7 @@
                             android:text="@{detailNewsData.description}"
                             android:textSize="15sp"
                             app:layout_constraintStart_toStartOf="@id/detail_title"
-                            app:layout_constraintTop_toBottomOf="@id/detail_image"
+                            app:layout_constraintTop_toBottomOf="@id/detail_title"
                             tools:text='코로나19 확산 방지를 위하여 서울시내 한 영화관을 찾은 관람객이 떨어져 앉아 있다. 연합뉴스503명의 영화인이 현 정부와 각 정당 대선후보에게 한국영화 위기극복을 위한 비상정책을 제안했다.' />
 
                         <TextView
