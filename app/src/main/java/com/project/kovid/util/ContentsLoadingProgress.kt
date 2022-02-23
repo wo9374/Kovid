@@ -1,4 +1,4 @@
-package com.project.kovid.objects
+package com.project.kovid.util
 
 import android.app.Activity
 import android.view.LayoutInflater
