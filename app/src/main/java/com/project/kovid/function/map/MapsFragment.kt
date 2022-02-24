@@ -1,6 +1,7 @@
 package com.project.kovid.function.map
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -49,8 +50,9 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
     }
 
-    //GoogleMap Setting
-    override fun onMapReady(googleMap: GoogleMap) {
+
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(googleMap: GoogleMap) { //GoogleMap Setting
         val seoul = LatLng(37.554891, 126.970814)
 
         mGoogleMap = googleMap
@@ -69,12 +71,14 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     snippet("현재 위치 GPS")
                     //icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_room_24))
                 }
-                addCircle{
+                /*addCircle{
                     center(currentPlace)
                     radius(accuracy)
                     strokeColor(resources.getColor(R.color.fab_green)) //테두리 Color
                     fillColor(resources.getColor(R.color.fab_green))    //원 안 Color
-                }
+                }*/
+
+                isMyLocationEnabled = true //내 위치 Marker 와 이동 버튼 표시
             }
         }
 
