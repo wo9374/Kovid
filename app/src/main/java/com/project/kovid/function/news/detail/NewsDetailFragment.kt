@@ -2,6 +2,7 @@ package com.project.kovid.function.news.detail
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.project.kovid.MainViewModel
@@ -10,11 +11,23 @@ import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsDetailBinding
 import com.project.kovid.function.news.NewsViewModel
 
+
 class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.fragment_news_detail) {
 
-    lateinit var newsViewModel : NewsViewModel
+    lateinit var newsViewModel: NewsViewModel
 
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navController.popBackStack()
+                mainViewModel.onBottomNavi()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
