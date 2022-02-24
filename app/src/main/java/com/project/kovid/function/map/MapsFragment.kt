@@ -14,7 +14,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.maps.android.ktx.addCircle
 import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
@@ -119,6 +118,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause()
+        mapsViewModel.stopLocation()
     }
 
     override fun onStop() {
@@ -145,13 +145,13 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         if (mapsViewModel.permissionCheck())
             tedPermission()
         else
-            mapsViewModel.getLocation()
+            mapsViewModel.startLocation()
     }
 
     private fun tedPermission() {
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
-                mapsViewModel.getLocation()
+                mapsViewModel.startLocation()
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {

@@ -5,6 +5,8 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.project.kovid.repository.MapRepository
 import kotlinx.coroutines.CoroutineScope
@@ -13,21 +15,7 @@ import kotlinx.coroutines.launch
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = MapsViewModel::class.java.simpleName
-
     private val mapRepo: MapRepository = MapRepository(application)
-
-    val myLocation = MutableLiveData<Location>()
-
-    //현위치 가져오기
-    fun getLocation() {
-        myLocation.value = mapRepo.getLocation()
-    }
-
-    //위치 퍼미션 체크
-    fun permissionCheck(): Boolean {
-        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(getApplication())
-    }
-
 
     var hospData = MutableLiveData<List<LatLng>>()
 
@@ -48,5 +36,27 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
                 Log.d(TAG, "getHospital() fail...")
             }
         }
+    }
+
+
+
+    val myLocation = MutableLiveData<Location>()
+
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            myLocation.value = locationResult.lastLocation
+        }
+    }
+
+    fun startLocation(){
+        mapRepo.startLocation(mLocationCallback)
+    }
+
+    fun stopLocation(){
+        mapRepo.stopLocation(mLocationCallback)
+    }
+
+    fun permissionCheck(): Boolean {
+        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(getApplication())
     }
 }
