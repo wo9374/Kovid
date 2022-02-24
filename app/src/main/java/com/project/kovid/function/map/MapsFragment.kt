@@ -7,21 +7,23 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.project.kovid.R
-import com.project.kovid.base.BaseFragment
-import com.project.kovid.databinding.FragmentMapBinding
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.ktx.addCircle
 import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import com.project.kovid.R
+import com.project.kovid.base.BaseFragment
+import com.project.kovid.databinding.FragmentMapBinding
 import kotlinx.coroutines.flow.collect
+
 
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
 
@@ -55,38 +57,51 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         mGoogleMap = googleMap
         mGoogleMap.apply {
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F)) //카메라 이동
-
-            mapsViewModel.myLocation.observe(this@MapsFragment){
-                val currentPlace = LatLng(it.placeLatitude,it.placeLongitude)
-                val accuracy : Double = it.placeAccuracy.toDouble()  //Float Double 변환
-
-                moveCamera(CameraUpdateFactory.newLatLngZoom(currentPlace, 15F)) //카메라 이동
-
-                addMarker {   //사용자 현위치 마커 추가
-                    position(currentPlace)
-                    title("사용자")
-                    snippet("현재 위치 GPS")
-                    //icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_room_24))
-                }
-                /*addCircle{
-                    center(currentPlace)
-                    radius(accuracy)
-                    strokeColor(resources.getColor(R.color.fab_green)) //테두리 Color
-                    fillColor(resources.getColor(R.color.fab_green))    //원 안 Color
-                }*/
-
-                isMyLocationEnabled = true //내 위치 Marker 와 이동 버튼 표시
-            }
-
-            setOnMarkerClickListener {
+            /*setOnMarkerClickListener {
                 false
+            }*/
+        }
+
+        lifecycleScope.launchWhenCreated { //카메라 이동 Collect
+            mGoogleMap.cameraMoveEvents().collect {
+                //Log.d("MapFragment", "카메라 이동중")
             }
         }
 
-        //카메라 이동 Collect
-        lifecycleScope.launchWhenCreated {
-            mGoogleMap.cameraMoveEvents().collect {
-                //Log.d("MapFragment", "카메라 이동중")
+        subscribe(this)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun subscribe(owner: LifecycleOwner) {
+
+        //현위치
+        mapsViewModel.myLocation.observe(owner) {
+            val latLng = LatLng(it.latitude, it.longitude)
+
+            mGoogleMap.apply {
+                moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                addMarker {
+                    position(latLng)
+                    title("사용자")
+                    snippet("현재 위치 GPS")
+                }
+                /*addCircle {
+                    center(latLng)
+                    radius(it.accuracy.toDouble())
+                    strokeColor(resources.getColor(R.color.fab_green)) //테두리 Color
+                    fillColor(resources.getColor(R.color.fab_green))    //원 안 Color
+                }*/
+                //isMyLocationEnabled = true
+            }
+        }
+
+        mapsViewModel.hospData.observe(owner) {
+            it.forEachIndexed { index, hospItem ->
+                val makerOptions = MarkerOptions()
+                makerOptions
+                    .position(hospItem)
+                    .title("마커") // 타이틀.
+                mGoogleMap.addMarker(makerOptions)
             }
         }
     }

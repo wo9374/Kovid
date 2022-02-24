@@ -6,7 +6,6 @@ import com.project.kovid.function.map.HospitalAPI
 import com.project.kovid.function.news.NaverAPI
 import com.project.kovid.function.news.NewsAPI
 import com.tickaroo.tikxml.TikXml
-import com.tickaroo.tikxml.converter.htmlescape.HtmlEscapeStringConverter
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -27,9 +26,9 @@ object RetrofitService {
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val client = OkHttpClient.Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
-            .writeTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
