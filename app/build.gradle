@@ -26,6 +26,7 @@ android {
         buildConfigField "String", "NAVER_CLIENT_ID", properties['naver.api.client.id']
         buildConfigField "String", "NAVER_CLIENT_SECRET", properties['naver.api.client.secret']
         buildConfigField "String", "NEW_API_KEY", properties['news.api.key']
+        buildConfigField "String", "HOSPITAL_API_KEY", properties['hospital.api.key']
     }
 
     buildTypes {
@@ -89,8 +90,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-jaxb:2.7.2'
 
     //OkHttp: 통신 로그 확인하기 위함
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.4.1'
 
 
     //TedPerMission 퍼미션 체크 라이브러리
@@ -114,8 +116,15 @@ dependencies {
     implementation "com.airbnb.android:epoxy-databinding:3.9.0"
     kapt "com.airbnb.android:epoxy-processor:3.9.0"
 
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+    //TikXml SDK 32 사용으로 인한 0.8.13 사용
+    implementation 'com.tickaroo.tikxml:annotation:0.8.13'
+    implementation 'com.tickaroo.tikxml:core:0.8.13'
+    implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
+    kapt 'com.tickaroo.tikxml:processor:0.8.13'
+
+    implementation 'com.tickaroo.tikxml:converter-htmlescape:0.8.13'
 }

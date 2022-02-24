@@ -2,8 +2,12 @@ package com.project.kovid.objects
 
 import com.project.kovid.BuildConfig
 import com.project.kovid.function.home.CovidAPI
+import com.project.kovid.function.map.HospitalAPI
 import com.project.kovid.function.news.NaverAPI
 import com.project.kovid.function.news.NewsAPI
+import com.tickaroo.tikxml.TikXml
+import com.tickaroo.tikxml.converter.htmlescape.HtmlEscapeStringConverter
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,6 +20,7 @@ object RetrofitService {
     private lateinit var covidInstance: Retrofit
     private lateinit var naverInstance: Retrofit
     private lateinit var newsInstance: Retrofit
+    private lateinit var hospitalInstance: Retrofit
 
     private fun createOkHttpDefault(): OkHttpClient{
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -29,6 +34,34 @@ object RetrofitService {
             .build()
 
         return client
+    }
+
+    fun getRetrofitNews(): Retrofit {
+        newsInstance = Retrofit.Builder()
+            .baseUrl(NewsAPI.NEWS_BASE_URL)
+            .client(createOkHttpDefault())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return newsInstance
+    }
+
+    fun getRetrofitCovid(): Retrofit {
+        covidInstance = Retrofit.Builder()
+            .baseUrl(CovidAPI.COVID_19_URL)
+            .client(createOkHttpDefault())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return covidInstance
+    }
+
+    fun getRetrofitHospital():Retrofit{
+        val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
+        hospitalInstance = Retrofit.Builder()
+            .baseUrl(HospitalAPI.HOSPITAL_URL)
+            .client(createOkHttpDefault())
+            .addConverterFactory(TikXmlConverterFactory.create(tikXml))
+            .build()
+        return hospitalInstance
     }
 
     private fun createOkHttpNaver(): OkHttpClient{
@@ -55,15 +88,6 @@ object RetrofitService {
         return client
     }
 
-    fun getRetrofitCovid(): Retrofit {
-        covidInstance = Retrofit.Builder()
-            .baseUrl(CovidAPI.COVID_19_URL)
-            .client(createOkHttpDefault())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return covidInstance
-    }
-
     fun getRetrofitNaver(): Retrofit {
         naverInstance = Retrofit.Builder()
             .baseUrl(NaverAPI.NAVER_BASE_URL)
@@ -71,15 +95,6 @@ object RetrofitService {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return naverInstance
-    }
-
-    fun getRetrofitNews(): Retrofit {
-        newsInstance = Retrofit.Builder()
-            .baseUrl(NewsAPI.NEWS_BASE_URL)
-            .client(createOkHttpDefault())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return newsInstance
     }
 }
 

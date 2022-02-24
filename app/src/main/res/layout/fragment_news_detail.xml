@@ -8,7 +8,7 @@
 
         <variable
             name="detailNewsData"
-            type="com.project.kovid.model.NewsData.Article" />
+            type="com.project.kovid.model.Article" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

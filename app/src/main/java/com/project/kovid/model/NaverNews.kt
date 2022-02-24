@@ -7,13 +7,13 @@ data class NaverNews(
     @SerializedName("total") var total: Int,
     @SerializedName("start") var start: Int,
     @SerializedName("display") var display: Int,
-    @SerializedName("items") var items: Array<Items>
-) {
-    data class Items(
-        @SerializedName("title") val title: String,
-        @SerializedName("link") val link: String,
-        @SerializedName("originallink") val originallink: String,
-        @SerializedName("description") val description: String,
-        @SerializedName("pubDate") val pubDate: String
-    )
-}
+    @SerializedName("items") var items: Array<NaverNewsItems>
+)
+
+data class NaverNewsItems(
+    @SerializedName("title") val title: String,
+    @SerializedName("link") val link: String,
+    @SerializedName("originallink") val originallink: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("pubDate") val pubDate: String
+)

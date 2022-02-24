@@ -8,7 +8,7 @@
 
         <variable
             name="newsData"
-            type="com.project.kovid.model.NewsData.Article" />
+            type="com.project.kovid.model.Article" />
 
         <variable
             name="onClickItem"

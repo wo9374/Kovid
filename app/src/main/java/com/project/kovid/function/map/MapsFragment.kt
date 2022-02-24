@@ -16,7 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.ktx.addCircle
+import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
@@ -25,10 +25,9 @@ import kotlinx.coroutines.flow.collect
 
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
 
-    private val viewModel: MapViewModel by viewModels()
+    private val mapsViewModel: MapsViewModel by viewModels()
 
     private lateinit var mGoogleMap: GoogleMap
-    private lateinit var locationCallback: LocationCallback
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,15 +38,13 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mapViewModel = viewModel
+        binding.mapViewModel = mapsViewModel
         binding.lifecycleOwner = this
+
+        mapsViewModel.getHospital()
 
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
-
-        binding.testBtn.setOnClickListener {
-            viewModel.getLocation()
-        }
     }
 
 
@@ -59,7 +56,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         mGoogleMap.apply {
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F)) //카메라 이동
 
-            viewModel.myLocation.observe(this@MapsFragment){
+            mapsViewModel.myLocation.observe(this@MapsFragment){
                 val currentPlace = LatLng(it.placeLatitude,it.placeLongitude)
                 val accuracy : Double = it.placeAccuracy.toDouble()  //Float Double 변환
 
@@ -78,7 +75,11 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     fillColor(resources.getColor(R.color.fab_green))    //원 안 Color
                 }*/
 
-                isMyLocationEnabled = true //내 위치 Marker 와 이동 버튼 표시
+                //isMyLocationEnabled = true //내 위치 Marker 와 이동 버튼 표시
+            }
+
+            setOnMarkerClickListener {
+                false
             }
         }
 
@@ -126,16 +127,16 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     }
 
     private fun permissionCheck() {
-        if (viewModel.permissionCheck())
+        if (mapsViewModel.permissionCheck())
             tedPermission()
         else
-            viewModel.getLocation()
+            mapsViewModel.getLocation()
     }
 
     private fun tedPermission() {
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
-                viewModel.getLocation()
+                mapsViewModel.getLocation()
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {

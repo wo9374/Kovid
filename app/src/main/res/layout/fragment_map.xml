@@ -7,7 +7,7 @@
 
         <variable
             name="mapViewModel"
-            type="com.project.kovid.function.map.MapViewModel" />
+            type="com.project.kovid.function.map.MapsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,15 +24,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/testBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="test"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
