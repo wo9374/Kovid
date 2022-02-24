@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.project.kovid.repository.CovidRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -13,7 +15,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun getCovidItem() {
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = covidRepo.getCovidData()
             } catch (e: Exception) {

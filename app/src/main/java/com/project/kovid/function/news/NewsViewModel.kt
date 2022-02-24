@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.project.kovid.model.Article
 import com.project.kovid.repository.NewsRepository
 import com.project.kovid.util.TimeUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class NewsViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,13 +21,12 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var newsDetailData : Article
 
     fun searchNewsApi(){
-        viewModelScope.launch {
-            //TODO try/catch 삭제유무 고민
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = newsRepo.getNewsData(TimeUtil.getPast1Month())
 
                 if (result.isSuccessful && result.body() != null){
-                    newsData.value = result.body()?.articles!!
+                    newsData.postValue(result.body()?.articles!!)
                 }else{
                     Log.d("NewsViewModel", "searchNewsApi() result not Successful or result.body null")
                 }
@@ -37,7 +38,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
     //네이버 검색
     fun searchNaverNews(){
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = newsRepo.getNaverNewsData()
             } catch (e: Exception) {

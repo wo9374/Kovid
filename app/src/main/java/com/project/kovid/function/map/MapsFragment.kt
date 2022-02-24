@@ -75,7 +75,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     fillColor(resources.getColor(R.color.fab_green))    //원 안 Color
                 }*/
 
-                //isMyLocationEnabled = true //내 위치 Marker 와 이동 버튼 표시
+                isMyLocationEnabled = true //내 위치 Marker 와 이동 버튼 표시
             }
 
             setOnMarkerClickListener {
