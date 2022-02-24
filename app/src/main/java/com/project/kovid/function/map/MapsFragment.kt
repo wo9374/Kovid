@@ -22,7 +22,7 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.flow.collect
 
-class MapFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
+class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
 
     private val viewModel: MapViewModel by viewModels()
 
@@ -57,7 +57,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnM
         mGoogleMap.apply {
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F)) //카메라 이동
 
-            viewModel.myLocation.observe(this@MapFragment){
+            viewModel.myLocation.observe(this@MapsFragment){
                 val currentPlace = LatLng(it.placeLatitude,it.placeLongitude)
                 val accuracy : Double = it.placeAccuracy.toDouble()  //Float Double 변환
 

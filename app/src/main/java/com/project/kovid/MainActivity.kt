@@ -9,12 +9,18 @@ import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
 import com.project.kovid.base.BaseActivity
 import com.project.kovid.databinding.ActivityMainBinding
+import com.project.kovid.function.home.HomeFragment
+import com.project.kovid.function.map.MapsFragment
+import com.project.kovid.function.news.NewsFragment
+import com.project.kovid.function.world.WorldFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private val viewModel: MainViewModel by viewModels()
     //by viewModels() 사용 안할때
     //val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+    lateinit var navHostFragment: NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +32,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         subscribeUI()
     }
     private fun initLayout() {
-        val navHostFragment = supportFragmentManager.findFragmentById(binding.navMainFragment.id) as NavHostFragment
+        navHostFragment = supportFragmentManager.findFragmentById(binding.navMainFragment.id) as NavHostFragment
 
         val navController = navHostFragment.navController
 
@@ -53,21 +59,32 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-
-        for(fragment: Fragment in supportFragmentManager.fragments) {
-            if (fragment.isVisible) {
-               when(fragment.id){
-                       R.id.homeFragment,
-                       R.id.worldFragment,
-                       R.id.mapFragment,
-                       R.id.newsFragment -> super.onBackPressed()
-                   else -> {
-                       supportFragmentManager.popBackStack()
-                       viewModel.onBottomNavi()
-                   }
-               }
+        when(navHostFragment.childFragmentManager.fragments[0]){
+            is HomeFragment,
+            is WorldFragment,
+            is MapsFragment,
+            is NewsFragment -> super.onBackPressed()
+            else ->{
+                supportFragmentManager.popBackStack()
+                viewModel.onBottomNavi()
             }
         }
+
+        /*super.onBackPressed()
+        for(fragment: Fragment in supportFragmentManager.fragments) {
+            if (fragment.isVisible) {
+                when(fragment){
+                    is HomeFragment,
+                    is WorldFragment,
+                    is MapsFragment,
+                    is NewsFragment -> super.onBackPressed()
+                    else -> {
+                        supportFragmentManager.popBackStack()
+                        viewModel.onBottomNavi()
+                    }
+                }
+            }
+        }*/
+
     }
 }

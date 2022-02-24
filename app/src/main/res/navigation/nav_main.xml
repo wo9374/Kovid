@@ -14,7 +14,7 @@
         android:label="WorldFragment" />
     <keep_state_fragment
         android:id="@+id/mapFragment"
-        android:name="com.project.kovid.function.map.MapFragment"
+        android:name="com.project.kovid.function.map.MapsFragment"
         android:label="MapFragment" />
     <keep_state_fragment
         android:id="@+id/newsContainerFragment"
