@@ -8,21 +8,17 @@ import android.os.Looper
 import android.util.Log
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
-import com.project.kovid.model.HospItem
-import com.project.kovid.model.HospPlace
 import java.util.*
 
 class KovidLocationManager(private val context: Context) {
     val TAG = LocationManager::class.java.name
 
-    private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient // 현재 위치를 가져오기 위한 변수
+    private var mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context) // 현재 위치를 가져오기 위한 변수
     private lateinit var mLocationRequest: LocationRequest // 위치 정보 요청의 매개변수를 저장하는
 
     @SuppressLint("MissingPermission")
     fun startLocationUpdates(mLocationCallback: LocationCallback) {
         mLocationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper()!!)
     }
 
@@ -64,20 +60,5 @@ class KovidLocationManager(private val context: Context) {
             e.printStackTrace()
         }
         return addr
-    }
-
-    fun getGeoCodingList(list: List<HospItem>): List<HospPlace> {
-        val hospPlace = mutableListOf<HospPlace>()
-
-        list.forEachIndexed { index, hospItem ->
-            if (hospItem.yadmNm.isNullOrEmpty()) {
-                return emptyList()
-            }else{
-                val latLng = getGeoCoding(hospItem.yadmNm!!)
-                val address = getReverseGeocoding(latLng)
-                hospPlace.add(HospPlace(address, hospItem.yadmNm!!, latLng, hospItem.telno!!))
-            }
-        }
-        return hospPlace
     }
 }

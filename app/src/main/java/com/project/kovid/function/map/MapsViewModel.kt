@@ -7,8 +7,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
-import com.project.kovid.model.HospPlace
+import com.google.maps.android.clustering.ClusterItem
+import com.google.maps.android.clustering.ClusterManager
+import com.project.kovid.model.HospItem
 import com.project.kovid.repository.MapRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,32 +21,30 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = MapsViewModel::class.java.simpleName
     private val mapRepo: MapRepository = MapRepository(application)
 
-    var hospData = MutableLiveData<List<HospPlace>?>()
+    var hospData = MutableLiveData<List<HospItem>>()
 
-    fun getHospital() {
+    /**
+     *병원정보 get
+     * */
+    fun getHospData() {
         CoroutineScope(Dispatchers.IO).launch{
             try {
                 val result = mapRepo.getHospitalData()
-
                 if (result.isSuccessful && result.body() != null) {
                     val addressData = result.body()?.body?.items?.item
-                    val hospList = addressData?.let { mapRepo.locationLoader.getGeoCodingList(it) }
-
-                    hospData.postValue(hospList)
-
-                    Log.d(TAG, "병원정보 $addressData")
+                    //val hospList = addressData?.let { mapRepo.locationLoader.getGeoCodingList(it) }
+                    Log.d(TAG, "서버결과 $addressData")
+                    hospData.postValue(addressData!!)
                 } else {
                     Log.d(TAG, "getHospital() result not Successful or result.body null")
                 }
-
-            } catch (e: Exception) {
-                Log.d(TAG, "getHospital() fail...")
-            }
+            } catch (e: Exception) { Log.d(TAG, "getHospital() fail...") }
         }
     }
 
-
-
+    /**
+     *현위치 get
+     * */
     val myLocation = MutableLiveData<Location>()
 
     private val mLocationCallback = object : LocationCallback() {

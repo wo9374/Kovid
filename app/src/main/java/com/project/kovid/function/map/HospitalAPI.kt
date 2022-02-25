@@ -8,13 +8,15 @@ import retrofit2.http.Query
 interface HospitalAPI {
     companion object{
         const val HOSPITAL_URL = "http://apis.data.go.kr/"
-        private const val HOSPITAL_END_POINT = "B551182/pubReliefHospService/getpubReliefHospList"
+        private const val HOSPITAL_END_POINT = "B551182/rprtHospService/getRprtHospService"
 
         //B551182/pubReliefHospService/getpubReliefHospList
     }
 
     @GET(HOSPITAL_END_POINT)
     suspend fun getHospital(
-        @Query("serviceKey") serviceKey : String
+        @Query("serviceKey") serviceKey : String,
+        @Query("pageNo") pageNo : Int,
+        @Query("numOfRows") numOfRows : Int,
     ): Response<HospData>
 }

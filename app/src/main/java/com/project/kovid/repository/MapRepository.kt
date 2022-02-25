@@ -19,7 +19,7 @@ class MapRepository(application: Application) {
     private val hospitalRetrofit : Retrofit = RetrofitService.getRetrofitHospital()
     private val hospitalApi = hospitalRetrofit.create(HospitalAPI::class.java)
 
-    suspend fun getHospitalData() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY)
+    suspend fun getHospitalData() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY,1, 1000)
 
 
 
