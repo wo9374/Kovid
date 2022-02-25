@@ -3,19 +3,16 @@ package com.project.kovid.function.news
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.project.kovid.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsBinding
 import com.project.kovid.databinding.FragmentNewsContainerBinding
 import com.project.kovid.newsItemLayout
-import com.project.kovid.util.ContentsLoadingProgress
+import com.project.kovid.extenstion.ContentsLoadingProgress
 
 //Navigation 스택관리 때문인 Container Fragment
 class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)

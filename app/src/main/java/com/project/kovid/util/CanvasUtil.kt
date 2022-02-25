@@ -23,10 +23,12 @@ object CanvasUtil {
     }
 
     fun drawableToBitmapDescriptor(drawable: Drawable): BitmapDescriptor {
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        //val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(60,60, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
-        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        //drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        drawable.setBounds(0, 0, 60,60)
         drawable.draw(canvas)
 
         return BitmapDescriptorFactory.fromBitmap(bitmap)

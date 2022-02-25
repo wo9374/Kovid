@@ -1,6 +1,7 @@
 package com.project.kovid.function.map
 
 import android.app.Application
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -9,32 +10,52 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.project.kovid.model.HospItem
 import com.project.kovid.function.repository.MapRepository
+import com.project.kovid.model.HospMarker
+import com.project.kovid.util.LocationUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = MapsViewModel::class.java.simpleName
+    val context: Application = application
+
     private val mapRepo: MapRepository = MapRepository(application)
 
-    var hospData = MutableLiveData<List<HospItem>>()
+    var hospData = MutableLiveData<List<HospMarker>>()
 
     /**
      *병원정보 get
      * */
     fun getHospData() {
-        CoroutineScope(Dispatchers.IO).launch{
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = mapRepo.getHospitalData()
                 if (result.isSuccessful && result.body() != null) {
-                    val addressData = result.body()?.body?.items?.item
-                    //val hospList = addressData?.let { mapRepo.locationLoader.getGeoCodingList(it) }
-                    Log.d(TAG, "서버결과 $addressData")
-                    hospData.postValue(addressData!!)
+                    val resultData = result.body()?.body?.items?.item
+
+                    val list = mutableListOf<HospMarker>()
+                    resultData?.forEachIndexed { index, hospItem ->
+                        val address = "${hospItem.sidoNm} ${hospItem.sgguNm} ${hospItem.yadmNm}"
+
+                        list.add(
+                            HospMarker(
+                                LocationUtil(context).getGeoCoding(address),
+                                hospItem.spclAdmTyCd,
+                                hospItem.sidoNm,
+                                hospItem.sgguNm,
+                                hospItem.yadmNm,
+                                hospItem.telno
+                            )
+                        )
+                    }
+                    hospData.postValue(list)
                 } else {
                     Log.d(TAG, "getHospital() result not Successful or result.body null")
                 }
-            } catch (e: Exception) { Log.d(TAG, "getHospital() fail...") }
+            } catch (e: Exception) {
+                Log.d(TAG, "getHospital() fail...")
+            }
         }
     }
 
@@ -49,15 +70,17 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun startLocation(){
+    fun startLocation() {
         mapRepo.startLocation(mLocationCallback)
     }
 
-    fun stopLocation(){
+    fun stopLocation() {
         mapRepo.stopLocation(mLocationCallback)
     }
 
     fun permissionCheck(): Boolean {
-        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(getApplication())
+        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(
+            getApplication()
+        )
     }
 }

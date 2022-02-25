@@ -3,26 +3,17 @@ package com.project.kovid.function.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
-import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
@@ -31,10 +22,8 @@ import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
 import com.project.kovid.extenstion.CustomMarker
-import com.project.kovid.model.HospItem
-import com.project.kovid.util.CanvasUtil
+import com.project.kovid.model.HospMarker
 import kotlinx.coroutines.flow.collect
-
 
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
     var TAG = MapsFragment::class.java.simpleName
@@ -43,7 +32,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private lateinit var mGoogleMap: GoogleMap
 
-    private lateinit var clusterManager: ClusterManager<HospItem>
+    private lateinit var clusterManager: ClusterManager<HospMarker>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
