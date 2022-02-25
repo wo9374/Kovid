@@ -1,4 +1,4 @@
-package com.project.kovid.repository
+package com.project.kovid.function.repository
 
 import android.Manifest
 import android.app.Application
@@ -10,12 +10,11 @@ import com.project.kovid.BuildConfig
 import com.project.kovid.function.map.HospitalAPI
 import com.project.kovid.extenstion.LocationManager
 import com.project.kovid.model.HospData
-import com.project.kovid.objects.RetrofitService
+import com.project.kovid.objects.RetrofitObject
 import retrofit2.Response
-import retrofit2.Retrofit
 
 class MapRepository(application: Application) {
-    private val hospitalRetrofit : Retrofit = RetrofitService.getRetrofitHospital()
+    private val hospitalRetrofit : retrofit2.Retrofit = RetrofitObject.getRetrofitHospital()
     private val hospitalApi = hospitalRetrofit.create(HospitalAPI::class.java)
 
     suspend fun getHospitalData() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY,1, 1000)

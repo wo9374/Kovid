@@ -4,9 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.project.kovid.model.Article
-import com.project.kovid.repository.NewsRepository
+import com.project.kovid.function.repository.NewsRepository
 import com.project.kovid.util.TimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

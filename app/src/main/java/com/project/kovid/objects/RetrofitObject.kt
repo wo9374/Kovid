@@ -14,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-object RetrofitService {
+object RetrofitObject {
 
     private lateinit var covidInstance: Retrofit
     private lateinit var naverInstance: Retrofit
@@ -53,7 +53,7 @@ object RetrofitService {
         return covidInstance
     }
 
-    fun getRetrofitHospital():Retrofit{
+    fun getRetrofitHospital(): Retrofit {
         val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
         hospitalInstance = Retrofit.Builder()
             .baseUrl(HospitalAPI.HOSPITAL_URL)

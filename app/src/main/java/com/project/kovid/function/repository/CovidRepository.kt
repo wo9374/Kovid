@@ -1,13 +1,12 @@
-package com.project.kovid.repository
+package com.project.kovid.function.repository
 
 import com.project.kovid.function.home.CovidAPI
-import com.project.kovid.objects.RetrofitService
 import com.project.kovid.model.CovidCountData
+import com.project.kovid.objects.RetrofitObject
 import retrofit2.Response
-import retrofit2.Retrofit
 
 class CovidRepository{
-    private val covidRetrofit : Retrofit = RetrofitService.getRetrofitCovid()
+    private val covidRetrofit : retrofit2.Retrofit = RetrofitObject.getRetrofitCovid()
 
     private val api = covidRetrofit.create(CovidAPI::class.java)
 
