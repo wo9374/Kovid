@@ -4,12 +4,11 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.project.kovid.BuildConfig
 import com.project.kovid.function.map.HospitalAPI
-import com.project.kovid.function.map.KovidLocationManager
+import com.project.kovid.extenstion.LocationManager
 import com.project.kovid.model.HospData
 import com.project.kovid.objects.RetrofitService
 import retrofit2.Response
@@ -23,7 +22,7 @@ class MapRepository(application: Application) {
 
 
 
-    val locationLoader = KovidLocationManager(application)
+    val locationLoader = LocationManager(application)
 
     fun startLocation(mLocationCallback: LocationCallback){
         locationLoader.startLocationUpdates(mLocationCallback)

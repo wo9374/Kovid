@@ -1,4 +1,4 @@
-package com.project.kovid.function.map
+package com.project.kovid.extenstion
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 
-class KovidLocationManager(private val context: Context) {
+class LocationManager(private val context: Context) {
     val TAG = LocationManager::class.java.name
 
     private var mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context) // 현재 위치를 가져오기 위한 변수

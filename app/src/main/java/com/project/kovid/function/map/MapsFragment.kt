@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -18,12 +17,12 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
@@ -31,7 +30,9 @@ import com.gun0912.tedpermission.normal.TedPermission
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
+import com.project.kovid.extenstion.CustomMarker
 import com.project.kovid.model.HospItem
+import com.project.kovid.util.CanvasUtil
 import kotlinx.coroutines.flow.collect
 
 
@@ -66,13 +67,13 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         val seoul = LatLng(37.554891, 126.970814)
-
         mGoogleMap = googleMap
 
         clusterManager = ClusterManager(mContext, mGoogleMap)
+        clusterManager.renderer = CustomMarker(mContext, mGoogleMap, clusterManager)
 
         mGoogleMap.apply {
-            moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F)) //카메라 이동
+            moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))
 
             /*setOnInfoWindowClickListener { marker ->
                 Log.d(TAG,"정보창 클릭 Marker ID : ${marker.id}")
@@ -85,7 +86,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             mGoogleMap.setOnMarkerClickListener(clusterManager)
         }
 
-        lifecycleScope.launchWhenCreated { //카메라 이동 Collect
+        lifecycleScope.launchWhenCreated {
             mGoogleMap.cameraMoveEvents().collect {
                 //Log.d(TAG, "카메라 이동중")
             }
@@ -106,33 +107,26 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     title("사용자")
                     snippet("현재 위치 GPS")
                 }
-                /*addCircle {
-                    center(latLng)
-                    radius(it.accuracy.toDouble())
-                    strokeColor(resources.getColor(R.color.fab_green)) //테두리 Color
-                    fillColor(resources.getColor(R.color.fab_green))    //원 안 Color
-                }*/
-                //isMyLocationEnabled = true
+                isMyLocationEnabled = true
+                uiSettings.isMyLocationButtonEnabled = true
+                uiSettings.isZoomControlsEnabled = true
             }
         }
 
         mapsViewModel.hospData.observe(owner) {
-            val latLngBounds = LatLngBounds.Builder()
-
             it?.forEachIndexed { index, hospItem->
                 clusterManager.addItem(hospItem)
 
-                val position = LatLng(hospItem.YPosWgs84,hospItem.XPosWgs84)
-                latLngBounds.include(position)
-
-              /*  val drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_local_hospital_24)
+                /*val drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_local_hospital_24)
                 val latLng = LatLng(hospItem.YPosWgs84,hospItem.XPosWgs84)
                 val makerOptions = MarkerOptions()
                 makerOptions
                     .position(latLng)
                     .title(hospItem.yadmNm)
                     .snippet("상세정보")
-                    .icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(drawable)))
+                    .icon(
+                        CanvasUtil.drawableToBitmapDescriptor(drawable!!)
+                    )
                 mGoogleMap.addMarker(makerOptions)*/
             }
         }
@@ -162,6 +156,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     override fun onDestroy() {
         super.onDestroy()
         binding.mapView.onDestroy()
+        //clusterManager.clearItems()
     }
 
     override fun onLowMemory() {
@@ -199,18 +194,4 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .check()
     }
-
-    private fun drawableToBitmap(drawable: Drawable?): Bitmap {
-        if (drawable is BitmapDrawable) {
-            return drawable.bitmap
-        }
-        val bitmap = Bitmap.createBitmap(drawable?.intrinsicWidth ?: 200, drawable?.intrinsicHeight ?: 200, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-
-        drawable?.setBounds(0, 0, canvas.width, canvas.height)
-        drawable?.draw(canvas)
-
-        return bitmap
-    }
-
 }
