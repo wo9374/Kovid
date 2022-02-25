@@ -3,14 +3,13 @@ package com.project.kovid.function.map
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
-import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
 import com.google.android.gms.location.*
-import com.project.kovid.model.Place
 import com.google.android.gms.maps.model.LatLng
 import com.project.kovid.model.HospItem
+import com.project.kovid.model.HospPlace
 import java.util.*
 
 class KovidLocationManager(private val context: Context) {
@@ -67,16 +66,18 @@ class KovidLocationManager(private val context: Context) {
         return addr
     }
 
-    fun getGeoCodingList(list: List<HospItem>): List<LatLng> {
-        val listLatLng = mutableListOf<LatLng>()
+    fun getGeoCodingList(list: List<HospItem>): List<HospPlace> {
+        val hospPlace = mutableListOf<HospPlace>()
 
         list.forEachIndexed { index, hospItem ->
             if (hospItem.yadmNm.isNullOrEmpty()) {
                 return emptyList()
-            } else {
-                listLatLng.add(getGeoCoding(hospItem.yadmNm!!))
+            }else{
+                val latLng = getGeoCoding(hospItem.yadmNm!!)
+                val address = getReverseGeocoding(latLng)
+                hospPlace.add(HospPlace(address, hospItem.yadmNm!!, latLng, hospItem.telno!!))
             }
         }
-        return listLatLng
+        return hospPlace
     }
 }

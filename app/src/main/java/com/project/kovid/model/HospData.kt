@@ -1,13 +1,21 @@
 package com.project.kovid.model
 
+import com.google.android.gms.maps.model.LatLng
 import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
 
+/**병원정보 DataClass*/
+data class HospPlace(
+    var address: String,
+    var yadmNm: String,
+    var latLng : LatLng,
+    var telno: String,
+)
+
 /**
  * 코로나19병원정보 API DataClass
  * */
-
 @Xml(name = "response")
 data class HospData(
     @Element(name = "header")

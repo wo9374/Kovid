@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
+import com.project.kovid.model.HospPlace
 import com.project.kovid.repository.MapRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = MapsViewModel::class.java.simpleName
     private val mapRepo: MapRepository = MapRepository(application)
 
-    var hospData = MutableLiveData<List<LatLng>>()
+    var hospData = MutableLiveData<List<HospPlace>?>()
 
     fun getHospital() {
         CoroutineScope(Dispatchers.IO).launch{
@@ -26,7 +27,10 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
                 if (result.isSuccessful && result.body() != null) {
                     val addressData = result.body()?.body?.items?.item
-                    hospData.postValue(addressData?.let { mapRepo.locationLoader.getGeoCodingList(it) })
+                    val hospList = addressData?.let { mapRepo.locationLoader.getGeoCodingList(it) }
+
+                    hospData.postValue(hospList)
+
                     Log.d(TAG, "병원정보 $addressData")
                 } else {
                     Log.d(TAG, "getHospital() result not Successful or result.body null")

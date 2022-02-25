@@ -3,15 +3,21 @@ package com.project.kovid.function.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.ktx.addMarker
@@ -95,11 +101,17 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
 
         mapsViewModel.hospData.observe(owner) {
-            it.forEachIndexed { index, hospItem ->
+            it?.forEachIndexed { index, hospPlace->
                 val makerOptions = MarkerOptions()
+
+                val drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_local_hospital_24)
+
                 makerOptions
-                    .position(hospItem)
-                    .title("마커") // 타이틀.
+                    .position(hospPlace.latLng)
+                    .title(hospPlace.yadmNm)
+                    .snippet("${hospPlace.address}\n${hospPlace.address}")
+                    .icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(drawable)))
+
                 mGoogleMap.addMarker(makerOptions)
             }
         }
@@ -167,5 +179,20 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ).check()
+    }
+
+    fun drawableToBitmap(drawable: Drawable?): Bitmap {
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+        val bitmap = Bitmap.createBitmap(
+            drawable?.intrinsicWidth ?: 200,
+            drawable?.intrinsicHeight ?: 200,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable?.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable?.draw(canvas)
+        return bitmap
     }
 }
