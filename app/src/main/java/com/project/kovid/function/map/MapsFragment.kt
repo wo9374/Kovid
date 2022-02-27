@@ -102,9 +102,9 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             }
         }
 
-        mapsViewModel.hospData.observe(owner) {
-            it?.forEachIndexed { index, hospItem->
-                clusterManager.addItem(hospItem)
+        mapsViewModel.symptomTestHospData.observe(owner){
+            it.forEachIndexed { index, hospMarker ->
+                clusterManager.addItem(hospMarker)
 
                 /*val drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_local_hospital_24)
                 val latLng = LatLng(hospItem.YPosWgs84,hospItem.XPosWgs84)

@@ -54,8 +54,8 @@ data class HospItem(
     @PropertyElement(name = "sidoNm")  //시도명
     var sidoNm: String,
 
-    @PropertyElement(name = "spclAdmTyCd") //A0: 국민안심병원/97: 코로나검사 실시기관/99: 코로나 선별진료소 운영기관
-    var spclAdmTyCd: Int,
+    @PropertyElement(name = "spclAdmTyCd") //A0: 국민안심병원 /97: 코로나검사 실시기관(무증상) /99: 코로나 선별진료소 운영기관 (의심증상)
+    var spclAdmTyCd: String,
 
     @PropertyElement(name = "telno")   //전화번호
     var telno: String,
@@ -67,7 +67,7 @@ data class HospItem(
 
 data class HospMarker(
     val latLng: LatLng,
-    var spclAdmTyCd: Int,
+    var spclAdmTyCd: String,
 
     var sidoNm: String,
     var sgguNm: String,

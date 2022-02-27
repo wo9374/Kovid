@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.project.kovid.R
+import com.project.kovid.function.repository.MapRepository
 import com.project.kovid.model.HospMarker
 import com.project.kovid.util.CanvasUtil
 
@@ -16,20 +17,11 @@ class CustomMarker(private val context: Context, map: GoogleMap, clusterManager:
     : DefaultClusterRenderer<HospMarker>(context, map, clusterManager) {
 
     override fun onBeforeClusterItemRendered(item: HospMarker, markerOptions: MarkerOptions) {
-        val id: Int = R.drawable.ic_comprehensive_hosp
-
-        when(item.spclAdmTyCd){
-
+        val id: Int = when(item.spclAdmTyCd){
+            MapRepository.CORONA_TEST -> R.drawable.ic_covid_test
+            MapRepository.SYMPTOM_TEST -> R.drawable.ic_symptom_test
+            else -> R.drawable.ic_comprehensive_hosp
         }
-       /* if (item.bg === 1) {      // drawable 변경
-
-        } else if (item.bg === 2) {
-
-        } else if (item.bg === 3) {
-
-        } else if (item.bg === 4) {
-
-        }*/
 
         val drawable = ContextCompat.getDrawable(context, id)
         val markerIcon: BitmapDescriptor = CanvasUtil.drawableToBitmapDescriptor(drawable!!)

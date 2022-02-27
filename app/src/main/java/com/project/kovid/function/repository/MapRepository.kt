@@ -17,7 +17,13 @@ class MapRepository(application: Application) {
     private val hospitalRetrofit : retrofit2.Retrofit = RetrofitObject.getRetrofitHospital()
     private val hospitalApi = hospitalRetrofit.create(HospitalAPI::class.java)
 
-    suspend fun getHospitalData() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY,1, 102, "97")
+    companion object{
+        const val SAFE_HOSP = "A0"
+        const val CORONA_TEST = "97"
+        const val SYMPTOM_TEST = "99"
+    }
+
+    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY,1, 250, SYMPTOM_TEST)
 
 
 
