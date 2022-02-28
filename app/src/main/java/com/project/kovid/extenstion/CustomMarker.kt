@@ -9,18 +9,19 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.project.kovid.R
 import com.project.kovid.function.repository.MapRepository
-import com.project.kovid.model.HospMarker
+import com.project.kovid.model.HospItem
 import com.project.kovid.util.CanvasUtil
 
 
-class CustomMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospMarker>)
-    : DefaultClusterRenderer<HospMarker>(context, map, clusterManager) {
+class CustomMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospItem>)
+    : DefaultClusterRenderer<HospItem>(context, map, clusterManager) {
 
-    override fun onBeforeClusterItemRendered(item: HospMarker, markerOptions: MarkerOptions) {
-        val id: Int = when(item.spclAdmTyCd){
-            MapRepository.CORONA_TEST -> R.drawable.ic_covid_test
-            MapRepository.SYMPTOM_TEST -> R.drawable.ic_symptom_test
-            else -> R.drawable.ic_comprehensive_hosp
+    override fun onBeforeClusterItemRendered(item: HospItem, markerOptions: MarkerOptions) {
+        val id: Int = when(item.recuClCd){
+            MapRepository.HOSP_COMPREHENSIVE -> R.drawable.ic_hosp_comprehensive
+            MapRepository.HOSP_GENERAL -> R.drawable.ic_hosp_general
+            MapRepository.HOSP_DOCTOR_OFFICE -> R.drawable.ic_host_doctor_office
+            else -> R.drawable.ic_hosp_comprehensive
         }
 
         val drawable = ContextCompat.getDrawable(context, id)

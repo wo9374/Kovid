@@ -9,8 +9,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.project.kovid.function.repository.MapRepository
 import com.project.kovid.model.HospItem
-import com.project.kovid.model.HospMarker
-import com.project.kovid.util.LocationUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +19,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val mapRepo: MapRepository = MapRepository(application)
 
-    var symptomTestHospData = MutableLiveData<List<HospMarker>>()
+    var symptomTestHospData = MutableLiveData<List<HospItem>>()
 
     /**
      *병원정보 get
@@ -33,7 +31,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
                 if (result.isSuccessful && result.body() != null) {
                     val resultData = result.body()!!.body.items.item
-                    symptomTestHospData.postValue(computeGeoCoding(resultData))
+                    symptomTestHospData.postValue(resultData)
                 } else {
                     Log.d(TAG, "getHospital() result not Successful or result.body null")
                 }
@@ -43,18 +41,6 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-
-    fun computeGeoCoding(resultData : List<HospItem>) : MutableList<HospMarker>{
-        val list = mutableListOf<HospMarker>()
-        resultData.forEachIndexed { index, hospItem ->
-            val address = "${hospItem.sidoNm} ${hospItem.sgguNm} ${hospItem.yadmNm}"
-            list.add(HospMarker(LocationUtil(context).getGeoCoding(address), hospItem.spclAdmTyCd, hospItem.sidoNm, hospItem.sgguNm, hospItem.yadmNm, hospItem.telno))
-        }
-        Log.d(TAG, "getHospital() success data compute")
-        return list
-    }
-
-
 
     /**
      *현위치 get

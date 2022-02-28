@@ -18,12 +18,11 @@ class MapRepository(application: Application) {
     private val hospitalApi = hospitalRetrofit.create(HospitalAPI::class.java)
 
     companion object{
-        const val SAFE_HOSP = "A0"
-        const val CORONA_TEST = "97"
-        const val SYMPTOM_TEST = "99"
+        const val HOSP_COMPREHENSIVE = "11"
+        const val HOSP_GENERAL = "21"
+        const val HOSP_DOCTOR_OFFICE = "31"
     }
-
-    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY,1, 250, SYMPTOM_TEST)
+    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.HOSPITAL_API_KEY,1, 200)
 
 
 

@@ -22,7 +22,7 @@ import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
 import com.project.kovid.extenstion.CustomMarker
-import com.project.kovid.model.HospMarker
+import com.project.kovid.model.HospItem
 import kotlinx.coroutines.flow.collect
 
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
@@ -32,7 +32,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private lateinit var mGoogleMap: GoogleMap
 
-    private lateinit var clusterManager: ClusterManager<HospMarker>
+    private lateinit var clusterManager: ClusterManager<HospItem>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -55,6 +55,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
+        subscribe(this)
+        
         val seoul = LatLng(37.554891, 126.970814)
         mGoogleMap = googleMap
 
@@ -73,6 +75,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             }*/
             mGoogleMap.setOnCameraIdleListener(clusterManager)
             mGoogleMap.setOnMarkerClickListener(clusterManager)
+
+            isMyLocationEnabled = true
+            uiSettings.isMyLocationButtonEnabled = true
+            uiSettings.isZoomControlsEnabled = true
         }
 
         lifecycleScope.launchWhenCreated {
@@ -80,13 +86,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 //Log.d(TAG, "카메라 이동중")
             }
         }
-
-        subscribe(this)
     }
 
     @SuppressLint("MissingPermission")
     fun subscribe(owner: LifecycleOwner) {
-        //현위치
         mapsViewModel.myLocation.observe(owner) {
             val latLng = LatLng(it.latitude, it.longitude)
             mGoogleMap.apply {
@@ -96,9 +99,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     title("사용자")
                     snippet("현재 위치 GPS")
                 }
-                isMyLocationEnabled = true
-                uiSettings.isMyLocationButtonEnabled = true
-                uiSettings.isZoomControlsEnabled = true
             }
         }
 

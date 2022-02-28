@@ -45,17 +45,23 @@ data class HospItems(
 
 @Xml(name = "item")
 data class HospItem(
-    @PropertyElement(name = "adtFrDd") //운영가능일자
-    var adtFrDd: String,
+    @PropertyElement(name = "addr") //대전광역시 중구 당디로6번길 76 302,304,305호 (문화동, 두루타운)
+    var addr: String,
 
-    @PropertyElement(name = "sgguNm")  //시군구명
-    var sgguNm: String,
+    @PropertyElement(name = "recuClCd") //요양종별코드 //11:종합병원 21:병원 31:의원
+    var recuClCd: String,
 
-    @PropertyElement(name = "sidoNm")  //시도명
-    var sidoNm: String,
+    @PropertyElement(name = "pcrPsblYn") //PCR 가능여부
+    var pcrPsblYn: String,
 
-    @PropertyElement(name = "spclAdmTyCd") //A0: 국민안심병원 /97: 코로나검사 실시기관(무증상) /99: 코로나 선별진료소 운영기관 (의심증상)
-    var spclAdmTyCd: String,
+    @PropertyElement(name = "ratPsblYn") //RAT 가능여부
+    var ratPsblYn: String,
+
+    @PropertyElement(name = "sgguCdNm")  //시군구명
+    var sgguCdNm: String,
+
+    @PropertyElement(name = "sidoCdNm")  //시도명
+    var sidoCdNm: String,
 
     @PropertyElement(name = "telno")   //전화번호
     var telno: String,
@@ -63,20 +69,15 @@ data class HospItem(
     @PropertyElement(name = "yadmNm")  //기관명
     var yadmNm: String,
 
-)
+    @PropertyElement(name = "YPosWgs84")  //위도
+    var YPosWgs84: Double,
 
-data class HospMarker(
-    val latLng: LatLng,
-    var spclAdmTyCd: String,
+    @PropertyElement(name = "XPosWgs84")  //경도
+    var XPosWgs84: Double,
 
-    var sidoNm: String,
-    var sgguNm: String,
-    val yadmNm: String,
-
-    var telno: String,
-) : ClusterItem {
+): ClusterItem {
     override fun getPosition(): LatLng {
-        return latLng
+        return LatLng(YPosWgs84, XPosWgs84)
     }
 
     override fun getTitle(): String {
@@ -84,10 +85,9 @@ data class HospMarker(
     }
 
     override fun getSnippet(): String {
-        return "$sidoNm $sgguNm\n$yadmNm"
+        return addr
     }
 }
-
 
 
 
