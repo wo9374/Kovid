@@ -1,33 +1,25 @@
 package com.project.kovid.extenstion
 
-import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
-import com.project.kovid.R
+import com.project.kovid.databinding.CustomInfoWindowLayoutBinding
 
-internal class CustomInfoWindow(context : Context) : GoogleMap.InfoWindowAdapter{
-
-    val mWindow = (context as Activity).layoutInflater.inflate(R.layout.custom_info_window_layout, null)
-
-    fun rendowWindowText(marker: Marker, view: View) {
-
-        val tvTitle = view.findViewById<TextView>(R.id.marker_title)
-        val tvSnippet = view.findViewById<TextView>(R.id.txt_marker_snippet)
-
-        tvTitle.text = marker.title
-        tvSnippet.text = marker.snippet
-    }
+internal class CustomInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{
+    lateinit var binding : CustomInfoWindowLayoutBinding
 
     override fun getInfoContents(marker: Marker): View {
-        rendowWindowText(marker, mWindow)
-        return mWindow
+        binding = CustomInfoWindowLayoutBinding.inflate(LayoutInflater.from(context))
+
+        binding.txtMarkerTitle.text = marker.title
+        binding.txtMarkerSnippet.text = marker.snippet
+
+        return binding.root
     }
 
     override fun getInfoWindow(marker: Marker): View? {
-        rendowWindowText(marker, mWindow)
-        return mWindow
+        return null
     }
 }

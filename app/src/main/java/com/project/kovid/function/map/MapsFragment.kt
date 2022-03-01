@@ -64,6 +64,9 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         clusterManager = ClusterManager(mContext, mGoogleMap)
         clusterManager.renderer = CustomMarker(mContext, mGoogleMap, clusterManager)
+        clusterManager.setOnClusterItemClickListener { hospItem ->
+            return@setOnClusterItemClickListener false
+        }
 
         mGoogleMap.apply {
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))

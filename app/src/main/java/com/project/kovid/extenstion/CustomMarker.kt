@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
@@ -33,4 +34,8 @@ class CustomMarker(private val context: Context, map: GoogleMap, clusterManager:
         super.onBeforeClusterItemRendered(item, markerOptions)
     }
 
+    override fun onClusterItemRendered(clusterItem: HospItem, marker: Marker) {
+        super.onClusterItemRendered(clusterItem, marker)
+        getMarker(clusterItem).showInfoWindow()
+    }
 }
