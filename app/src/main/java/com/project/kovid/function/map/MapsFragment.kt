@@ -13,17 +13,19 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.clustering.ClusterManager
-import com.google.maps.android.ktx.addMarker
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
+import com.project.kovid.extenstion.CustomInfoWindow
 import com.project.kovid.extenstion.CustomMarker
 import com.project.kovid.model.HospItem
 import kotlinx.coroutines.flow.collect
+
 
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
     var TAG = MapsFragment::class.java.simpleName
@@ -56,7 +58,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         subscribe(this)
-        
+
         val seoul = LatLng(37.554891, 126.970814)
         mGoogleMap = googleMap
 
@@ -76,6 +78,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             mGoogleMap.setOnCameraIdleListener(clusterManager)
             mGoogleMap.setOnMarkerClickListener(clusterManager)
 
+            setInfoWindowAdapter(CustomInfoWindow(mContext))
+
             isMyLocationEnabled = true
             uiSettings.isMyLocationButtonEnabled = true
             uiSettings.isZoomControlsEnabled = true
@@ -94,11 +98,11 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             val latLng = LatLng(it.latitude, it.longitude)
             mGoogleMap.apply {
                 moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-                addMarker{
+                /*addMarker{
                     position(latLng)
                     title("사용자")
                     snippet("현재 위치 GPS")
-                }
+                }*/
             }
         }
 

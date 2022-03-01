@@ -85,7 +85,7 @@ data class HospItem(
     }
 
     override fun getSnippet(): String {
-        return addr
+        return "$addr\n$telno"
     }
 }
 
