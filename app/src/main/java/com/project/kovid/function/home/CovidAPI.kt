@@ -1,7 +1,7 @@
 package com.project.kovid.function.home
 
 import com.project.kovid.BuildConfig
-import com.project.kovid.model.CovidCountData
+import com.project.kovid.model.CovidData
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,5 +17,5 @@ interface CovidAPI {
         @Query("serviceKey") serviceKey: String = BuildConfig.DATA_GO_KR_API_KEY,
         @Query("startCreateDt") startCreateDt : String,
         @Query("endCreateDt") endCreateDt : String,
-    ): Response<CovidCountData>
+    ): Response<CovidData>
 }

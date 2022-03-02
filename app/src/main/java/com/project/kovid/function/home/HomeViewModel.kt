@@ -18,6 +18,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = covidRepo.getCovidData()
+
+                if (result.isSuccessful && result.body() != null) {
+                    val resultData = result.body()!!.body.items.item
+                    //symptomTestHospData.postValue(resultData)
+                } else {
+                    Log.d(TAG, "getCovidItem() result not Successful or result.body null")
+                }
             } catch (e: Exception) {
                 Log.d("MainViewModel", "fail...")
             }
