@@ -10,5 +10,5 @@ class CovidRepository{
 
     private val api = covidRetrofit.create(CovidAPI::class.java)
 
-    suspend fun getCovidData() : Response<CovidCountData>? = api.getInfo()
+    suspend fun getCovidData() : Response<CovidCountData> = api.getInfo(startCreateDt = "20220223", endCreateDt = "20220302")
 }

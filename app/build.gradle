@@ -26,7 +26,7 @@ android {
         buildConfigField "String", "NAVER_CLIENT_ID", properties['naver.api.client.id']
         buildConfigField "String", "NAVER_CLIENT_SECRET", properties['naver.api.client.secret']
         buildConfigField "String", "NEW_API_KEY", properties['news.api.key']
-        buildConfigField "String", "HOSPITAL_API_KEY", properties['hospital.api.key']
+        buildConfigField "String", "DATA_GO_KR_API_KEY", properties['data.go.kr.api.key']
     }
 
     buildTypes {

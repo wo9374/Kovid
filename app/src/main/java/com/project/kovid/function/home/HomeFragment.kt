@@ -1,6 +1,7 @@
 package com.project.kovid.function.home
 
-import android.content.Context
+import android.app.Activity
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -21,20 +22,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     //private val viewModel: HomeViewModel by activityViewModels() //activity 의 ViewModel 을 따름
     private val viewModel: HomeViewModel by viewModels()
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        //viewModel.getCovidItem()
+        viewModel.getCovidItem()
 
-        //barChartSetting(binding.chart)
-        //barDataSetting(binding.chart)
+        barChartSetting(binding.chart)
+        barDataSetting(binding.chart)
     }
 
 
@@ -48,8 +44,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         entries.add(BarEntry(5.0f,70.0f))
         entries.add(BarEntry(6.0f,30.0f))
         entries.add(BarEntry(7.0f,90.0f))
-
-
 
         var set = BarDataSet(entries,"DataSet")//데이터셋 초기화 하기
         set.color = ContextCompat.getColor(requireContext(),R.color.fab_green)
@@ -81,9 +75,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 setDrawLabels(true) //값 적기 허용
                 setDrawGridLines(true)    //격자 라인 활용
                 setDrawAxisLine(false)    //축 그리기 설정
-                axisLineColor = ContextCompat.getColor(context, R.color.black) //축 컬러 설정
-                gridColor = ContextCompat.getColor(context, R.color.black)     //격자 컬러 설정
-                textColor = ContextCompat.getColor(context, R.color.black)     //라벨 텍스트 컬러
+
+                axisLineColor = lightDarkThemeCheck() //축 컬러 설정
+                gridColor = lightDarkThemeCheck()     //격자 컬러 설정
+                textColor = lightDarkThemeCheck()     //라벨 텍스트 컬러
                 textSize = 13f      //라벨 텍스트 크기
             }
 
@@ -92,7 +87,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 granularity = 1f      // 1단위 만큼 간격
                 setDrawAxisLine(true) // 축 그림
                 setDrawGridLines(false) // 격자
-                textColor = ContextCompat.getColor(context, R.color.fab_red)   //라벨 컬러
+                textColor = lightDarkThemeCheck()   //라벨 컬러
                 textSize = 12f        // 텍스트 크기
                 valueFormatter = MyXAxisFormatter()
             }
@@ -108,6 +103,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         private val days = arrayOf("1차","2차","3차","4차","5차","6차","7차")
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             return days.getOrNull(value.toInt()-1) ?: value.toString()
+        }
+    }
+
+    private fun lightDarkThemeCheck() : Int{
+        return if (requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
+            ContextCompat.getColor(mContext, R.color.white)
+        }else{
+            ContextCompat.getColor(mContext, R.color.black)
         }
     }
 }
