@@ -24,6 +24,7 @@ internal class CustomInfoWindow(private val context : Context) : GoogleMap.InfoW
     }
 
     override fun getInfoWindow(marker: Marker): View? {
+        //기본 창(흰색 버블)을 사용해야 함을 나타내려면 null 반환
         return null
     }
 }

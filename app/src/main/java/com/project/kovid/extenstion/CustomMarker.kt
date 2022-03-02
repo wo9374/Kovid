@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
@@ -29,13 +30,14 @@ class CustomMarker(private val context: Context, map: GoogleMap, clusterManager:
         val markerIcon: BitmapDescriptor = CanvasUtil.drawableToBitmapDescriptor(drawable!!)
 
         markerOptions.icon(markerIcon)
-        markerOptions.snippet(item.snippet)
+        //markerOptions.snippet(item.snippet)
         markerOptions.title(item.title)
-        super.onBeforeClusterItemRendered(item, markerOptions)
+        markerOptions.position(LatLng(item.YPosWgs84,item.XPosWgs84))
+        //super.onBeforeClusterItemRendered(item, markerOptions)
     }
 
     override fun onClusterItemRendered(clusterItem: HospItem, marker: Marker) {
-        super.onClusterItemRendered(clusterItem, marker)
+        //super.onClusterItemRendered(clusterItem, marker)
         marker.tag = clusterItem
     }
 }

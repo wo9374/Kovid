@@ -60,7 +60,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         clusterManager = ClusterManager(mContext, mGoogleMap)
         clusterManager.apply {
             renderer = CustomMarker(mContext, mGoogleMap, clusterManager)
-            markerCollection.setInfoWindowAdapter(CustomInfoWindow(mContext))
             setOnClusterItemClickListener { hospItem ->
                 return@setOnClusterItemClickListener false
             }
@@ -103,6 +102,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         mapsViewModel.symptomTestHospData.observe(owner) {
             it.forEachIndexed { index, hospMarker ->
+                clusterManager.markerCollection.setInfoWindowAdapter(CustomInfoWindow(mContext))
                 clusterManager.addItem(hospMarker)
                 clusterManager.cluster()
 
