@@ -61,9 +61,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         mapRepo.stopLocation(mLocationCallback)
     }
 
-    fun permissionCheck(): Boolean {
-        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(
-            getApplication()
-        )
+    fun permissionNotAllowCheck(): Boolean {
+        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(getApplication())
     }
 }

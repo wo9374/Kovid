@@ -36,6 +36,6 @@ class CustomMarker(private val context: Context, map: GoogleMap, clusterManager:
 
     override fun onClusterItemRendered(clusterItem: HospItem, marker: Marker) {
         super.onClusterItemRendered(clusterItem, marker)
-        getMarker(clusterItem).showInfoWindow()
+        marker.tag = clusterItem
     }
 }

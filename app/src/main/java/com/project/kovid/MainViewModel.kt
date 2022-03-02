@@ -8,15 +8,9 @@ import androidx.lifecycle.MutableLiveData
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = MainViewModel::class.java.simpleName
 
-    val visibility = MutableLiveData(true)
+    val botNaviViewVisibility = MutableLiveData(true)
 
-    fun onBottomNavi(){
-        visibility.postValue(true)
-    }
-
-    fun offBottomNavi(){
-        visibility.postValue(false)
-    }
+    val mapPermission = MutableLiveData(false)
 
     //private val covidRepo: CovidRepository = CovidRepository()
 

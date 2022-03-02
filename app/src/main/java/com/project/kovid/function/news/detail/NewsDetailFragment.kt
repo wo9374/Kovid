@@ -23,7 +23,7 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navController.popBackStack()
-                mainViewModel.onBottomNavi()
+                mainViewModel
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -34,7 +34,7 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
 
         initLayout()
 
-        mainViewModel.offBottomNavi()
+        mainViewModel.botNaviViewVisibility.postValue(false)
     }
 
     private fun initLayout() {
@@ -47,7 +47,7 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
 
         binding.backBtn.setOnClickListener {
             navController.popBackStack()
-            mainViewModel.onBottomNavi()
+            mainViewModel.botNaviViewVisibility.postValue(true)
         }
     }
 }
