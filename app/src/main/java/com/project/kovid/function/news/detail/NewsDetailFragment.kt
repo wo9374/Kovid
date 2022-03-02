@@ -23,7 +23,7 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navController.popBackStack()
-                mainViewModel
+                mainViewModel.botNaviViewVisibility.postValue(true)
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
