@@ -30,7 +30,8 @@
                 android:id="@+id/txtCurrentDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@{viewModel.color}"
+                android:text="@{viewModel.topDecideDate == null ? @string/data_loading : @string/current_covid(viewModel.topDecideDate)}"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="3.2 신규확진자" />
@@ -40,6 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:text="@{viewModel.topDecide == null ? @string/default_decide : viewModel.topDecide}"
                 android:textColor="@color/fab_red"
                 android:textSize="18sp"
                 android:textStyle="bold"

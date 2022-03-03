@@ -6,5 +6,7 @@
     <string name="string_map">지도</string>
     <string name="string_news">뉴스</string>
 
+    <string name="data_loading">Data Loading..</string>
     <string name="current_covid">%1s 신규확진자</string>
+    <string name="default_decide">000000</string>
 </resources>

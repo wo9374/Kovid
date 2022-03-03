@@ -2,9 +2,10 @@ package com.project.kovid.function.home
 
 import android.app.Application
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
+import com.project.kovid.R
 import com.project.kovid.function.repository.CovidRepository
-import com.project.kovid.model.CovidItem
 import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val covidRepo: CovidRepository = CovidRepository()
 
     val weekDecide = MutableLiveData<ArrayList<WeekCovid>>()
+
+    val topDecideDate = MutableLiveData<String>()
+    val topDecide = MutableLiveData<String>()
+    var color = MutableLiveData(ContextCompat.getColor(application, R.color.black))
+
 
     fun getWeekCovid(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -33,6 +39,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         weekCovid.add(WeekCovid(currentDate,decideCnt))
                     }
                     weekDecide.postValue(weekCovid)
+
+                    topDecideDate.postValue(weekCovid[weekCovid.lastIndex].day)
+                    topDecide.postValue(StringUtil.getDecimalFormatNum(weekCovid[weekCovid.lastIndex].decideCnt))
                 } else {
                     Log.d(TAG, "getCovidItem() result not Successful or result.body null")
                 }
