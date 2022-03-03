@@ -2,7 +2,6 @@ package com.project.kovid.function.home
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -18,7 +17,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.project.kovid.extenstion.CustomMPChartMarker
+import com.project.kovid.extenstion.CustomChartMarker
 import com.project.kovid.model.WeekCovid
 import java.util.*
 import kotlin.collections.ArrayList
@@ -36,6 +35,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         homeViewModel.color.value = lightDarkThemeCheck()
         homeViewModel.getWeekCovid()
 
+        binding.chart.setNoDataText(getString(R.string.data_loading))  //data 없을때 표시 text
         subscribe(this)
     }
 
@@ -47,30 +47,35 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun barChartSetting(chart: BarChart, dataList: ArrayList<WeekCovid>, color: Int) {
-
         val cntList = arrayListOf<Int>()
         dataList.forEachIndexed { index, weekCovid ->
             cntList.add(weekCovid.decideCnt)
         }
-        
-        val maxDecide = Collections.max(cntList)
+
+        val maxDecide = Collections.max(cntList) //코로나 확진자 최대 값
         var maxDecideLength = maxDecide.toString().length
-        var multipli = 0
+        val multipli: Int
 
         if (maxDecide.toString().length > 1){
             maxDecideLength -= 1
-            multipli = 10.0.pow(maxDecideLength.toDouble()).toInt() //10의 n승
+            multipli = 10.0.pow(maxDecideLength.toDouble()).toInt() //10의 n승 (0 자릿수 만큼)
         }else multipli = 10
 
         val num = (maxDecide + multipli) / multipli
         val maxGraphCount = (num * multipli).toFloat() + 1f
 
         chart.run {
-            description.isEnabled = false // 차트 옆 별도로 표시되는 description
-            setMaxVisibleValueCount(dataList.size)    // 최대 표시할 그래프 수
-            setPinchZoom(false)             // 핀치줌 설정
+            description.isEnabled = false   // 차트 옆 별도로 표시되는 description
+            setMaxVisibleValueCount(dataList.size)   // 최대 표시할 그래프 수
+            //setPinchZoom(false)           // 핀치줌 설정 (기능 안됨)
+            setScaleEnabled(false)          // 모든 확대/축소 비활성화
             setDrawBarShadow(false)         // 그래프 그림자
             setDrawGridBackground(false)    // 격자 구조 유무
+
+            axisRight.isEnabled = false // 우측 Y축 안보이게
+            setTouchEnabled(true)      // 그래프 터치 disable
+            animateY(1000)  // 아래서 올라오는 anim
+            legend.isEnabled = false    // 차트 범례 설정
 
             axisLeft.run { //왼쪽 축, Y 축
                 axisMaximum = maxGraphCount  //끝 위치에 선을 그리기 위해 + 1f로 맥시멈
@@ -97,13 +102,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 valueFormatter = MyXAxisFormatter(dataList)
             }
 
-            axisRight.isEnabled = false // 우측 Y축 안보이게
-            setTouchEnabled(false)      // 그래프 터치 disable
-            animateY(1000)  // 아래서 올라오는 anim
-            legend.isEnabled = false    // 차트 범례 설정
-
-            val customMarker = CustomMPChartMarker(mContext, R.layout.custom_mpchart_marker)
-            marker = customMarker
+            val customMarker = CustomChartMarker(mContext, R.layout.custom_mpchart_marker)
+            chart.marker = customMarker
         }
     }
 
