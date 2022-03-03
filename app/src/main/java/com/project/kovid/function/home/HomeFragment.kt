@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -28,40 +29,36 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.viewModel = homeViewModel
         binding.lifecycleOwner = this
 
-        homeViewModel.getCovidItem()
+        homeViewModel.getWeekCovid()
 
         subscribe(this)
-
-        barChartSetting(binding.chart)
-        barDataSetting(binding.chart)
     }
 
     private fun subscribe(owner: LifecycleOwner) {
-        homeViewModel.currentDecide.observe(owner) {
-            val currentData = StringUtil.computeStringToInt(it[1].stateDt)
-
-            val decideCnt = (it[0].decideCnt - it[1].decideCnt).toString()
-            val decideString = StringUtil.getDecimalFormatNum(decideCnt)
-
+        homeViewModel.weekDecide.observe(owner) {
             //신규 날짜
-            binding.txtCurrentDate.text = getString(R.string.current_covid, currentData)
+            binding.txtCurrentDate.text = getString(R.string.current_covid, it[it.lastIndex].day)
+            binding.txtCurrentDate.setTextColor(lightDarkThemeCheck())
             //신규 확진자
-            binding.txtDecideCnt.text = decideString
+            binding.txtDecideCnt.text = StringUtil.getDecimalFormatNum(it[it.lastIndex].decideCnt)
+
+            barChartSetting(binding.chart, it)
+            barDataSetting(binding.chart, it)
         }
     }
 
-    private fun barDataSetting(chart: BarChart) {
+    private fun barDataSetting(chart: BarChart, dataList: ArrayList<WeekCovid>) {
         val entries = ArrayList<BarEntry>()
-        entries.add(BarEntry(1.0f,20.0f))
-        entries.add(BarEntry(2.0f,70.0f))
-        entries.add(BarEntry(3.0f,30.0f))
-        entries.add(BarEntry(4.0f,90.0f))
-        entries.add(BarEntry(5.0f,70.0f))
-        entries.add(BarEntry(6.0f,30.0f))
-        entries.add(BarEntry(7.0f,90.0f))
 
-        var set = BarDataSet(entries,"DataSet")//데이터셋 초기화 하기
-        set.color = ContextCompat.getColor(requireContext(),R.color.fab_green)
+        dataList.forEachIndexed { index, weekCovid ->
+            entries.add(BarEntry(
+                (index+1).toFloat(),
+                weekCovid.decideCnt.toFloat())
+            )
+        }
+
+        val set = BarDataSet(entries,"DataSet") //데이터셋 초기화 하기
+        set.color = ContextCompat.getColor(requireContext(),R.color.fab_red)
 
         val dataSet :ArrayList<IBarDataSet> = ArrayList()
         dataSet.add(set)
@@ -74,20 +71,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
     }
 
-    private fun barChartSetting(chart : BarChart) {
+    private fun barChartSetting(chart : BarChart, dataList: ArrayList<WeekCovid>) {
         chart.run {
             description.isEnabled = false // 차트 옆 별도로 표시되는 description
 
-            setMaxVisibleValueCount(7)    // 최대 표시할 그래프 수
+            setMaxVisibleValueCount(dataList.size)    // 최대 표시할 그래프 수
             setPinchZoom(false)           // 핀치줌 설정
             setDrawBarShadow(false)       // 그래프 그림자
             setDrawGridBackground(false)  // 격자 구조 유무
 
-            axisLeft.run {     //왼쪽 축, Y 축
-                axisMaximum = 101f  //100 위치에 선을 그리기 위해 101f로 맥시멈
-                axisMinimum = 0f    //최소값
-                granularity = 50f   //50 단위마다 선 그리기
-                setDrawLabels(true) //값 적기 허용
+            axisLeft.run { //왼쪽 축, Y 축
+                axisMaximum = 300001f  //위치에 선을 그리기 위해 +1f로 맥시멈
+                axisMinimum = 0f       //최소값
+
+                granularity = 50000f   //단위마다 선 그리기
+
+                setDrawLabels(true)    //값 적기 허용
                 setDrawGridLines(true)    //격자 라인 활용
                 setDrawAxisLine(false)    //축 그리기 설정
 
@@ -104,7 +103,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 setDrawGridLines(false) // 격자
                 textColor = lightDarkThemeCheck()   //라벨 컬러
                 textSize = 12f        // 텍스트 크기
-                valueFormatter = MyXAxisFormatter()
+                valueFormatter = MyXAxisFormatter(dataList)
             }
 
             axisRight.isEnabled = false // 우측 Y축 안보이게
@@ -113,13 +112,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             legend.isEnabled = false    // 차트 범례 설정
         }
     }
+    inner class MyXAxisFormatter(private val dataList: ArrayList<WeekCovid>) : ValueFormatter(){
+        private val days = arrayOfNulls<String>(dataList.size)
 
-    inner class MyXAxisFormatter : ValueFormatter(){
-        private val days = arrayOf("1차","2차","3차","4차","5차","6차","7차")
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            dataList.forEachIndexed { index, weekCovid ->
+                days[index] = weekCovid.day
+            }
             return days.getOrNull(value.toInt()-1) ?: value.toString()
         }
     }
+
 
     private fun lightDarkThemeCheck() : Int{
         return if (requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
@@ -129,3 +132,4 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
     }
 }
+

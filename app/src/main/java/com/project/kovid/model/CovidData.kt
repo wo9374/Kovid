@@ -63,5 +63,9 @@ data class CovidItem(
 
     @PropertyElement(name = "updateDt")   //수정일시분초
     var updateDt: String?,
+)
 
-    )
+data class WeekCovid(
+    val day : String,
+    val decideCnt : Int,
+)

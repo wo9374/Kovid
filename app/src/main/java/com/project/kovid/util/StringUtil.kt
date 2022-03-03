@@ -13,9 +13,11 @@ object StringUtil {
         return "compute 오류"
     }
 
-    fun getDecimalFormatNum(price: String?): String? {  // String용
+    fun getDecimalFormatNum(num: Int): String {  // String용
+
+        val numString = num.toString()
         var result = "0"
-        if (price == null || price.isEmpty()) return result
+        if (numString.isEmpty()) return result
 
         val dfs = DecimalFormatSymbols()
         dfs.groupingSeparator = ','
@@ -24,7 +26,7 @@ object StringUtil {
         df.groupingSize = 3              //3자리수 마다 그룹핑
         df.decimalFormatSymbols = dfs
 
-        val dPrice = price.toDouble()
+        val dPrice = numString.toDouble()
         result = df.format(dPrice)
 
         return result

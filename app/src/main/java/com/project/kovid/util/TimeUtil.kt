@@ -38,10 +38,10 @@ object TimeUtil {
         return beforeDate
     }
 
-    fun getPast1Week():String{
+    fun getPast8Day():String{
         val week: Calendar = Calendar.getInstance()
-        week.add(Calendar.DATE, -7)
-        val beforeWeek = SimpleDateFormat("yyyy-MM-dd").format(week.time)
+        week.add(Calendar.DATE, -8)
+        val beforeWeek = SimpleDateFormat("yyyyMMdd").format(week.time)
         return beforeWeek
     }
 
