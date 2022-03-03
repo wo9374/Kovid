@@ -2,6 +2,7 @@ package com.project.kovid.function.home
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -19,7 +20,9 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.project.kovid.extenstion.CustomMPChartMarker
 import com.project.kovid.model.WeekCovid
-import com.project.kovid.util.StringUtil
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.pow
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     //private val viewModel: HomeViewModel by activityViewModels() //activity 의 ViewModel 을 따름
@@ -44,28 +47,44 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun barChartSetting(chart: BarChart, dataList: ArrayList<WeekCovid>, color: Int) {
+
+        val cntList = arrayListOf<Int>()
+        dataList.forEachIndexed { index, weekCovid ->
+            cntList.add(weekCovid.decideCnt)
+        }
+        
+        val maxDecide = Collections.max(cntList)
+        var maxDecideLength = maxDecide.toString().length
+        var multipli = 0
+
+        if (maxDecide.toString().length > 1){
+            maxDecideLength -= 1
+            multipli = 10.0.pow(maxDecideLength.toDouble()).toInt() //10의 n승
+        }else multipli = 10
+
+        val num = (maxDecide + multipli) / multipli
+        val maxGraphCount = (num * multipli).toFloat() + 1f
+
         chart.run {
             description.isEnabled = false // 차트 옆 별도로 표시되는 description
-
             setMaxVisibleValueCount(dataList.size)    // 최대 표시할 그래프 수
-            setPinchZoom(false)           // 핀치줌 설정
-            setDrawBarShadow(false)       // 그래프 그림자
-            setDrawGridBackground(false)  // 격자 구조 유무
+            setPinchZoom(false)             // 핀치줌 설정
+            setDrawBarShadow(false)         // 그래프 그림자
+            setDrawGridBackground(false)    // 격자 구조 유무
 
             axisLeft.run { //왼쪽 축, Y 축
-                axisMaximum = 300001f  //끝 위치에 선을 그리기 위해 + 1f로 맥시멈
+                axisMaximum = maxGraphCount  //끝 위치에 선을 그리기 위해 + 1f로 맥시멈
                 axisMinimum = 0f       //최소값
+                granularity = (multipli/2).toFloat()   //단위마다 선 그리기
 
-                granularity = 50000f   //단위마다 선 그리기
+                setDrawLabels(true)      //값 적기 허용
+                setDrawGridLines(true)   //격자 라인 활용
+                setDrawAxisLine(false)   //축 그리기 설정
 
-                setDrawLabels(true)    //값 적기 허용
-                setDrawGridLines(true)    //격자 라인 활용
-                setDrawAxisLine(false)    //축 그리기 설정
-
-                axisLineColor = color //축 컬러 설정
-                gridColor = color     //격자 컬러 설정
-                textColor = color     //라벨 텍스트 컬러
-                textSize = 13f      //라벨 텍스트 크기
+                axisLineColor = color    //축 컬러 설정
+                gridColor = color        //격자 컬러 설정
+                textColor = color        //라벨 텍스트 컬러
+                textSize = 13f           //라벨 텍스트 크기
             }
 
             xAxis.run {
@@ -83,7 +102,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             animateY(1000)  // 아래서 올라오는 anim
             legend.isEnabled = false    // 차트 범례 설정
 
-            marker = CustomMPChartMarker(mContext, R.layout.custom_mpchart_marker)
+            val customMarker = CustomMPChartMarker(mContext, R.layout.custom_mpchart_marker)
+            marker = customMarker
         }
     }
 
