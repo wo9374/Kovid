@@ -1,11 +1,11 @@
 package com.project.kovid.function.home
 
-import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentHomeBinding
@@ -17,23 +17,38 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.project.kovid.util.StringUtil
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     //private val viewModel: HomeViewModel by activityViewModels() //activity 의 ViewModel 을 따름
-    private val viewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
+        binding.viewModel = homeViewModel
         binding.lifecycleOwner = this
 
-        viewModel.getCovidItem()
+        homeViewModel.getCovidItem()
+
+        subscribe(this)
 
         barChartSetting(binding.chart)
         barDataSetting(binding.chart)
     }
 
+    private fun subscribe(owner: LifecycleOwner) {
+        homeViewModel.currentDecide.observe(owner) {
+            val currentData = StringUtil.computeStringToInt(it[1].stateDt)
 
+            val decideCnt = (it[0].decideCnt - it[1].decideCnt).toString()
+            val decideString = StringUtil.getDecimalFormatNum(decideCnt)
+
+            //신규 날짜
+            binding.txtCurrentDate.text = getString(R.string.current_covid, currentData)
+            //신규 확진자
+            binding.txtDecideCnt.text = decideString
+        }
+    }
 
     private fun barDataSetting(chart: BarChart) {
         val entries = ArrayList<BarEntry>()

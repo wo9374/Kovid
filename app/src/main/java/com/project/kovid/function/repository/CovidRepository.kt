@@ -3,6 +3,7 @@ package com.project.kovid.function.repository
 import com.project.kovid.function.home.CovidAPI
 import com.project.kovid.model.CovidData
 import com.project.kovid.objects.RetrofitObject
+import com.project.kovid.util.TimeUtil
 import retrofit2.Response
 
 class CovidRepository{
@@ -10,5 +11,5 @@ class CovidRepository{
 
     private val api = covidRetrofit.create(CovidAPI::class.java)
 
-    suspend fun getCovidData() : Response<CovidData> = api.getInfo(startCreateDt = "20220228", endCreateDt = "20220301")
+    suspend fun getCovidData() : Response<CovidData> = api.getInfo(startCreateDt = TimeUtil.getPast1Day(), endCreateDt = TimeUtil.getTodayDate())
 }

@@ -5,4 +5,6 @@
     <string name="string_country">세계별</string>
     <string name="string_map">지도</string>
     <string name="string_news">뉴스</string>
+
+    <string name="current_covid">%1s 신규확진자</string>
 </resources>

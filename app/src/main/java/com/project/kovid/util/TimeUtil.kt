@@ -7,7 +7,7 @@ object TimeUtil {
 
     fun getTodayDate() : String{
         val today = Date()
-        val date = SimpleDateFormat("yyyy-MM-dd")
+        val date = SimpleDateFormat("yyyyMMdd")
         val toDay: String = date.format(today)
 
         return toDay
@@ -33,7 +33,7 @@ object TimeUtil {
     fun getPast1Day():String{
         val day: Calendar = Calendar.getInstance()
         day.add(Calendar.DATE, -1)
-        val beforeDate = SimpleDateFormat("yyyy-MM-dd").format(day.time)
+        val beforeDate = SimpleDateFormat("yyyyMMdd").format(day.time)
 
         return beforeDate
     }
