@@ -45,10 +45,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun subscribeUI() {
-        viewModel.botNaviViewVisibility.observe(this) {
-            if (it) binding.bottomNavigationView.visibility = View.VISIBLE
-            else binding.bottomNavigationView.visibility = View.GONE
-        }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -21,7 +21,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val topDecideDate = MutableLiveData<String>()
     val topDecide = MutableLiveData<String>()
-    var color = MutableLiveData(ContextCompat.getColor(application, R.color.black))
+    var uiModeColor = MutableLiveData(ContextCompat.getColor(application, R.color.black))
 
 
     fun getWeekCovid(){
@@ -43,10 +43,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     topDecideDate.postValue(weekCovid[weekCovid.lastIndex].day)
                     topDecide.postValue(StringUtil.getDecimalFormatNum(weekCovid[weekCovid.lastIndex].decideCnt))
                 } else {
-                    Log.d(TAG, "getCovidItem() result not Successful or result.body null")
+                    Log.d(TAG, "getWeekCovid() result not Successful or result.body null")
                 }
             } catch (e: Exception) {
-                Log.d("MainViewModel", "fail...")
+                Log.d(TAG, "getWeekCovid() fail...")
             }
         }
     }

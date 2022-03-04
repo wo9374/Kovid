@@ -30,8 +30,8 @@
                 android:id="@+id/txtCurrentDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@{viewModel.color}"
                 android:text="@{viewModel.topDecideDate == null ? @string/data_loading : @string/current_covid(viewModel.topDecideDate)}"
+                android:textColor="@{viewModel.uiModeColor}"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="3.2 신규확진자" />
@@ -64,11 +64,13 @@
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_margin="8dp"
+                app:dataList="@{viewModel.weekDecide}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_margin="8dp"/>
+                app:uiModeColor="@{viewModel.uiModeColor}" />
         </androidx.cardview.widget.CardView>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>
