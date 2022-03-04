@@ -1,4 +1,4 @@
-package com.project.kovid.extenstion
+package com.project.kovid.extenstion.customview
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -17,7 +17,7 @@ class ContentsLoadingProgress {
         @JvmStatic
         @JvmOverloads
         fun showProgress(key: String, activity: Activity, touchable: Boolean = false) {
-            if(mContentViewHashMap.containsKey(key)) return//이미 노출 중이라면.
+            if(mContentViewHashMap.containsKey(key)) return //이미 노출 중이라면.
 
             val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
             mContentViewHashMap[key] = contentView

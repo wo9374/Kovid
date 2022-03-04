@@ -1,4 +1,4 @@
-package com.project.kovid.extenstion
+package com.project.kovid.extenstion.customview
 
 import android.annotation.SuppressLint
 import android.content.Context

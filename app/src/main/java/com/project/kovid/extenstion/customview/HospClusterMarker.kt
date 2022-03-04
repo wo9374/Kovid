@@ -1,4 +1,4 @@
-package com.project.kovid.extenstion
+package com.project.kovid.extenstion.customview
 
 import android.content.Context
 import androidx.core.content.ContextCompat
@@ -15,7 +15,7 @@ import com.project.kovid.model.HospItem
 import com.project.kovid.util.CanvasUtil
 
 
-class CustomMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospItem>)
+class HospClusterMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospItem>)
     : DefaultClusterRenderer<HospItem>(context, map, clusterManager) {
 
     override fun onBeforeClusterItemRendered(item: HospItem, markerOptions: MarkerOptions) {

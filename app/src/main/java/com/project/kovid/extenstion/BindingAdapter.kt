@@ -16,6 +16,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.project.kovid.R
+import com.project.kovid.extenstion.customview.CustomChartMarker
 import com.project.kovid.model.WeekCovid
 import java.util.*
 import kotlin.collections.ArrayList

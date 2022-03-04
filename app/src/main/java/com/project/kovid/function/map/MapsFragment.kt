@@ -2,7 +2,6 @@ package com.project.kovid.function.map
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -23,8 +22,8 @@ import com.project.kovid.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
-import com.project.kovid.extenstion.CustomInfoWindow
-import com.project.kovid.extenstion.CustomMarker
+import com.project.kovid.extenstion.customview.HospMapInfoWindow
+import com.project.kovid.extenstion.customview.HospClusterMarker
 import com.project.kovid.model.HospItem
 import kotlinx.coroutines.flow.collect
 
@@ -59,7 +58,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         clusterManager = ClusterManager(mContext, mGoogleMap)
         clusterManager.apply {
-            renderer = CustomMarker(mContext, mGoogleMap, clusterManager)
+            renderer = HospClusterMarker(mContext, mGoogleMap, clusterManager)
             setOnClusterItemClickListener { hospItem ->
                 return@setOnClusterItemClickListener false
             }
@@ -102,7 +101,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         mapsViewModel.symptomTestHospData.observe(owner) {
             it.forEachIndexed { index, hospMarker ->
-                clusterManager.markerCollection.setInfoWindowAdapter(CustomInfoWindow(mContext))
+                clusterManager.markerCollection.setInfoWindowAdapter(HospMapInfoWindow(mContext))
                 clusterManager.addItem(hospMarker)
                 clusterManager.cluster()
 

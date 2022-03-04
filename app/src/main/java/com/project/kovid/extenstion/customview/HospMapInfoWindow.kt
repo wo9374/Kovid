@@ -1,4 +1,4 @@
-package com.project.kovid.extenstion
+package com.project.kovid.extenstion.customview
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.Marker
 import com.project.kovid.databinding.CustomInfoWindowLayoutBinding
 import com.project.kovid.model.HospItem
 
-internal class CustomInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{
+internal class HospMapInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{
     lateinit var binding : CustomInfoWindowLayoutBinding
 
     override fun getInfoContents(marker: Marker): View {
