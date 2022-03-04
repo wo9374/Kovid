@@ -11,6 +11,7 @@ import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
 import com.project.kovid.base.BaseActivity
 import com.project.kovid.databinding.ActivityMainBinding
+import com.project.kovid.extenstion.customview.ContentsLoadingProgress
 import com.project.kovid.function.map.MapsFragment
 
 
@@ -60,7 +61,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 }
 
                 if (permission) viewModel.mapPermission.value = true
-                else Toast.makeText(this, "설정에서 권한을 허가 해주세요.", Toast.LENGTH_SHORT).show()
+                else {
+                    Toast.makeText(this, "설정에서 권한을 허가 해주세요.", Toast.LENGTH_SHORT).show()
+                    ContentsLoadingProgress.hideProgress(this.javaClass.name)
+                }
             }
         }
     }

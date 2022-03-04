@@ -5,59 +5,63 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import com.project.kovid.R
+import com.project.kovid.databinding.ContentsLoadingScreenBinding
 
 class ContentsLoadingProgress {
+
     companion object {
         const val LOADING_SCREEN_TAG = "contents_loading_screen"
+
+        lateinit var binding: ContentsLoadingScreenBinding
 
         val mContentViewHashMap: HashMap<String, ViewGroup> = HashMap()
 
         @JvmStatic
         @JvmOverloads
         fun showProgress(key: String, activity: Activity, touchable: Boolean = false) {
-            if(mContentViewHashMap.containsKey(key)) return //이미 노출 중이라면.
+            if (mContentViewHashMap.containsKey(key)) return //이미 노출 중이라면.
 
             val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
             mContentViewHashMap[key] = contentView
 
-            val inflater = LayoutInflater.from(activity)
-            inflater.inflate(R.layout.include_contents_loading_screen, null)?.let {
+            binding = ContentsLoadingScreenBinding.inflate(
+                LayoutInflater.from(activity)
+            )
 
-                it.isClickable = touchable
+            binding.root.rootView.let {
                 contentView.addView(it)
 
-                it.layoutParams?.apply {
-                    width = ViewGroup.LayoutParams.MATCH_PARENT
-                    height = ViewGroup.LayoutParams.MATCH_PARENT
+                it.apply {
+                    isClickable = touchable
+                    layoutParams?.apply {
+                        width = ViewGroup.LayoutParams.MATCH_PARENT
+                        height = ViewGroup.LayoutParams.MATCH_PARENT
+                    }
+                    tag = LOADING_SCREEN_TAG
                 }
-
-                val loadingImageView = it.findViewById<ImageView>(R.id.vodlist_loading_pregross)
 
                 val rotateAnim = AnimationUtils.loadAnimation(activity, R.anim.loading_image_rotate_anim)
                 rotateAnim.fillAfter = true
 
-                loadingImageView.animation = rotateAnim
-
-                it.tag = LOADING_SCREEN_TAG
+                binding.vodlistLoadingPregross.animation = rotateAnim
             }
         }
 
         @JvmStatic
         fun hideProgress(key: String) {
-            if(mContentViewHashMap.containsKey(key)) {
+            if (mContentViewHashMap.containsKey(key)) {
                 mContentViewHashMap[key]?.apply {
 
-                    val loadingScreen: View? = findViewById<View>(R.id.loading_screen)
-
-                    if(loadingScreen != null && loadingScreen.visibility == View.VISIBLE)
-                        loadingScreen.visibility = View.GONE
+                    if (binding.loadingScreen.visibility == View.VISIBLE)
+                        binding.loadingScreen.visibility = View.GONE
 
                     removeView(findViewWithTag(LOADING_SCREEN_TAG))
                 }
                 mContentViewHashMap.remove(key)
             }
         }
+
     }
+
 }
