@@ -6,6 +6,9 @@ import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 
+/**
+ * 위치에 관한 함수 Util
+ * */
 class LocationUtil(val context: Context) {
 
     //주소로 위도,경도 구하는 GeoCoding
