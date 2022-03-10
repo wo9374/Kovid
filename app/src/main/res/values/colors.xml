@@ -13,4 +13,7 @@
     <color name="fab_yellow">#F4FA58</color>
     <color name="fab_green">#ACFA58</color>
 
+
+    <color name="widjet_bg_color">#f0f0f0</color>
+    <color name="txt_color">#FF000000</color>
 </resources>

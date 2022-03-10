@@ -60,15 +60,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chart"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_margin="8dp"
-                app:dataList="@{viewModel.weekDecide}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:uiModeColor="@{viewModel.uiModeColor}" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_margin="10dp"
+                    app:dataList="@{viewModel.weekDecide}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:uiModeColor="@{viewModel.uiModeColor}" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/chart_tab_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_coner_round"
+                    android:layout_marginVertical="4dp"
+                    app:tabIndicator="@null" />
+
+                <!--
+                    app:tabIndicatorColor="#0070C0" //하단 움직이는 바 색상
+                    app:tabIndicatorGravity="top" // 하단 움직이는 바 위치 설정
+                    app:tabTextColor="#0070C0" //탭 텍스트 색상
+                    app:tabSelectedTextColor="@color/white" //선택된 탭 텍스트 색상
+                    app:tabBackground="@drawable/tab_background" //탭 배경
+                    app:tabTextAppearance="@style/TabText" //Style에서 추가한 폰트와 텍스트 사이즈 추가
+                -->
+            </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
