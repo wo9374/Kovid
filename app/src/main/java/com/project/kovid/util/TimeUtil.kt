@@ -38,11 +38,18 @@ object TimeUtil {
         return beforeDate
     }
 
-    fun getPast8Day():String{
+    fun getPast7Day():String{
         val week: Calendar = Calendar.getInstance()
-        week.add(Calendar.DATE, -8)
+        week.add(Calendar.DATE, -7)
         val beforeWeek = SimpleDateFormat("yyyyMMdd").format(week.time)
         return beforeWeek
+    }
+
+    fun getPast1MonthCovid():String{
+        val mon: Calendar = Calendar.getInstance()
+        mon.add(Calendar.DATE, -31)
+        val beforeMonth = SimpleDateFormat("yyyyMMdd").format(mon.time)
+        return beforeMonth
     }
 
     fun getPast1Month(): String{

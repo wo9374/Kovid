@@ -33,7 +33,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     val resultData = apiResultData.body()!!.body.items.item
                     val weekCovid = arrayListOf<WeekCovid>()
 
-                    for (i in 6 downTo 0){ //일주일
+                    for (i in 29 downTo 0){ //일주일
                         val currentDate = StringUtil.computeStringToInt(resultData[i+1].stateDt)
                         val decideCnt = (resultData[i].decideCnt - resultData[i+1].decideCnt)
                         weekCovid.add(WeekCovid(currentDate,decideCnt))
