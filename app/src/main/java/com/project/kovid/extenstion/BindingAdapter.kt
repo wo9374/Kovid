@@ -1,5 +1,7 @@
 package com.project.kovid.extenstion
 
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -12,8 +14,11 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.listener.ChartTouchListener
+import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.project.kovid.R
 import com.project.kovid.extenstion.customview.CustomChartMarker
@@ -75,19 +80,27 @@ fun setImg(view: ImageView, imgUri: String?){
 }*/
 
 @BindingAdapter(value = ["dataList","uiModeColor"])
-fun setChartData(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColor : Int){
+fun setChartSetting(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColor : Int){
     chart.setNoDataText(chart.context.getString(R.string.data_loading))  //data 없을때 표시 text
 
     val cntList = arrayListOf<Int>()    //Bar ChartSet / Max 확진자수 구하기위한 배열
+    val entries = ArrayList<BarEntry>() //Bar DataSet  / 그래프 순서, 수치
 
     dataList?.forEachIndexed { index, weekCovid ->
         cntList.add(weekCovid.decideCnt)
+
+        val graphIndex = (index + 1).toFloat()         //그래프 순서 1부터 시작
+        val graphCnt = weekCovid.decideCnt.toFloat()   //그래프 확진자 수치
+
+        val entry = BarEntry(graphIndex, graphCnt)
+        entry.data = dataList[index]
+        entries.add(entry)
     }
 
     var multipli = 0
     var maxGraphCount = 0.0f
 
-    /**---------------------------- Bar ChartSet  ------------------------------*/
+    /**---------------------------- 일일 확진자 Text  ------------------------------*/
     if (!cntList.isNullOrEmpty()){
         val maxDecide = Collections.max(cntList) //코로나 확진자 최대 값
         var maxDecideLength = maxDecide.toString().length
@@ -102,6 +115,7 @@ fun setChartData(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColor :
         maxGraphCount = (num * multipli).toFloat() + 1f
     }
 
+    /**---------------------------- Bar ChartSetting  ------------------------------*/
     chart.run {
         description.isEnabled = false   // 차트 옆 별도로 표시되는 description
         setMaxVisibleValueCount(dataList?.size ?: 0)   // 최대 표시할 그래프 수
@@ -110,8 +124,11 @@ fun setChartData(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColor :
         setDrawBarShadow(false)         // 그래프 그림자
         setDrawGridBackground(false)    // 격자 구조 유무
 
+        isDragEnabled = true
+        isDragDecelerationEnabled = true
+
         axisRight.isEnabled = false // 우측 Y축 안보이게
-        setTouchEnabled(true)      // 그래프 터치 disable
+        setTouchEnabled(true)      // 그래프 터치 disable / enable
         animateY(1000)  // 아래서 올라오는 anim
         legend.isEnabled = false    // 차트 범례 설정
 
@@ -141,10 +158,23 @@ fun setChartData(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColor :
         }
 
         val customMarker = CustomChartMarker(chart.context, R.layout.custom_mpchart_marker)
-        chart.marker = customMarker
+        marker = customMarker
+    }
+
+    /**---------------------------- Bar DataSet  ------------------------------*/
+    val set = BarDataSet(entries, "DataSet")     //데이터셋 초기화
+    set.color = ContextCompat.getColor(chart.context, R.color.fab_red) //그래프 바 Color
+
+    val dataSet: ArrayList<IBarDataSet> = arrayListOf(set)
+    val data = BarData(dataSet)
+    data.barWidth = 0.3f  //막대 너비 설정
+
+    chart.run {
+        this.data = data  //차트의 데이터를 data로 설정
+        setFitBars(true)
+        invalidate()
     }
 }
-
 
 class MyXAxisFormatter(private val dataList: ArrayList<WeekCovid>?) : ValueFormatter() {
     private val days = arrayOfNulls<String>(dataList?.size ?:0)

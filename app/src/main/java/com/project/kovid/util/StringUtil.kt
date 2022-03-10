@@ -13,7 +13,7 @@ object StringUtil {
         return "compute 오류"
     }
 
-    fun getDecimalFormatNum(num: Int): String {  // String용
+    fun getDecimalFormatNum(num: Int): String {
 
         val numString = num.toString()
         var result = "0"

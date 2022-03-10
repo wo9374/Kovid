@@ -2,6 +2,8 @@ package com.project.kovid.function.home
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -10,11 +12,17 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.listener.ChartTouchListener
+import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentHomeBinding
 import com.project.kovid.model.WeekCovid
+import com.project.kovid.util.StringUtil
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     //private val viewModel: HomeViewModel by activityViewModels() //activity 의 ViewModel 을 따름
@@ -28,38 +36,33 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         homeViewModel.uiModeColor.value = lightDarkThemeCheck()
         homeViewModel.getWeekCovid()
 
-        binding.chart.setNoDataText(getString(R.string.data_loading))  //data 없을때 표시 text
+        binding.chart.apply {
+            setNoDataText(getString(R.string.data_loading))  //data 없을때 표시 text
+            setOnChartValueSelectedListener(valueOnSelectedListener)
+        }
+
+        binding.chartTabLayout.apply {
+            addTab(this.newTab().setText("7일"))
+            addTab(this.newTab().setText("30일"))
+        }
+
         subscribe(this)
     }
 
     private fun subscribe(owner: LifecycleOwner) {
-        homeViewModel.weekDecide.observe(owner){
-            chartDataSet(binding.chart, it)
-        }
+
     }
 
-    /**---------------------------- Bar DataSet  ------------------------------*/
-    fun chartDataSet(chart: BarChart, dataList: ArrayList<WeekCovid>){
-        val entries = ArrayList<BarEntry>() //Bar DataSet  / 그래프 순서, 수치
-
-        dataList.forEachIndexed { index, weekCovid ->
-            val graphIndex = (index + 1).toFloat()         //그래프 순서 1부터 시작
-            val graphCnt = weekCovid.decideCnt.toFloat()   //그래프 확진자 수치
-            entries.add(BarEntry(graphIndex, graphCnt))
+    private val valueOnSelectedListener = object : OnChartValueSelectedListener{
+        override fun onValueSelected(e: Entry?, h: Highlight?) {
+            e.let {
+                val weekCovid = e?.data as WeekCovid
+                homeViewModel.topDecideDate.value = weekCovid.day
+                homeViewModel.topDecide.value = StringUtil.getDecimalFormatNum(weekCovid.decideCnt)
+                Log.d("타입", weekCovid.day)
+            }
         }
-
-        val set = BarDataSet(entries, "DataSet")     //데이터셋 초기화
-        set.color = ContextCompat.getColor(chart.context, R.color.fab_red) //그래프 바 Color
-
-        val dataSet: ArrayList<IBarDataSet> = arrayListOf(set)
-        val data = BarData(dataSet)
-        data.barWidth = 0.3f  //막대 너비 설정
-
-        chart.run {
-            this.data = data  //차트의 데이터를 data로 설정
-            setFitBars(true)
-            invalidate()
-        }
+        override fun onNothingSelected() {}
     }
 
     private fun lightDarkThemeCheck(): Int {
