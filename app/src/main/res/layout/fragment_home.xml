@@ -14,6 +14,7 @@
         android:id="@+id/home_nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingHorizontal="8dp"
         tools:context=".function.home.HomeFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,12 +57,11 @@
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="20dp"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+                app:layout_constraintTop_toBottomOf="@id/linearLayout">
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/chart"
@@ -76,13 +76,13 @@
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/chart_tab_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="38dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_coner_round"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@id/cardView"
                 app:tabIndicator="@null"
                 app:tabMinWidth="56dp">
 
@@ -115,14 +115,14 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chart_tab_layout" />
+                app:layout_constraintTop_toBottomOf="@id/chart_tab_layout" />
 
             <com.airbnb.epoxy.EpoxyRecyclerView
                 android:id="@+id/area_decide_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@id/textView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

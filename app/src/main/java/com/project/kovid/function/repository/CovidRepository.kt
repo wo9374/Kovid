@@ -1,15 +1,20 @@
 package com.project.kovid.function.repository
 
 import com.project.kovid.function.home.CovidAPI
-import com.project.kovid.model.CovidData
+import com.project.kovid.model.CovidAreaData
+import com.project.kovid.model.CovidChartData
 import com.project.kovid.objects.RetrofitObject
 import com.project.kovid.util.TimeUtil
 import retrofit2.Response
 
 class CovidRepository{
-    private val covidRetrofit : retrofit2.Retrofit = RetrofitObject.getRetrofitCovid()
+    private val chartRetrofit : retrofit2.Retrofit = RetrofitObject.getRetrofitCovidChart()
+    private val areaRetrofit : retrofit2.Retrofit = RetrofitObject.getRetrofitCovidArea()
 
-    private val api = covidRetrofit.create(CovidAPI::class.java)
+    private val covidChartApi = chartRetrofit.create(CovidAPI::class.java)
+    private val covidAreaApi = areaRetrofit.create(CovidAPI::class.java)
 
-    suspend fun getCovidWeek() : Response<CovidData> = api.getInfo(startCreateDt = TimeUtil.getPast1MonthCovid(), endCreateDt = TimeUtil.getTodayDate())
+    suspend fun getCovidChartData() : Response<CovidChartData> = covidChartApi.getCovidChartInfo(startCreateDt = TimeUtil.getPast1MonthCovid(), endCreateDt = TimeUtil.getTodayDate())
+
+    suspend fun getCovidAreaData() : Response<CovidAreaData> = covidAreaApi.getCovidArea()
 }

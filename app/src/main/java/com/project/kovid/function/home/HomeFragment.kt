@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -27,15 +28,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.viewModel = homeViewModel
         binding.lifecycleOwner = this
 
-        homeViewModel.getWeekCovid()
+        homeViewModel.getChartData()
+        homeViewModel.getAreaData()
 
-        binding.chart.apply {
-            setNoDataText(getString(R.string.data_loading))  //data 없을때 표시 text
-            setOnChartValueSelectedListener(valueOnSelectedListener)
-            setOnTouchListener(chartOnTouchListener)
-        }
+        chartInit()
 
-        binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
 
         subscribe(this)
     }
@@ -43,6 +40,28 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private fun subscribe(owner: LifecycleOwner) {
 
     }
+
+    private fun chartInit(){
+        binding.chart.apply {
+            setOnChartValueSelectedListener(valueOnSelectedListener)
+            setOnTouchListener(chartOnTouchListener)
+        }
+        binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
+    }
+
+    fun areaRecycleInit(){
+        val linearLayoutManager = LinearLayoutManager(mContext)
+        binding.areaDecideRecycler.apply {
+            layoutManager = linearLayoutManager
+            setHasFixedSize(true)
+
+
+            withModels {
+
+            }
+        }
+    }
+
 
     private val valueOnSelectedListener = object : OnChartValueSelectedListener{
         override fun onValueSelected(e: Entry?, h: Highlight?) {

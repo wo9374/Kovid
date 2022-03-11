@@ -2,10 +2,9 @@ package com.project.kovid.function.home
 
 import android.app.Application
 import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
-import com.project.kovid.R
 import com.project.kovid.function.repository.CovidRepository
+import com.project.kovid.model.AreaData
 import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
 import kotlinx.coroutines.CoroutineScope
@@ -26,13 +25,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     var resultDecide = ArrayList<WeekCovid>()
     val currentDecide = MutableLiveData<ArrayList<WeekCovid>>()
 
-    fun getWeekCovid(){
+    fun getChartData(){
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val apiResultData = covidRepo.getCovidWeek()
-
+                val apiResultData = covidRepo.getCovidChartData()
                 if (apiResultData.isSuccessful && apiResultData.body() != null) {
-                    var resultData = apiResultData.body()!!.body.items.item
+
+                    var resultData = apiResultData.body()!!.chartBody.chartItems.chartItem
                     resultData = resultData.sortedBy{ it.stateDt }
 
                     val computeList = arrayListOf<WeekCovid>()
@@ -49,10 +48,49 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     topDecideDate.postValue(computeList[computeList.lastIndex].day)
                     topDecide.postValue(StringUtil.getDecimalFormatNum(computeList[computeList.lastIndex].decideCnt))
                 } else {
-                    Log.d(TAG, "getWeekCovid() result not Successful or result.body null")
+                    Log.d(TAG, "getChartData() Result not Successful or result.body null")
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "getWeekCovid() fail...")
+                Log.d(TAG, "getChartData() Fail...")
+            }
+        }
+    }
+
+    fun getAreaData(){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val apiResultData = covidRepo.getCovidAreaData()
+                if (apiResultData.isSuccessful && apiResultData.body() != null){
+                    var computeList = arrayListOf<AreaData>()
+                    var resultData = apiResultData.body()!!.run {
+                        
+                        computeList.add(seoul)
+                        computeList.add(busan)
+                        computeList.add(daegu)
+                        computeList.add(incheon)
+                        computeList.add(gwangju)
+                        computeList.add(daejeon)
+                        computeList.add(ulsan)
+                        computeList.add(sejong)
+                        computeList.add(gyeonggi)
+                        computeList.add(gangwon)
+
+                        computeList.add(chungbuk)
+                        computeList.add(chungnam)
+
+                        computeList.add(jeonbuk)
+                        computeList.add(jeonnam)
+
+                        computeList.add(gyeongbuk)
+                        computeList.add(gyeongnam)
+                        computeList.add(jeju)
+                        computeList.add(quarantine)
+                    }
+                }else{
+                    Log.d(TAG, "getAreaData() Result not Successful or Result.body null")
+                }
+            }catch (e:Exception){
+                Log.d(TAG, "getAreaData() Fail...")
             }
         }
     }

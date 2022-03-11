@@ -44,13 +44,22 @@ object RetrofitObject {
         return newsInstance
     }
 
-    fun getRetrofitCovid(): Retrofit {
+    fun getRetrofitCovidChart(): Retrofit {
         val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
         covidInstance = Retrofit.Builder()
-            .baseUrl(CovidAPI.COVID_19_URL)
+            .baseUrl(CovidAPI.COVID_19_CHART)
             .client(createOkHttpDefault())
             //.addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(TikXmlConverterFactory.create(tikXml))
+            .build()
+        return covidInstance
+    }
+
+    fun getRetrofitCovidArea(): Retrofit {
+        covidInstance = Retrofit.Builder()
+            .baseUrl(CovidAPI.COVID_19_AREA)
+            .client(createOkHttpDefault())
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
         return covidInstance
     }

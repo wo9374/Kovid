@@ -8,15 +8,15 @@ import com.tickaroo.tikxml.annotation.Xml
  * 코로나 감염정보 API DataClass
  * */
 @Xml(name = "response")
-data class CovidData(
+data class CovidChartData(
     @Element(name = "header")
-    val header: CovidHeader,
+    val chartHeader: CovidChartHeader,
     @Element(name = "body")
-    val body: CovidBody
+    val chartBody: CovidChartBody
 )
 
 @Xml(name = "header")
-data class CovidHeader(
+data class CovidChartHeader(
     @PropertyElement(name = "resultCode")
     val resultCode: Int,
     @PropertyElement(name = "resultMsg")
@@ -24,9 +24,9 @@ data class CovidHeader(
 )
 
 @Xml(name = "body")
-data class CovidBody(
+data class CovidChartBody(
     @Element(name = "items")
-    val items: CovidItems,
+    val chartItems: CovidChartItems,
     @PropertyElement(name = "numOfRows")
     val numOfRows: Int,
     @PropertyElement(name = "pageNo")
@@ -36,13 +36,13 @@ data class CovidBody(
 )
 
 @Xml(name = "items")
-data class CovidItems(
+data class CovidChartItems(
     @Element(name = "item")
-    val item: List<CovidItem>
+    val chartItem: List<CovidChartItem>
 )
 
 @Xml(name = "item")
-data class CovidItem(
+data class CovidChartItem(
     @PropertyElement(name = "createDt")   //등록일시분초
     var createDt: String,
 

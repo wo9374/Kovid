@@ -2,4 +2,5 @@
 <resources>
     <color name="widjet_bg_color">#3c3c3c</color>
     <color name="day_night_color">#FFFFFFFF</color>
+    <color name="day_night_area_decide_bg">#3c3c3c</color>
 </resources>
