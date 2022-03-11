@@ -3,6 +3,7 @@ package com.project.kovid.function.home
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -18,8 +19,11 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
+import com.project.kovid.databinding.CustomTabBinding
 import com.project.kovid.databinding.FragmentHomeBinding
 import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
@@ -41,10 +45,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             setOnChartValueSelectedListener(valueOnSelectedListener)
         }
 
-        binding.chartTabLayout.apply {
-            addTab(this.newTab().setText("7일"))
-            addTab(this.newTab().setText("30일"))
-        }
+        binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
 
         subscribe(this)
     }
@@ -63,6 +64,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
         }
         override fun onNothingSelected() {}
+    }
+
+    private val tabOnTabSelectedListener = object :TabLayout.OnTabSelectedListener{
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            Log.d("탭온 클릭", "${tab?.position}")
+            when(tab?.position){
+                0 -> homeViewModel.weekDataSet()
+                1 -> homeViewModel.monthDataSet()
+            }
+        }
+        override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        override fun onTabReselected(tab: TabLayout.Tab?) {}
     }
 
     private fun lightDarkThemeCheck(): Int {

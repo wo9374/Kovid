@@ -45,7 +45,7 @@
                 android:textColor="@color/fab_red"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:text="180000" />
+                tools:text="100000" />
         </LinearLayout>
 
 
@@ -60,41 +60,49 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-            <LinearLayout
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_margin="10dp"
-                    app:dataList="@{viewModel.weekDecide}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:uiModeColor="@{viewModel.uiModeColor}" />
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/chart_tab_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/bg_coner_round"
-                    android:layout_marginVertical="4dp"
-                    app:tabIndicator="@null" />
-
-                <!--
-                    app:tabIndicatorColor="#0070C0" //하단 움직이는 바 색상
-                    app:tabIndicatorGravity="top" // 하단 움직이는 바 위치 설정
-                    app:tabTextColor="#0070C0" //탭 텍스트 색상
-                    app:tabSelectedTextColor="@color/white" //선택된 탭 텍스트 색상
-                    app:tabBackground="@drawable/tab_background" //탭 배경
-                    app:tabTextAppearance="@style/TabText" //Style에서 추가한 폰트와 텍스트 사이즈 추가
-                -->
-            </LinearLayout>
-
+                android:layout_height="300dp"
+                android:layout_margin="10dp"
+                app:dataList="@{viewModel.currentDecide}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:uiModeColor="@{viewModel.uiModeColor}" />
         </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/chart_tab_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="8dp"
+            app:tabMinWidth="56dp"
+            android:background="@drawable/bg_coner_round"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView"
+            app:tabIndicator="@null">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/day_7" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="@string/day_30" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <!--
+            app:tabIndicatorColor="#0070C0" //하단 움직이는 바 색상
+            app:tabIndicatorGravity="top" // 하단 움직이는 바 위치 설정
+            app:tabTextColor="#0070C0" //탭 텍스트 색상
+            app:tabSelectedTextColor="@color/white" //선택된 탭 텍스트 색상
+            app:tabBackground="@drawable/tab_background" //탭 배경
+            app:tabTextAppearance="@style/TabText" //Style에서 추가한 폰트와 텍스트 사이즈 추가
+        -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
