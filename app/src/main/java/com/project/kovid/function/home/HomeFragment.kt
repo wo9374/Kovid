@@ -6,25 +6,28 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.tabs.TabLayout
 import com.project.kovid.R
-import com.project.kovid.base.BaseFragment
+import com.project.kovid.areaCovidItem
 import com.project.kovid.databinding.FragmentHomeBinding
+import com.project.kovid.base.BaseFragment
 import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
-    //private val viewModel: HomeViewModel by activityViewModels() //activity 의 ViewModel 을 따름
-    private val homeViewModel: HomeViewModel by viewModels()
+    lateinit var homeViewModel: HomeViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
         binding.viewModel = homeViewModel
         binding.lifecycleOwner = this
 
@@ -32,16 +35,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         homeViewModel.getAreaData()
 
         chartInit()
-
+        areaRecycleInit()
 
         subscribe(this)
     }
 
-    private fun subscribe(owner: LifecycleOwner) {
-
-    }
-
-    private fun chartInit(){
+    private fun chartInit() {
         binding.chart.apply {
             setOnChartValueSelectedListener(valueOnSelectedListener)
             setOnTouchListener(chartOnTouchListener)
@@ -49,21 +48,35 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
     }
 
-    fun areaRecycleInit(){
+    fun areaRecycleInit() {
         val linearLayoutManager = LinearLayoutManager(mContext)
-        binding.areaDecideRecycler.apply {
+
+        binding.epoxyAreaRecycler.apply {
             layoutManager = linearLayoutManager
             setHasFixedSize(true)
 
+            addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation)) //구분선
 
             withModels {
+                homeViewModel.areaDecide.value?.forEachIndexed { index, data ->
+                    areaCovidItem {
+                        id(index)
+                        areaData(data)
+                    }
+                }
+            } // withModels
+        } // binding.areaDecideRecycler.apply
+    }
 
-            }
+
+    private fun subscribe(owner: LifecycleOwner) {
+        homeViewModel.areaDecide.observe(owner) {
+            binding.epoxyAreaRecycler.requestModelBuild()
         }
     }
 
 
-    private val valueOnSelectedListener = object : OnChartValueSelectedListener{
+    private val valueOnSelectedListener = object : OnChartValueSelectedListener {
         override fun onValueSelected(e: Entry?, h: Highlight?) {
             e.let {
                 val weekCovid = e?.data as WeekCovid
@@ -72,17 +85,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 Log.d("타입", weekCovid.day)
             }
         }
+
         override fun onNothingSelected() {}
     }
 
-    private val tabOnTabSelectedListener = object :TabLayout.OnTabSelectedListener{
+    private val tabOnTabSelectedListener = object : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
             Log.d("탭온 클릭", "${tab?.position}")
-            when(tab?.position){
+            when (tab?.position) {
                 0 -> homeViewModel.weekDataSet()
                 1 -> homeViewModel.monthDataSet()
             }
         }
+
         override fun onTabUnselected(tab: TabLayout.Tab?) {}
         override fun onTabReselected(tab: TabLayout.Tab?) {}
     }

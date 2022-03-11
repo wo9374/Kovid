@@ -19,11 +19,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val topDecideDate = MutableLiveData<String>()
     val topDecide = MutableLiveData<String>()
 
-    //var uiModeColor = MutableLiveData(ContextCompat.getColor(application, R.color.black))
-
-
-    var resultDecide = ArrayList<WeekCovid>()
+    private var resultDecide = ArrayList<WeekCovid>()
     val currentDecide = MutableLiveData<ArrayList<WeekCovid>>()
+
+    var areaDecide = MutableLiveData<ArrayList<AreaData>>()
 
     fun getChartData(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -32,12 +31,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (apiResultData.isSuccessful && apiResultData.body() != null) {
 
                     var resultData = apiResultData.body()!!.chartBody.chartItems.chartItem
-                    resultData = resultData.sortedBy{ it.stateDt }
+                    resultData = resultData.sortedBy{ it.stateDt }  //오름차순
 
                     val computeList = arrayListOf<WeekCovid>()
                     for (i in 0 .. 30){ //한달
                         val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
-                        val decideCnt = (resultData[i+1].decideCnt - resultData[i].decideCnt)
+                        val decideCnt = (resultData[i+1].decideCnt - resultData[i].decideCnt)  //현재날 - 어제날
                         computeList.add(WeekCovid(currentDate,decideCnt))
                     }
                     resultDecide = computeList
@@ -61,30 +60,17 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val apiResultData = covidRepo.getCovidAreaData()
                 if (apiResultData.isSuccessful && apiResultData.body() != null){
-                    var computeList = arrayListOf<AreaData>()
-                    var resultData = apiResultData.body()!!.run {
-                        
-                        computeList.add(seoul)
-                        computeList.add(busan)
-                        computeList.add(daegu)
-                        computeList.add(incheon)
-                        computeList.add(gwangju)
-                        computeList.add(daejeon)
-                        computeList.add(ulsan)
-                        computeList.add(sejong)
-                        computeList.add(gyeonggi)
-                        computeList.add(gangwon)
 
-                        computeList.add(chungbuk)
-                        computeList.add(chungnam)
-
-                        computeList.add(jeonbuk)
-                        computeList.add(jeonnam)
-
-                        computeList.add(gyeongbuk)
-                        computeList.add(gyeongnam)
-                        computeList.add(jeju)
-                        computeList.add(quarantine)
+                    apiResultData.body()!!.run {
+                        val computeList= arrayListOf(
+                            seoul, busan, daegu, incheon, gwangju,
+                            daejeon, ulsan, sejong, gyeonggi, gangwon,
+                            chungbuk, chungnam, jeonbuk, jeonnam, gyeongbuk,
+                            gyeongnam, jeju, quarantine
+                        )
+                        //내림차 순
+                        computeList.sortByDescending{ it.newCase.replace(",","").toInt() }
+                        areaDecide.postValue(computeList)
                     }
                 }else{
                     Log.d(TAG, "getAreaData() Result not Successful or Result.body null")

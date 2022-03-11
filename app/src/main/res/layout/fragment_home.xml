@@ -118,11 +118,12 @@
                 app:layout_constraintTop_toBottomOf="@id/chart_tab_layout" />
 
             <com.airbnb.epoxy.EpoxyRecyclerView
-                android:id="@+id/area_decide_recycler"
+                android:id="@+id/epoxy_area_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="700dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/textView" />
+                app:layout_constraintTop_toBottomOf="@id/textView"
+                tools:listitem="@layout/epoxy_area_covid_item" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
