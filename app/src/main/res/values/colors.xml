@@ -15,5 +15,5 @@
 
 
     <color name="widjet_bg_color">#f0f0f0</color>
-    <color name="txt_color">#FF000000</color>
+    <color name="day_night_color">#FF000000</color>
 </resources>

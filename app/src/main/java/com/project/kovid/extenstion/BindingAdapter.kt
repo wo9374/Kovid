@@ -79,8 +79,8 @@ fun setImg(view: ImageView, imgUri: String?){
             .into(view)
 }*/
 
-@BindingAdapter(value = ["dataList","uiModeColor"])
-fun setChartSetting(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColor : Int){
+@BindingAdapter("binding:dataList") //value = ["dataList","uiModeColor"]
+fun setChartSetting(chart: BarChart, dataList: ArrayList<WeekCovid>?){
     chart.setNoDataText(chart.context.getString(R.string.data_loading))  //data 없을때 표시 text
 
     val cntList = arrayListOf<Int>()    //Bar ChartSet / Max 확진자수 구하기위한 배열
@@ -124,40 +124,42 @@ fun setChartSetting(chart: BarChart, dataList: ArrayList<WeekCovid>?, uiModeColo
         setDrawBarShadow(false)         // 그래프 그림자
         setDrawGridBackground(false)    // 격자 구조 유무
 
-        isDragEnabled = true
+        isDragEnabled = true            // 차트 드래그 유무
         isDragDecelerationEnabled = true
 
-        axisRight.isEnabled = false // 우측 Y축 안보이게
-        setTouchEnabled(true)      // 그래프 터치 disable / enable
-        animateY(1000)  // 아래서 올라오는 anim
-        legend.isEnabled = false    // 차트 범례 설정
+        axisRight.isEnabled = false     // 우측 Y축 안보이게
+        setTouchEnabled(true)           // 그래프 터치 disable / enable
+        animateY(1000)      // 아래서 올라오는 anim
+        legend.isEnabled = false        // 차트 범례 설정
 
         axisLeft.run { //왼쪽 축, Y 축
             axisMaximum = maxGraphCount  //끝 위치에 선을 그리기 위해 + 1f로 맥시멈
-            axisMinimum = 0f       //최소값
+            axisMinimum = 0f             //최소값
             granularity = (multipli/2).toFloat()   //단위마다 선 그리기
 
             setDrawLabels(true)      //값 적기 허용
             setDrawGridLines(true)   //격자 라인 활용
             setDrawAxisLine(false)   //축 그리기 설정
 
-            axisLineColor = uiModeColor    //축 컬러 설정
-            gridColor = uiModeColor        //격자 컬러 설정
-            textColor = uiModeColor        //라벨 텍스트 컬러
+            ContextCompat.getColor(context, R.color.day_night_color).run {
+                axisLineColor = this //축 컬러 설정
+                gridColor = this     //격자 컬러 설정
+                textColor = this     //라벨 텍스트 컬러
+            }
             textSize = 13f           //라벨 텍스트 크기
         }
 
         xAxis.run {
             position = XAxis.XAxisPosition.BOTTOM  // x축을 아래에 설정
-            granularity = 1f      // 1단위 만큼 간격
-            setDrawAxisLine(true) // 축 그림
-            setDrawGridLines(false) // 격자
-            textColor = uiModeColor     //라벨 컬러
-            textSize = 12f        // 텍스트 크기
+            granularity = 1f            // 1단위 만큼 간격
+            setDrawAxisLine(true)       // 축 그림
+            setDrawGridLines(false)     // 격자
+            textColor = ContextCompat.getColor(context, R.color.day_night_color) //라벨 컬러
+            textSize = 12f              // 텍스트 크기
             valueFormatter = MyXAxisFormatter(dataList)
         }
 
-        val customMarker = CustomChartMarker(chart.context, R.layout.custom_mpchart_marker)
+        val customMarker = CustomChartMarker(context, R.layout.custom_mpchart_marker)
         marker = customMarker
     }
 

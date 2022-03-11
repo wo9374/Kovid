@@ -3,27 +3,17 @@ package com.project.kovid.function.home
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.listener.ChartTouchListener
-import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
-import com.project.kovid.databinding.CustomTabBinding
 import com.project.kovid.databinding.FragmentHomeBinding
 import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
@@ -37,12 +27,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.viewModel = homeViewModel
         binding.lifecycleOwner = this
 
-        homeViewModel.uiModeColor.value = lightDarkThemeCheck()
         homeViewModel.getWeekCovid()
 
         binding.chart.apply {
             setNoDataText(getString(R.string.data_loading))  //data 없을때 표시 text
             setOnChartValueSelectedListener(valueOnSelectedListener)
+            setOnTouchListener(chartOnTouchListener)
         }
 
         binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
@@ -76,6 +66,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
         override fun onTabUnselected(tab: TabLayout.Tab?) {}
         override fun onTabReselected(tab: TabLayout.Tab?) {}
+    }
+
+    private val chartOnTouchListener = View.OnTouchListener { v, event ->
+        when (event!!.action) {
+            MotionEvent.ACTION_DOWN -> {
+                binding.homeNestedScroll.requestDisallowInterceptTouchEvent(true)
+                v.performClick()
+            }
+            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                binding.homeNestedScroll.requestDisallowInterceptTouchEvent(false)
+            }
+        }
+        false
     }
 
     private fun lightDarkThemeCheck(): Int {

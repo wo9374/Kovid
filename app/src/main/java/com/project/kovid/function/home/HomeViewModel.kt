@@ -19,7 +19,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val topDecideDate = MutableLiveData<String>()
     val topDecide = MutableLiveData<String>()
-    var uiModeColor = MutableLiveData(ContextCompat.getColor(application, R.color.black))
+
+    //var uiModeColor = MutableLiveData(ContextCompat.getColor(application, R.color.black))
 
 
     var resultDecide = ArrayList<WeekCovid>()

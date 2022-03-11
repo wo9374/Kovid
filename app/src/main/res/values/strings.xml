@@ -9,7 +9,8 @@
     <string name="data_loading">Data Loading..</string>
     <string name="current_covid">%1s 신규확진자</string>
     <string name="default_decide">000000</string>
-
     <string name="day_7">7일</string>
     <string name="day_30">30일</string>
+
+    <string name="area_table">지역별 표</string>
 </resources>
