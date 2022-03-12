@@ -22,22 +22,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var resultDecide = ArrayList<WeekCovid>()
     val currentDecide = MutableLiveData<ArrayList<WeekCovid>>()
 
-    var areaDecide = MutableLiveData<ArrayList<AreaData>>()
+    var areaDecide = MutableLiveData<ArrayList<ArrayList<AreaData>>>()
 
-    fun getChartData(){
+    fun getChartData() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val apiResultData = covidRepo.getCovidChartData()
                 if (apiResultData.isSuccessful && apiResultData.body() != null) {
 
                     var resultData = apiResultData.body()!!.chartBody.chartItems.chartItem
-                    resultData = resultData.sortedBy{ it.stateDt }  //오름차순
+                    resultData = resultData.sortedBy { it.stateDt }  //오름차순
 
                     val computeList = arrayListOf<WeekCovid>()
-                    for (i in 0 .. 30){ //한달
+                    for (i in 0..30) { //한달
                         val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
-                        val decideCnt = (resultData[i+1].decideCnt - resultData[i].decideCnt)  //현재날 - 어제날
-                        computeList.add(WeekCovid(currentDate,decideCnt))
+                        val decideCnt =
+                            (resultData[i + 1].decideCnt - resultData[i].decideCnt)  //현재날 - 어제날
+                        computeList.add(WeekCovid(currentDate, decideCnt))
                     }
                     resultDecide = computeList
 
@@ -55,39 +56,61 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getAreaData(){
+    fun getAreaData() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val apiResultData = covidRepo.getCovidAreaData()
-                if (apiResultData.isSuccessful && apiResultData.body() != null){
+                if (apiResultData.isSuccessful && apiResultData.body() != null) {
 
                     apiResultData.body()!!.run {
-                        val computeList= arrayListOf(
+                        val sortList = arrayListOf(
                             seoul, busan, daegu, incheon, gwangju,
                             daejeon, ulsan, sejong, gyeonggi, gangwon,
                             chungbuk, chungnam, jeonbuk, jeonnam, gyeongbuk,
                             gyeongnam, jeju, quarantine
                         )
                         //내림차 순
-                        computeList.sortByDescending{ it.newCase.replace(",","").toInt() }
-                        areaDecide.postValue(computeList)
+                        sortList.sortByDescending { it.newCase.replace(",", "").toInt() }
+
+                        val viewPagerList = arrayListOf<ArrayList<AreaData>>()
+
+                        val recyclerList1 = arrayListOf<AreaData>()
+                        val recyclerList2 = arrayListOf<AreaData>()
+                        val recyclerList3 = arrayListOf<AreaData>()
+                        for (i in 0 until sortList.size) {
+                            if (i < 6){
+                                recyclerList1.add(sortList[i])
+                            }else if (i < 12){
+                                recyclerList2.add(sortList[i])
+                            }else{
+                                recyclerList3.add(sortList[i])
+                            }
+                        }
+
+                        viewPagerList.add(recyclerList1)
+                        viewPagerList.add(recyclerList2)
+                        viewPagerList.add(recyclerList3)
+
+                        areaDecide.postValue(viewPagerList)
                     }
-                }else{
+                } else {
                     Log.d(TAG, "getAreaData() Result not Successful or Result.body null")
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "getAreaData() Fail...")
             }
         }
     }
 
-    fun weekDataSet(){
+    fun weekDataSet() {
         val weekCovid = arrayListOf<WeekCovid>()
-        for (i in resultDecide.size - 7 until resultDecide.size){weekCovid.add(resultDecide[i])}
+        for (i in resultDecide.size - 7 until resultDecide.size) {
+            weekCovid.add(resultDecide[i])
+        }
         currentDecide.postValue(weekCovid)
     }
 
-    fun monthDataSet(){
+    fun monthDataSet() {
         currentDecide.postValue(resultDecide)
     }
 }

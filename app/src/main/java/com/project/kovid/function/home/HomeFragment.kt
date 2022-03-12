@@ -8,14 +8,11 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.tabs.TabLayout
 import com.project.kovid.R
-import com.project.kovid.areaCovidItem
 import com.project.kovid.databinding.FragmentHomeBinding
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.model.WeekCovid
@@ -35,7 +32,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         homeViewModel.getAreaData()
 
         chartInit()
-        areaRecycleInit()
 
         subscribe(this)
     }
@@ -48,30 +44,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
     }
 
-    fun areaRecycleInit() {
-        val linearLayoutManager = LinearLayoutManager(mContext)
-
-        binding.epoxyAreaRecycler.apply {
-            layoutManager = linearLayoutManager
-            setHasFixedSize(true)
-
-            addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation)) //구분선
-
-            withModels {
-                homeViewModel.areaDecide.value?.forEachIndexed { index, data ->
-                    areaCovidItem {
-                        id(index)
-                        areaData(data)
-                    }
-                }
-            } // withModels
-        } // binding.areaDecideRecycler.apply
-    }
-
-
     private fun subscribe(owner: LifecycleOwner) {
         homeViewModel.areaDecide.observe(owner) {
-            binding.epoxyAreaRecycler.requestModelBuild()
+            binding.areaViewPager.adapter = ViewPagerAdapter(it)
         }
     }
 
