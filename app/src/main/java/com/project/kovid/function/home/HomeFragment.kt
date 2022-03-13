@@ -47,6 +47,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private fun subscribe(owner: LifecycleOwner) {
         homeViewModel.areaDecide.observe(owner) {
             binding.areaViewPager.adapter = ViewPagerAdapter(it)
+            binding.areaViewPager.requestLayout()
         }
     }
 
