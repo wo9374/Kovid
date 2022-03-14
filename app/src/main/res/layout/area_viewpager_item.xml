@@ -12,14 +12,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_coner_round"
-            android:clipToOutline="true"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/area_country"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/day_night_area_decide_bg"
+                android:background="@color/widjet_bg_color"
                 android:gravity="center"
                 android:paddingVertical="8dp"
                 android:text="@string/country"
@@ -33,7 +32,7 @@
                 android:id="@+id/area_total_case"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/day_night_area_decide_bg"
+                android:background="@color/widjet_bg_color"
                 android:gravity="center"
                 android:paddingVertical="8dp"
                 android:text="@string/accumulate_deice"
@@ -48,7 +47,7 @@
                 android:id="@+id/area_new_case"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/day_night_area_decide_bg"
+                android:background="@color/widjet_bg_color"
                 android:gravity="center"
                 android:paddingVertical="8dp"
                 android:text="@string/new_decide"

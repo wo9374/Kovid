@@ -9,6 +9,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -48,8 +49,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     @SuppressLint("ClickableViewAccessibility")
     private fun subscribe(owner: LifecycleOwner) {
         homeViewModel.areaDecide.observe(owner) {
-            binding.areaViewPager.adapter = ViewPagerAdapter(it)
-            binding.areaViewPager.setOnTouchListener(chartOnTouchListener)
+            binding.areaViewPager.apply {
+                adapter = ViewPagerAdapter(it)
+                setOnTouchListener(chartOnTouchListener)
+                (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            }
             binding.wormDotsIndicator.setViewPager2(binding.areaViewPager)
         }
     }

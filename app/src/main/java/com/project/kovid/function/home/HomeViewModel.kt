@@ -103,14 +103,17 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun weekDataSet() {
-        val weekCovid = arrayListOf<WeekCovid>()
-        for (i in resultDecide.size - 7 until resultDecide.size) {
-            weekCovid.add(resultDecide[i])
+        if (resultDecide.size != 0){
+            val weekCovid = arrayListOf<WeekCovid>()
+            for (i in resultDecide.size - 7 until resultDecide.size) {
+                weekCovid.add(resultDecide[i])
+            }
+            currentDecide.postValue(weekCovid)
         }
-        currentDecide.postValue(weekCovid)
     }
 
     fun monthDataSet() {
+        if (resultDecide.size != 0)
         currentDecide.postValue(resultDecide)
     }
 }

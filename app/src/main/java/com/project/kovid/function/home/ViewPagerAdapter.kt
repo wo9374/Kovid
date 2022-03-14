@@ -1,6 +1,7 @@
 package com.project.kovid.function.home
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -41,6 +42,10 @@ class ViewHolderPage(val binding: AreaViewpagerItemBinding) : RecyclerView.ViewH
                     }
                 }
             }
+        }
+        binding.constraint.apply {
+            measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            clipToOutline= true
         }
     }
 }
