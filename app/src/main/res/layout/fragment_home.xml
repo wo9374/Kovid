@@ -109,7 +109,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/area_table"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -117,14 +117,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/chart_tab_layout" />
 
+            <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+                android:id="@+id/worm_dots_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:dotsColor="@color/purple_200"
+                app:dotsCornerRadius="8dp"
+                app:dotsSize="12dp"
+                app:dotsSpacing="4dp"
+                app:dotsStrokeColor="@color/purple_200"
+                app:dotsStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/area_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:paddingVertical="12dp"
+                android:nestedScrollingEnabled="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
-
+                app:layout_constraintTop_toBottomOf="@+id/worm_dots_indicator" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

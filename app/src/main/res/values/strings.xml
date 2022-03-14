@@ -13,4 +13,8 @@
     <string name="day_30">30일</string>
 
     <string name="area_table">지역별 표</string>
+
+    <string name="country">지역</string>
+    <string name="accumulate_deice">누적확진자</string>
+    <string name="new_decide">신규확진자</string>
 </resources>

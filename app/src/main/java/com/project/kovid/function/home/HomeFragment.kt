@@ -1,5 +1,6 @@
 package com.project.kovid.function.home
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -44,10 +45,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun subscribe(owner: LifecycleOwner) {
         homeViewModel.areaDecide.observe(owner) {
             binding.areaViewPager.adapter = ViewPagerAdapter(it)
-            binding.areaViewPager.requestLayout()
+            binding.areaViewPager.setOnTouchListener(chartOnTouchListener)
+            binding.wormDotsIndicator.setViewPager2(binding.areaViewPager)
         }
     }
 
