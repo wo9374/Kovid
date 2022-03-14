@@ -6,13 +6,14 @@ import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.project.kovid.databinding.CustomInfoWindowLayoutBinding
+import com.project.kovid.model.HospDBItem
 import com.project.kovid.model.HospItem
 
 internal class HospMapInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{
     lateinit var binding : CustomInfoWindowLayoutBinding
 
     override fun getInfoContents(marker: Marker): View {
-        val hospItem = marker.tag as HospItem
+        val hospItem = marker.tag as HospDBItem
 
         binding = CustomInfoWindowLayoutBinding.inflate(LayoutInflater.from(context))
 

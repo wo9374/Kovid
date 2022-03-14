@@ -4,10 +4,12 @@ import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.project.kovid.function.repository.MapRepository
+import com.project.kovid.model.HospDBItem
 import com.project.kovid.model.HospItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val mapRepo: MapRepository = MapRepository(application)
 
-    var symptomTestHospData = MutableLiveData<List<HospItem>>()
+    var symptomTestHospData = MutableLiveData<List<HospDBItem>>()
 
     /**
      *병원정보 get
@@ -31,13 +33,18 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
                 if (result.isSuccessful && result.body() != null) {
                     val resultData = result.body()!!.body.items.item
-                    symptomTestHospData.postValue(resultData)
+                    resultData.forEach {
+                        it.apply {
+                            insert(HospDBItem(null, addr, recuClCd, pcrPsblYn, ratPsblYn, sgguCdNm, sidoCdNm, telno, yadmNm, YPosWgs84, XPosWgs84))
+                        }
+                    }
+                    symptomTestHospData.postValue(getAll().value)
                 } else {
-                    Log.d(TAG, "getHospital() result not Successful or result.body null")
+                    Log.d(TAG, "getHospData() result not Successful or result.body null")
                 }
 
             } catch (e: Exception) {
-                Log.d(TAG, "getHospital() fail...")
+                Log.d(TAG, "getHospData() fail...")
             }
         }
     }
@@ -63,5 +70,24 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun permissionNotAllowCheck(): Boolean {
         return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(getApplication())
+    }
+
+
+    /**
+     * Room
+     */
+    fun getAll(): LiveData<List<HospDBItem>> {
+        return mapRepo.getAll()
+    }
+
+    fun insert(hospDBItem: HospDBItem){
+        mapRepo.insert(hospDBItem)
+    }
+    fun delete(hospDBItem: HospDBItem){
+        mapRepo.delete(hospDBItem)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
     }
 }

@@ -128,5 +128,10 @@ dependencies {
     implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
     kapt 'com.tickaroo.tikxml:processor:0.8.13'
 
+    //인디케이터 라이브러리
     implementation 'com.tbuonomo:dotsindicator:4.2'
+
+    //Room
+    implementation "androidx.room:room-runtime:2.4.0-alpha03"
+    kapt"androidx.room:room-compiler:2.4.0-alpha03"
 }

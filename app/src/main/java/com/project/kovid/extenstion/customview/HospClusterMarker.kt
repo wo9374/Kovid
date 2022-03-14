@@ -11,14 +11,15 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.project.kovid.R
 import com.project.kovid.function.repository.MapRepository
+import com.project.kovid.model.HospDBItem
 import com.project.kovid.model.HospItem
 import com.project.kovid.util.CanvasUtil
 
 
-class HospClusterMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospItem>)
-    : DefaultClusterRenderer<HospItem>(context, map, clusterManager) {
+class HospClusterMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospDBItem>)
+    : DefaultClusterRenderer<HospDBItem>(context, map, clusterManager) {
 
-    override fun onBeforeClusterItemRendered(item: HospItem, markerOptions: MarkerOptions) {
+    override fun onBeforeClusterItemRendered(item: HospDBItem, markerOptions: MarkerOptions) {
         val id: Int = when(item.recuClCd){
             MapRepository.HOSP_COMPREHENSIVE -> R.drawable.ic_hosp_comprehensive
             MapRepository.HOSP_GENERAL -> R.drawable.ic_hosp_general
@@ -36,7 +37,7 @@ class HospClusterMarker(private val context: Context, map: GoogleMap, clusterMan
         //super.onBeforeClusterItemRendered(item, markerOptions)
     }
 
-    override fun onClusterItemRendered(clusterItem: HospItem, marker: Marker) {
+    override fun onClusterItemRendered(clusterItem: HospDBItem, marker: Marker) {
         //super.onClusterItemRendered(clusterItem, marker)
         marker.tag = clusterItem
     }
