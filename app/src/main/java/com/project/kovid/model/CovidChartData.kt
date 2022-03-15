@@ -62,7 +62,7 @@ data class CovidChartItem(
     var stateTime: String,
 
     @PropertyElement(name = "updateDt")   //수정일시분초
-    var updateDt: String?,
+    var updateDt: String? = "",
 )
 
 data class WeekCovid(
