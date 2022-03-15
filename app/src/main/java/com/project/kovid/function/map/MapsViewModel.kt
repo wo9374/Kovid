@@ -24,32 +24,6 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     var symptomTestHospData = MutableLiveData<List<HospDBItem>>()
 
     /**
-     *병원정보 get
-     * */
-    fun getHospData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val result = mapRepo.getSymptomTest()
-
-                if (result.isSuccessful && result.body() != null) {
-                    val resultData = result.body()!!.body.items.item
-                    resultData.forEach {
-                        it.apply {
-                            insert(HospDBItem(null, addr, recuClCd, pcrPsblYn, ratPsblYn, sgguCdNm, sidoCdNm, telno, yadmNm, YPosWgs84, XPosWgs84))
-                        }
-                    }
-                    symptomTestHospData.postValue(getAll().value)
-                } else {
-                    Log.d(TAG, "getHospData() result not Successful or result.body null")
-                }
-
-            } catch (e: Exception) {
-                Log.d(TAG, "getHospData() fail...")
-            }
-        }
-    }
-
-    /**
      *현위치 get
      * */
     val myLocation = MutableLiveData<Location>()
@@ -69,21 +43,62 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun permissionNotAllowCheck(): Boolean {
-        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(getApplication())
+        return mapRepo.checkFineLocationPermission(getApplication()) && mapRepo.checkCoarseLocationPermission(
+            getApplication()
+        )
+    }
+
+
+    fun checkDBData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            if (getAll().isNullOrEmpty()) {
+                getHospData()
+            } else {
+                symptomTestHospData.postValue(getAll())
+            }
+        }
+    }
+
+    /**
+     *병원정보 get
+     * */
+    fun getHospData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val result = mapRepo.getSymptomTest()
+
+                if (result.isSuccessful && result.body() != null) {
+                    val resultData = result.body()!!.body.items.item
+                    resultData.forEachIndexed { index, hospItem ->
+                        hospItem.run {
+                            insert(HospDBItem(index, addr, recuClCd, pcrPsblYn, ratPsblYn, sgguCdNm, sidoCdNm, telno, yadmNm, YPosWgs84, XPosWgs84))
+                        }
+                    }
+                    Log.d(TAG, "getHospData() Room InsertSuccess ${getAll()}")
+                    symptomTestHospData.postValue(getAll())
+                } else {
+                    Log.d(TAG, "getHospData() result not Successful or result.body null")
+                }
+
+            } catch (e: Exception) {
+                Log.d(TAG, "getHospData() fail...")
+            }
+        }
     }
 
 
     /**
      * Room
      */
-    fun getAll(): LiveData<List<HospDBItem>> {
+    fun getAll(): List<HospDBItem> {
         return mapRepo.getAll()
     }
 
-    fun insert(hospDBItem: HospDBItem){
+    fun insert(hospDBItem: HospDBItem) {
         mapRepo.insert(hospDBItem)
     }
-    fun delete(hospDBItem: HospDBItem){
+
+    fun delete(hospDBItem: HospDBItem) {
         mapRepo.delete(hospDBItem)
     }
 

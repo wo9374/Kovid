@@ -27,7 +27,7 @@ class MapRepository(application: Application) {
         const val HOSP_GENERAL = "21"
         const val HOSP_DOCTOR_OFFICE = "31"
     }
-    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.DATA_GO_KR_API_KEY,1, 200)
+    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.DATA_GO_KR_API_KEY,1, 1000)
 
     val locationLoader = LocationManager(application)
 
@@ -50,7 +50,7 @@ class MapRepository(application: Application) {
     private val hospDatabase: HospDatabase = HospDatabase.getInstance(application)!!
     private val hospDao: HospDao = hospDatabase.hospDao()
 
-    fun getAll(): LiveData<List<HospDBItem>> {
+    fun getAll(): List<HospDBItem> {
         return hospDao.getAll()
     }
 

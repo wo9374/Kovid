@@ -45,6 +45,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         navController.setGraph(R.navigation.nav_main)
 
         binding.bottomNavigationView.setupWithNavController(navController)
+
+        //val currentFragment = supportFragmentManager.primaryNavigationFragment // keepState 현재 프래그먼트
     }
 
     private fun subscribeUI() {

@@ -19,7 +19,7 @@ abstract class HospDatabase : RoomDatabase(){
                     Instance = Room.databaseBuilder(
                         context.applicationContext,
                         HospDatabase::class.java,
-                        "hospItem")
+                        "HospDBItem.db")
                         .build()
                 }
             }

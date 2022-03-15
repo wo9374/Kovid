@@ -67,7 +67,7 @@ data class HospItem(
     var sidoCdNm: String,
 
     @PropertyElement(name = "telno")   //전화번호
-    var telno: String,
+    var telno: String?,
 
     @PropertyElement(name = "yadmNm")  //기관명
     var yadmNm: String,
@@ -79,7 +79,7 @@ data class HospItem(
     var XPosWgs84: Double,
 )
 
-@Entity
+@Entity(tableName = "HospDBItem")
 data class HospDBItem(
     @PrimaryKey(autoGenerate = true)
     var id : Int?,
@@ -103,7 +103,7 @@ data class HospDBItem(
     var sidoCdNm: String,               //시도명
 
     @ColumnInfo(name ="telno")
-    var telno: String,                  //전화번호
+    var telno: String? = "",                  //전화번호
 
     @ColumnInfo(name ="yadmNm")
     var yadmNm: String,                 //기관명

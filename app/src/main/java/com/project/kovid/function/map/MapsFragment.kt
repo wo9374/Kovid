@@ -25,7 +25,6 @@ import com.project.kovid.databinding.FragmentMapBinding
 import com.project.kovid.extenstion.customview.HospMapInfoWindow
 import com.project.kovid.extenstion.customview.HospClusterMarker
 import com.project.kovid.model.HospDBItem
-import com.project.kovid.model.HospItem
 import kotlinx.coroutines.flow.collect
 
 
@@ -90,9 +89,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
                 mapsViewModel.startLocation()
 
-                if (mapsViewModel.getAll().value.isNullOrEmpty()) {
-                    mapsViewModel.getHospData()
-                }
+                mapsViewModel.checkDBData()
             } else {
                 permissionCheck()
             }
@@ -104,7 +101,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
 
         mapsViewModel.symptomTestHospData.observe(owner) {
-            it.forEachIndexed { index, hospDBItem ->
+            it?.forEachIndexed { index, hospDBItem ->
                 clusterManager.markerCollection.setInfoWindowAdapter(HospMapInfoWindow(mContext))
                 clusterManager.addItem(hospDBItem)
                 clusterManager.cluster()
