@@ -19,7 +19,7 @@ class ContentsLoadingProgress {
 
         @JvmStatic
         @JvmOverloads
-        fun showProgress(key: String, activity: Activity, touchable: Boolean = false) {
+        fun showProgress(key: String, activity: Activity, touchable: Boolean = false, loadingTxt : String ="") {
             if (mContentViewHashMap.containsKey(key)) return //이미 노출 중이라면.
 
             val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
@@ -44,7 +44,8 @@ class ContentsLoadingProgress {
                 val rotateAnim = AnimationUtils.loadAnimation(activity, R.anim.loading_image_rotate_anim)
                 rotateAnim.fillAfter = true
 
-                binding.vodlistLoadingPregross.animation = rotateAnim
+                binding.loadingProgressImg.animation = rotateAnim
+                binding.loadingTxt.text = loadingTxt
             }
         }
 

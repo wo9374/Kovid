@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loading_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#1A000000">
 
         <ImageView
-            android:id="@+id/vodlist_loading_pregross"
+            android:id="@+id/loading_progress_img"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_loading_progress"/>
+            android:src="@drawable/ic_loading_progress"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loading_progress_img"
+            tools:text="초기 정보를 불러오는 중입니다." />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

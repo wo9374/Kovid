@@ -48,17 +48,6 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-
-    fun checkDBData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (getAll().isNullOrEmpty()) {
-                getHospData()
-            } else {
-                symptomTestHospData.postValue(getAll())
-            }
-        }
-    }
-
     /**
      *병원정보 get
      * */

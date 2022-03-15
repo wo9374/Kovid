@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
@@ -22,10 +23,14 @@ import com.project.kovid.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
+import com.project.kovid.extenstion.customview.ContentsLoadingProgress
 import com.project.kovid.extenstion.customview.HospMapInfoWindow
 import com.project.kovid.extenstion.customview.HospClusterMarker
 import com.project.kovid.model.HospDBItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
@@ -89,7 +94,14 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
                 mapsViewModel.startLocation()
 
-                mapsViewModel.checkDBData()
+                ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true, getString(R.string.init_db_check))
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (mapsViewModel.getAll().isNullOrEmpty()) {
+                        mapsViewModel.getHospData()
+                    } else {
+                        mapsViewModel.symptomTestHospData.postValue(mapsViewModel.getAll())
+                    }
+                }
             } else {
                 permissionCheck()
             }
@@ -106,6 +118,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 clusterManager.addItem(hospDBItem)
                 clusterManager.cluster()
             }
+
+            ContentsLoadingProgress.hideProgress(this.javaClass.name)
         }
         /*mapsViewModel.symptomTestHospData.observe(owner) {
             it.forEachIndexed { index, hospMarker ->
