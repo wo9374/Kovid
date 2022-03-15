@@ -12,7 +12,6 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.project.kovid.R
 import com.project.kovid.function.repository.MapRepository
 import com.project.kovid.model.HospDBItem
-import com.project.kovid.model.HospItem
 import com.project.kovid.util.CanvasUtil
 
 
@@ -23,7 +22,7 @@ class HospClusterMarker(private val context: Context, map: GoogleMap, clusterMan
         val id: Int = when(item.recuClCd){
             MapRepository.HOSP_COMPREHENSIVE -> R.drawable.ic_hosp_comprehensive
             MapRepository.HOSP_GENERAL -> R.drawable.ic_hosp_general
-            MapRepository.HOSP_DOCTOR_OFFICE -> R.drawable.ic_host_doctor_office
+            MapRepository.HOSP_DOCTOR_OFFICE -> R.drawable.ic_hosp_doctor_office
             else -> R.drawable.ic_hosp_comprehensive
         }
 
