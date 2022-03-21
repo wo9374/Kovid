@@ -45,7 +45,12 @@ class ContentsLoadingProgress {
                 rotateAnim.fillAfter = true
 
                 binding.loadingProgressImg.animation = rotateAnim
-                binding.loadingTxt.text = loadingTxt
+
+                if (loadingTxt.isEmpty()){
+                    binding.loadingTxt.visibility = View.GONE
+                }else{
+                    binding.loadingTxt.text = loadingTxt
+                }
             }
         }
 
