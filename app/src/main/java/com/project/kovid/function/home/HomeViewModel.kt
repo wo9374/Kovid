@@ -33,7 +33,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 val resultData = apiResultData.body()!!.chartBody.chartItems.chartItem.sortedBy { it.stateDt }  //오름차순
 
                 val computeList = arrayListOf<WeekCovid>()
-                for (i in 0..29) { //한달
+                for (i in 0 until resultData.size - 1) { // 31일치 구해오기 때문에 -1 계산
                     val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
                     val decideCnt = (resultData[i + 1].decideCnt - resultData[i].decideCnt)  //현재날 - 어제날
                     computeList.add(WeekCovid(currentDate, decideCnt))
