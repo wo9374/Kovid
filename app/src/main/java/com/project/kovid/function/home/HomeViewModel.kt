@@ -26,33 +26,30 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getChartData() {
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val apiResultData = covidRepo.getCovidChartData()
-                if (apiResultData.isSuccessful && apiResultData.body() != null) {
+            //try {
+            val apiResultData = covidRepo.getCovidChartData()
+            if (apiResultData.isSuccessful && apiResultData.body() != null) {
 
-                    var resultData = apiResultData.body()!!.chartBody.chartItems.chartItem
-                    resultData = resultData.sortedBy { it.stateDt }  //오름차순
+                val resultData = apiResultData.body()!!.chartBody.chartItems.chartItem.sortedBy { it.stateDt }  //오름차순
 
-                    val computeList = arrayListOf<WeekCovid>()
-                    for (i in 0..30) { //한달
-                        val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
-                        val decideCnt =
-                            (resultData[i + 1].decideCnt - resultData[i].decideCnt)  //현재날 - 어제날
-                        computeList.add(WeekCovid(currentDate, decideCnt))
-                    }
-                    resultDecide = computeList
-
-                    //초기 일주일 set
-                    weekDataSet()
-
-                    topDecideDate.postValue(computeList[computeList.lastIndex].day)
-                    topDecide.postValue(StringUtil.getDecimalFormatNum(computeList[computeList.lastIndex].decideCnt))
-                } else {
-                    Log.d(TAG, "getChartData() Result not Successful or result.body null")
+                val computeList = arrayListOf<WeekCovid>()
+                for (i in 0..29) { //한달
+                    val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
+                    val decideCnt = (resultData[i + 1].decideCnt - resultData[i].decideCnt)  //현재날 - 어제날
+                    computeList.add(WeekCovid(currentDate, decideCnt))
                 }
-            } catch (e: Exception) {
-                Log.d(TAG, "getChartData() Fail...")
+                resultDecide = computeList
+
+                weekDataSet() //초기 일주일 set
+
+                topDecideDate.postValue(computeList[computeList.lastIndex].day)
+                topDecide.postValue(StringUtil.getDecimalFormatNum(computeList[computeList.lastIndex].decideCnt))
+            } else {
+                Log.d(TAG, "getChartData() Result not Successful or result.body null")
             }
+            /*} catch (e: Exception) {
+                Log.d(TAG, "getChartData() Fail...")
+            }*/
         }
     }
 
@@ -78,11 +75,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         val recyclerList2 = arrayListOf<AreaData>()
                         val recyclerList3 = arrayListOf<AreaData>()
                         for (i in 0 until sortList.size) {
-                            if (i < 6){
+                            if (i < 6) {
                                 recyclerList1.add(sortList[i])
-                            }else if (i < 12){
+                            } else if (i < 12) {
                                 recyclerList2.add(sortList[i])
-                            }else{
+                            } else {
                                 recyclerList3.add(sortList[i])
                             }
                         }
@@ -103,7 +100,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun weekDataSet() {
-        if (resultDecide.size != 0){
+        if (resultDecide.size != 0) {
             val weekCovid = arrayListOf<WeekCovid>()
             for (i in resultDecide.size - 7 until resultDecide.size) {
                 weekCovid.add(resultDecide[i])
@@ -114,6 +111,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun monthDataSet() {
         if (resultDecide.size != 0)
-        currentDecide.postValue(resultDecide)
+            currentDecide.postValue(resultDecide)
     }
 }
