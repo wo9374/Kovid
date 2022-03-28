@@ -30,12 +30,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.viewModel = homeViewModel
         binding.lifecycleOwner = this
 
-        homeViewModel.getChartData()
-        homeViewModel.getAreaData()
-
         chartInit()
 
         subscribe(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        homeViewModel.getChartData()
+        homeViewModel.getAreaData()
     }
 
     private fun chartInit() {
