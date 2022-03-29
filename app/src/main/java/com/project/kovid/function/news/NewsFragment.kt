@@ -28,13 +28,16 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
         binding.viewModel = newsViewModel
         binding.lifecycleOwner = this@NewsFragment
 
-        newsViewModel.searchNewsApi()
-
         ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
 
         initLayout()
 
         subscribe(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        newsViewModel.searchNewsApi()
     }
 
     private fun initLayout() {
