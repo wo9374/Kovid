@@ -40,8 +40,9 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = newsRepo.getNaverNewsData()
+
             } catch (e: Exception) {
-                Log.d("NewsViewModel", "searchNews() fail...")
+                Log.d("NewsViewModel", "searchNaverNews() fail...")
             }
         }
     }

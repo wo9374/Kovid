@@ -38,6 +38,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
     override fun onStart() {
         super.onStart()
         newsViewModel.searchNewsApi()
+        newsViewModel.searchNaverNews()
     }
 
     private fun initLayout() {
