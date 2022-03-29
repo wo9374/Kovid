@@ -81,5 +81,9 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
             binding.epoxyRecycler.requestModelBuild()
             ContentsLoadingProgress.hideProgress(this.javaClass.name) //Progress Hide
         }
+
+        newsViewModel.naverData.observe(owner){
+            //네이버 뉴스 대기
+        }
     }
 }
