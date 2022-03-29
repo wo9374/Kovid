@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.project.kovid.model.Article
 import com.project.kovid.function.repository.NewsRepository
+import com.project.kovid.model.NaverNews
 import com.project.kovid.util.TimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +17,9 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
     private val newsRepo: NewsRepository = NewsRepository()
 
     var newsData = MutableLiveData<List<Article>>()
-
     lateinit var newsDetailData : Article
+
+    var naverData = MutableLiveData<NaverNews>()
 
     fun searchNewsApi(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -40,6 +42,12 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = newsRepo.getNaverNewsData()
+
+                if (result.isSuccessful && result.body() != null){
+                    naverData.postValue(result.body())
+                }else{
+                    Log.d("NewsViewModel", "searchNaverNews() result not Successful or result.body null")
+                }
 
             } catch (e: Exception) {
                 Log.d("NewsViewModel", "searchNaverNews() fail...")
