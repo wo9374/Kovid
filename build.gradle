@@ -10,8 +10,19 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.4"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.41'
     }
 }
+
+/* //최신 버전 그래들
+plugins {
+    id 'com.android.application' version '7.1.1' apply false
+    id 'com.android.library' version '7.1.1' apply false
+    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+    id 'com.google.dagger.hilt.android' version '2.41' apply false
+}
+*/
 
 task clean(type: Delete) {
     delete rootProject.buildDir

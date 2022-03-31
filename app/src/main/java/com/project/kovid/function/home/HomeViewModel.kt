@@ -27,26 +27,28 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getChartData() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-            val apiResultData = covidRepo.getCovidChartData()
-            if (apiResultData.isSuccessful && apiResultData.body() != null) {
+                val apiResultData = covidRepo.getCovidChartData()
+                if (apiResultData.isSuccessful && apiResultData.body() != null) {
 
-                val resultData = apiResultData.body()!!.chartBody.chartItems.chartItem.sortedBy { it.stateDt }  //오름차순
+                    val resultData =
+                        apiResultData.body()!!.chartBody.chartItems.chartItem.sortedBy { it.stateDt }  //오름차순
 
-                val computeList = arrayListOf<WeekCovid>()
-                for (i in 1 until resultData.size) { // 31일치 구해오기 때문에 -1 계산
-                    val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
-                    val decideCnt = (resultData[i].decideCnt - resultData[i - 1].decideCnt)  //현재날 - 어제날
-                    computeList.add(WeekCovid(currentDate, decideCnt))
+                    val computeList = arrayListOf<WeekCovid>()
+                    for (i in 1 until resultData.size) { // 31일치 구해오기 때문에 -1 계산
+                        val currentDate = StringUtil.computeStringToInt(resultData[i].stateDt)
+                        val decideCnt =
+                            (resultData[i].decideCnt - resultData[i - 1].decideCnt)  //현재날 - 어제날
+                        computeList.add(WeekCovid(currentDate, decideCnt))
+                    }
+                    resultDecide = computeList
+
+                    weekDataSet() //초기 일주일 set
+
+                    topDecideDate.postValue(computeList[computeList.lastIndex].day)
+                    topDecide.postValue(StringUtil.getDecimalFormatNum(computeList[computeList.lastIndex].decideCnt))
+                } else {
+                    Log.d(TAG, "getChartData() Result not Successful or result.body null")
                 }
-                resultDecide = computeList
-
-                weekDataSet() //초기 일주일 set
-
-                topDecideDate.postValue(computeList[computeList.lastIndex].day)
-                topDecide.postValue(StringUtil.getDecimalFormatNum(computeList[computeList.lastIndex].decideCnt))
-            } else {
-                Log.d(TAG, "getChartData() Result not Successful or result.body null")
-            }
             } catch (e: Exception) {
                 Log.d(TAG, "getChartData() Fail...")
             }
