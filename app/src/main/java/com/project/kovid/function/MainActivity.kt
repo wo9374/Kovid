@@ -1,4 +1,4 @@
-package com.project.kovid
+package com.project.kovid.function
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,6 +9,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
+import com.project.kovid.KeepStateNavigator
+import com.project.kovid.R
 import com.project.kovid.base.BaseActivity
 import com.project.kovid.databinding.ActivityMainBinding
 import com.project.kovid.extenstion.customview.ContentsLoadingProgress

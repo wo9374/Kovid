@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
@@ -19,7 +18,7 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import com.project.kovid.MainViewModel
+import com.project.kovid.function.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding

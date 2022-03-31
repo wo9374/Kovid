@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
         <activity
-            android:name="com.project.kovid.MainActivity"
+            android:name="com.project.kovid.function.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

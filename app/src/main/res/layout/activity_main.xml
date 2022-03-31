@@ -8,14 +8,14 @@
 
         <variable
             name="mainViewModel"
-            type="com.project.kovid.MainViewModel" />
+            type="com.project.kovid.function.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        tools:context=".MainActivity">
+        tools:context=".function.MainActivity">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_main_fragment"

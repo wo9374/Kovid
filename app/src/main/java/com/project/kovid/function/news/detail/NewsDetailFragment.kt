@@ -5,7 +5,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import com.project.kovid.MainViewModel
+import com.project.kovid.function.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsDetailBinding
