@@ -26,7 +26,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getChartData() {
         CoroutineScope(Dispatchers.IO).launch {
-            //try {
+            try {
             val apiResultData = covidRepo.getCovidChartData()
             if (apiResultData.isSuccessful && apiResultData.body() != null) {
 
@@ -47,9 +47,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             } else {
                 Log.d(TAG, "getChartData() Result not Successful or result.body null")
             }
-            /*} catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.d(TAG, "getChartData() Fail...")
-            }*/
+            }
         }
     }
 
