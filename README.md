@@ -5,3 +5,5 @@
 지역별 코로나 확진자 - GoodBye Corona API / https://github.com/dhlife09/Corona-19-API/blob/master/README.md#-%EA%B5%AD%EB%82%B4-%EC%A0%95%EB%B3%B4
 
 코로나 뉴스 - News API / https://newsapi.org/
+
+22.04 프로젝트 투입으로 인한 잠정중단..
