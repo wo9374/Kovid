@@ -27,7 +27,7 @@ class MapRepository(application: Application) {
         const val HOSP_GENERAL = "21"
         const val HOSP_DOCTOR_OFFICE = "31"
     }
-    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.DATA_GO_KR_API_KEY,1, 1000)
+    suspend fun getSymptomTest() : Response<HospData> = hospitalApi.getHospital(BuildConfig.DATA_GO_KR_API_KEY,1, 1000, "97")
 
     val locationLoader = LocationManager(application)
 

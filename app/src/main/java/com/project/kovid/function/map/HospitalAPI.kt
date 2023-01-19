@@ -18,5 +18,6 @@ interface HospitalAPI {
         @Query("serviceKey") serviceKey : String,
         @Query("pageNo") pageNo : Int,
         @Query("numOfRows") numOfRows : Int,
+        @Query("spclAdmTyCd") spclAdmTyCd : String
     ): Response<HospData>
 }
