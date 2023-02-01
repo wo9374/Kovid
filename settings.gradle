@@ -9,5 +9,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Kovid"
 include ':app'
-include ':data'
-include ':domain'
