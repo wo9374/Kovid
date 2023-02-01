@@ -1,7 +1,7 @@
 package com.project.kovid.function.home
 
 import com.project.kovid.BuildConfig
-import com.project.kovid.model.CovidAreaData
+import com.project.kovid.model.KoreaArea
 import com.project.kovid.model.CovidChartData
 import retrofit2.Response
 import retrofit2.http.GET
@@ -25,5 +25,5 @@ interface CovidAPI {
 
     @GET(COVID_19_AREA_END_POINT) suspend fun getCovidArea(
         @Query("serviceKey") serviceKey: String = BuildConfig.GOODBYE_CORONA_API_KEY
-    ):Response<CovidAreaData>
+    ):Response<KoreaArea>
 }

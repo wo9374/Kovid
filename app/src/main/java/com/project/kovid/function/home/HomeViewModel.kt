@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.project.kovid.function.repository.CovidRepository
-import com.project.kovid.model.AreaData
+import com.project.kovid.model.Area
 import com.project.kovid.model.WeekCovid
 import com.project.kovid.util.StringUtil
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var resultDecide = ArrayList<WeekCovid>()
     val currentDecide = MutableLiveData<ArrayList<WeekCovid>>()
 
-    var areaDecide = MutableLiveData<ArrayList<ArrayList<AreaData>>>()
+    var areaDecide = MutableLiveData<ArrayList<ArrayList<Area>>>()
 
     fun getChartData() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -71,11 +71,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         //내림차 순
                         sortList.sortByDescending { it.newCase.replace(",", "").toInt() }
 
-                        val viewPagerList = arrayListOf<ArrayList<AreaData>>()
+                        val viewPagerList = arrayListOf<ArrayList<Area>>()
 
-                        val recyclerList1 = arrayListOf<AreaData>()
-                        val recyclerList2 = arrayListOf<AreaData>()
-                        val recyclerList3 = arrayListOf<AreaData>()
+                        val recyclerList1 = arrayListOf<Area>()
+                        val recyclerList2 = arrayListOf<Area>()
+                        val recyclerList3 = arrayListOf<Area>()
                         for (i in 0 until sortList.size) {
                             if (i < 6) {
                                 recyclerList1.add(sortList[i])

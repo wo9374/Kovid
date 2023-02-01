@@ -1,7 +1,7 @@
 package com.project.kovid.function.repository
 
 import com.project.kovid.function.home.CovidAPI
-import com.project.kovid.model.CovidAreaData
+import com.project.kovid.model.KoreaArea
 import com.project.kovid.model.CovidChartData
 import com.project.kovid.objects.RetrofitObject
 import com.project.kovid.util.TimeUtil
@@ -16,5 +16,5 @@ class CovidRepository{
 
     suspend fun getCovidChartData() : Response<CovidChartData> = covidChartApi.getCovidChartInfo(startCreateDt = TimeUtil.getPast1MonthCovid(), endCreateDt = TimeUtil.getTodayDate())
 
-    suspend fun getCovidAreaData() : Response<CovidAreaData> = covidAreaApi.getCovidArea()
+    suspend fun getCovidAreaData() : Response<KoreaArea> = covidAreaApi.getCovidArea()
 }

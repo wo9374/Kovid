@@ -7,7 +7,7 @@
 
         <variable
             name="areaData"
-            type="com.project.kovid.model.AreaData" />
+            type="com.project.kovid.model.Area" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

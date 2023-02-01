@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.project.kovid.R
 import com.project.kovid.areaCovidItem
 import com.project.kovid.databinding.AreaViewpagerItemBinding
-import com.project.kovid.model.AreaData
+import com.project.kovid.model.Area
 
-class ViewPagerAdapter(private val listData:ArrayList<ArrayList<AreaData>>) : RecyclerView.Adapter<ViewHolderPage>() {
+class ViewPagerAdapter(private val listData:ArrayList<ArrayList<Area>>) : RecyclerView.Adapter<ViewHolderPage>() {
     lateinit var binding: AreaViewpagerItemBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderPage {
@@ -29,7 +29,7 @@ class ViewPagerAdapter(private val listData:ArrayList<ArrayList<AreaData>>) : Re
 }
 
 class ViewHolderPage(val binding: AreaViewpagerItemBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun onBind(dataList: ArrayList<AreaData>) {
+    fun onBind(dataList: ArrayList<Area>) {
         binding.areaItemEpoxy.apply {
 
             addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)) //구분선
