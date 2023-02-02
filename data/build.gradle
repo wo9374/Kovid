@@ -1,7 +1,12 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
     namespace 'com.ljb.data'
@@ -13,6 +18,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        buildConfigField "String", "NAVER_CLIENT_ID", properties['naver.api.client.id']
+        buildConfigField "String", "NAVER_CLIENT_SECRET", properties['naver.api.client.secret']
+        buildConfigField "String", "NEW_API_KEY", properties['news.api.key']
+        buildConfigField "String", "DATA_GO_KR_API_KEY", properties['data.go.kr.api.key']
+        buildConfigField "String", "GOODBYE_CORONA_API_KEY", properties['goodbye.corona.api.key']
     }
 
     buildTypes {
@@ -39,4 +50,23 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    //Coroutine
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-jaxb:$retrofit_version"
+
+    //TikXml - SDK32 사용으로 인한 0.8.13 사용
+    implementation "com.tickaroo.tikxml:annotation:$tikxml_version"
+    implementation "com.tickaroo.tikxml:core:$tikxml_version"
+    implementation "com.tickaroo.tikxml:retrofit-converter:$tikxml_version"
+    kapt "com.tickaroo.tikxml:processor:$tikxml_version"
 }

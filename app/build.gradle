@@ -90,15 +90,15 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.7.2'
-    implementation 'com.squareup.retrofit2:converter-jaxb:2.7.2'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-jaxb:$retrofit_version"
 
     //OkHttp: 통신 로그 확인하기 위함
-    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.4.1'
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
 
 
     //TedPerMission 퍼미션 체크 라이브러리
@@ -139,6 +139,6 @@ dependencies {
     implementation "androidx.room:room-runtime:2.4.0-alpha03"
     kapt"androidx.room:room-compiler:2.4.0-alpha03"
 
-    implementation 'com.google.dagger:hilt-android:2.41'
-    kapt "com.google.dagger:hilt-android-compiler:2.38.1"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 }
