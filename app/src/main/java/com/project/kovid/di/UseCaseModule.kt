@@ -1,6 +1,8 @@
 package com.project.kovid.di
 
+import com.ljb.domain.repository.AreaRepository
 import com.ljb.domain.repository.ChartRepository
+import com.ljb.domain.usecase.GetAreaListUseCase
 import com.ljb.domain.usecase.GetChartListUseCase
 import dagger.Module
 import dagger.Provides
@@ -20,4 +22,7 @@ class UseCaseModule {
     @Singleton
     fun provideGetChartUseCase(repository: ChartRepository) = GetChartListUseCase(repository)
 
+    @Provides
+    @Singleton
+    fun provideGetAreaUseCase(repository: AreaRepository) = GetAreaListUseCase(repository)
 }

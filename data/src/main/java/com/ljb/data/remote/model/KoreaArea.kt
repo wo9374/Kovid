@@ -7,27 +7,27 @@ data class KoreaArea(
     @SerializedName("resultMessage") var resultMessage : String,
 
     //@SerializedName("korea") var korea : AreaData,
-    @SerializedName("seoul") var seoul : Area,
-    @SerializedName("busan") var busan : Area,
-    @SerializedName("daegu") var daegu : Area,
-    @SerializedName("incheon") var incheon : Area,
-    @SerializedName("gwangju") var gwangju : Area,
-    @SerializedName("daejeon") var daejeon : Area,
-    @SerializedName("ulsan") var ulsan : Area,
-    @SerializedName("sejong") var sejong : Area,
-    @SerializedName("gyeonggi") var gyeonggi : Area,
-    @SerializedName("gangwon") var gangwon : Area,
-    @SerializedName("chungbuk") var chungbuk : Area,
-    @SerializedName("chungnam") var chungnam : Area,
-    @SerializedName("jeonbuk") var jeonbuk : Area,
-    @SerializedName("jeonnam") var jeonnam : Area,
-    @SerializedName("gyeongbuk") var gyeongbuk : Area,
-    @SerializedName("gyeongnam") var gyeongnam : Area,
-    @SerializedName("jeju") var jeju : Area,
-    @SerializedName("quarantine") var quarantine : Area, //검역
+    @SerializedName("seoul") var seoul : AreaResponse,
+    @SerializedName("busan") var busan : AreaResponse,
+    @SerializedName("daegu") var daegu : AreaResponse,
+    @SerializedName("incheon") var incheon : AreaResponse,
+    @SerializedName("gwangju") var gwangju : AreaResponse,
+    @SerializedName("daejeon") var daejeon : AreaResponse,
+    @SerializedName("ulsan") var ulsan : AreaResponse,
+    @SerializedName("sejong") var sejong : AreaResponse,
+    @SerializedName("gyeonggi") var gyeonggi : AreaResponse,
+    @SerializedName("gangwon") var gangwon : AreaResponse,
+    @SerializedName("chungbuk") var chungbuk : AreaResponse,
+    @SerializedName("chungnam") var chungnam : AreaResponse,
+    @SerializedName("jeonbuk") var jeonbuk : AreaResponse,
+    @SerializedName("jeonnam") var jeonnam : AreaResponse,
+    @SerializedName("gyeongbuk") var gyeongbuk : AreaResponse,
+    @SerializedName("gyeongnam") var gyeongnam : AreaResponse,
+    @SerializedName("jeju") var jeju : AreaResponse,
+    @SerializedName("quarantine") var quarantine : AreaResponse, //검역
 )
 
-data class Area(
+data class AreaResponse(
     @SerializedName("countryName") var countryName : String, //시도명(지역명)
     @SerializedName("newCase") var newCase : String,         //신규확진환자수
     @SerializedName("totalCase") var totalCase : String,     //확진환자수
