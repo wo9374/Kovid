@@ -7,9 +7,9 @@ import retrofit2.Response
 import javax.inject.Inject
 
 /**
- * ChartRemoteDataSource 상속받아 사용
+ * ChartDataSource 상속받아 사용
  * */
-class AreaRemoteDataSourceImpl @Inject constructor(
+class AreaDataSourceImpl @Inject constructor(
     private val areaAPI: AreaAPI
 ) : AreaDataSource {
     override suspend fun getCovidArea(): Response<KoreaArea>{

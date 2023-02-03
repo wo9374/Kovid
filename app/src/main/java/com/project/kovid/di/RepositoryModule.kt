@@ -2,8 +2,8 @@ package com.project.kovid.di
 
 import com.ljb.data.repository.AreaRepositoryImpl
 import com.ljb.data.repository.ChartRepositoryImpl
-import com.ljb.data.repository.remote.datasourceimpl.AreaRemoteDataSourceImpl
-import com.ljb.data.repository.remote.datasourceimpl.ChartRemoteDataSourceImpl
+import com.ljb.data.repository.remote.datasourceimpl.AreaDataSourceImpl
+import com.ljb.data.repository.remote.datasourceimpl.ChartDataSourceImpl
 import com.ljb.domain.repository.AreaRepository
 import com.ljb.domain.repository.ChartRepository
 import dagger.Module
@@ -23,7 +23,7 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideChartRepository(
-        chartRemoteDataSourceImpl: ChartRemoteDataSourceImpl
+        chartRemoteDataSourceImpl: ChartDataSourceImpl
     ): ChartRepository{
         return ChartRepositoryImpl(
             chartRemoteDataSourceImpl
@@ -33,7 +33,7 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideAreaRepository(
-        areaRemoteDataSourceImpl: AreaRemoteDataSourceImpl
+        areaRemoteDataSourceImpl: AreaDataSourceImpl
     ): AreaRepository{
         return AreaRepositoryImpl(
             areaRemoteDataSourceImpl

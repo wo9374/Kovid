@@ -7,9 +7,9 @@ import retrofit2.Response
 import javax.inject.Inject
 
 /**
- * ChartRemoteDataSource 상속받아 사용
+ * ChartDataSource 상속받아 사용
  * */
-class ChartRemoteDataSourceImpl @Inject constructor(
+class ChartDataSourceImpl @Inject constructor(
     private val chartApi: CovidAPI
 ) : ChartDataSource {
     override suspend fun getCovidChart(): Response<ChartData> {
