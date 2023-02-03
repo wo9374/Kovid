@@ -4,14 +4,14 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 object StringUtil {
-    /*fun computeStringToInt(string:String) : String{
+    fun computeStringToInt(string:String) : String{
         if (string.length == 8){
             val month = string.substring(4,6).toInt()
             val day = string.substring(6).toInt()
             return "${month}.$day"
         }
         return "compute 오류"
-    }*/
+    }
 
     fun getDecimalFormatNum(num: Int): String {
 

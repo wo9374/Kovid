@@ -5,7 +5,7 @@ import com.project.kovid.function.news.NaverAPI
 import com.project.kovid.function.news.NewsAPI
 import com.project.kovid.model.NaverNews
 import com.project.kovid.model.NewsData
-import com.project.kovid.objects.RetrofitObject
+import com.project.kovid.RetrofitObject
 import retrofit2.Response
 import java.net.URLEncoder
 

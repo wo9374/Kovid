@@ -7,13 +7,13 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.project.kovid.BuildConfig
+import com.project.kovid.RetrofitObject
 import com.project.kovid.database.HospDao
 import com.project.kovid.database.HospDatabase
 import com.project.kovid.function.map.HospitalAPI
 import com.project.kovid.widget.extension.LocationManager
 import com.project.kovid.model.HospDBItem
 import com.project.kovid.model.HospData
-import com.project.kovid.objects.RetrofitObject
 import retrofit2.Response
 
 class MapRepository(application: Application) {
