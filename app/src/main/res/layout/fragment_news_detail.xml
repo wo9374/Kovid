@@ -14,7 +14,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".function.news.detail.NewsDetailFragment">
+        tools:context=".view.NewsDetailFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"

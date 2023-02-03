@@ -1,4 +1,4 @@
-package com.project.kovid.function.news
+package com.project.kovid.viewmodel
 
 import android.app.Application
 import android.util.Log
@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.project.kovid.model.Article
 import com.project.kovid.function.repository.NewsRepository
 import com.project.kovid.model.NaverNews
-import com.project.kovid.util.TimeUtil
+import com.project.kovid.widget.util.TimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -24,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getChartListUseCase: GetChartListUseCase,
+    private val getAreaListUseCase: GetAreaListUseCase
 ) : ViewModel() {
     val tag: String = this::class.java.simpleName
 
@@ -36,6 +37,9 @@ class HomeViewModel @Inject constructor(
     private val _covidList = MutableStateFlow<List<WeekCovid>>(mutableListOf())
     val covidList : StateFlow<List<WeekCovid>> get() = _covidList
 
+    //지역별 확진자
+    private val _areaList = MutableStateFlow<List<Area>>(mutableListOf())
+    val areaList : StateFlow<List<Area>> get() = _areaList
 
     init {
         viewModelScope.launch {
@@ -61,6 +65,24 @@ class HomeViewModel @Inject constructor(
                     }
                 }
 
+            getAreaListUseCase()
+                .catch { exception ->
+                    Log.d(tag, "CovidArea - Exception Error : ${exception.message}")
+                }.collectLatest { result ->
+                    when(result){
+                        is NetworkState.Success -> {
+                            _areaList.value = result.data
+                            Log.d(tag, "CovidArea - Network Success : ${result.data}")
+                        }
+                        is NetworkState.Error -> {
+
+                            Log.d(tag, "CovidArea - Network Error : ${result.message}")
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
         }
     }
 

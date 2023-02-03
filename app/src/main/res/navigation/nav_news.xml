@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/newsDetailFragment"
-        android:name="com.project.kovid.function.news.detail.NewsDetailFragment"
+        android:name="com.project.kovid.view.NewsDetailFragment"
         android:label="NewsDetailFragment" />
 
 </navigation>

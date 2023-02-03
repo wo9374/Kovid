@@ -1,8 +1,7 @@
-package com.project.kovid.function
+package com.project.kovid.view
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.navigation.NavController
@@ -13,10 +12,11 @@ import com.project.kovid.KeepStateNavigator
 import com.project.kovid.R
 import com.project.kovid.base.BaseActivity
 import com.project.kovid.databinding.ActivityMainBinding
-import com.project.kovid.extenstion.customview.ContentsLoadingProgress
-import com.project.kovid.function.map.MapsFragment
+import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
+import com.project.kovid.viewmodel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private val viewModel: MainViewModel by viewModels()

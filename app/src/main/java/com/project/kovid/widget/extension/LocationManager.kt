@@ -1,13 +1,10 @@
-package com.project.kovid.extenstion
+package com.project.kovid.widget.extension
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Looper
-import android.util.Log
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.model.LatLng
 import java.util.*
 
 class LocationManager(context: Context) {

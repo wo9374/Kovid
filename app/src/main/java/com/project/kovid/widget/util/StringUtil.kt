@@ -1,4 +1,4 @@
-package com.project.kovid.util
+package com.project.kovid.widget.util
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols

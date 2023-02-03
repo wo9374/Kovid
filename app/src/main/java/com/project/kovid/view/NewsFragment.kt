@@ -12,7 +12,8 @@ import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsBinding
 import com.project.kovid.databinding.FragmentNewsContainerBinding
 import com.project.kovid.newsItemLayout
-import com.project.kovid.extenstion.customview.ContentsLoadingProgress
+import com.project.kovid.viewmodel.NewsViewModel
+import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
 
 //Navigation 스택관리 때문인 Container Fragment
 class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)

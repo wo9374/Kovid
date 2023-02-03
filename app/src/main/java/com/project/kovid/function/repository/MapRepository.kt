@@ -5,16 +5,14 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LiveData
 import com.google.android.gms.location.*
 import com.project.kovid.BuildConfig
 import com.project.kovid.database.HospDao
 import com.project.kovid.database.HospDatabase
 import com.project.kovid.function.map.HospitalAPI
-import com.project.kovid.extenstion.LocationManager
+import com.project.kovid.widget.extension.LocationManager
 import com.project.kovid.model.HospDBItem
 import com.project.kovid.model.HospData
-import com.project.kovid.model.HospItem
 import com.project.kovid.objects.RetrofitObject
 import retrofit2.Response
 

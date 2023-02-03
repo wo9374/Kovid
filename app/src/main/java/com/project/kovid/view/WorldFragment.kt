@@ -1,4 +1,4 @@
-package com.project.kovid.function.world
+package com.project.kovid.view
 
 import android.os.Bundle
 import android.view.View

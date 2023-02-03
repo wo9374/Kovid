@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.project.kovid.function.news.NewsViewModel" />
+            type="com.project.kovid.viewmodel.NewsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

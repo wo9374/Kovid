@@ -1,4 +1,4 @@
-package com.project.kovid.extenstion.customview
+package com.project.kovid.widget.extension.customview
 
 import android.content.Context
 import androidx.core.content.ContextCompat
@@ -12,7 +12,7 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.project.kovid.R
 import com.project.kovid.function.repository.MapRepository
 import com.project.kovid.model.HospDBItem
-import com.project.kovid.util.CanvasUtil
+import com.project.kovid.widget.util.CanvasUtil
 
 
 class HospClusterMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<HospDBItem>)

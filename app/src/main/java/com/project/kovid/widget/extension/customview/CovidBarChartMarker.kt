@@ -1,18 +1,14 @@
-package com.project.kovid.extenstion.customview
+package com.project.kovid.widget.extension.customview
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Canvas
-import android.view.LayoutInflater
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.project.kovid.R
-import com.project.kovid.databinding.CustomMpchartMarkerBinding
-import com.project.kovid.util.StringUtil
+import com.project.kovid.widget.util.StringUtil
 
 @SuppressLint("ViewConstructor")
 class CustomChartMarker(context: Context, layoutResource: Int) : MarkerView(context, layoutResource) {

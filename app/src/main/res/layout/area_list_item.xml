@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="areaData"
-            type="com.project.kovid.model.Area" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
         android:layout_width="match_parent"
@@ -21,7 +14,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingVertical="8dp"
-            android:text="@{areaData.countryName}"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@id/area_total_case"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +26,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingVertical="8dp"
-            android:text="@{areaData.totalCase}"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/area_country"
             app:layout_constraintEnd_toStartOf="@id/area_new_case"
@@ -48,7 +39,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingVertical="8dp"
-            android:text="@{areaData.newCase}"
             android:textColor="@color/fab_red"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

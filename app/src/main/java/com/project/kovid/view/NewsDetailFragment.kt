@@ -1,15 +1,15 @@
-package com.project.kovid.function.news.detail
+package com.project.kovid.view
 
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import com.project.kovid.function.MainViewModel
+import com.project.kovid.viewmodel.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsDetailBinding
-import com.project.kovid.function.news.NewsViewModel
+import com.project.kovid.viewmodel.NewsViewModel
 
 
 class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.fragment_news_detail) {

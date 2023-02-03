@@ -1,16 +1,14 @@
-package com.project.kovid.function.map
+package com.project.kovid.viewmodel
 
 import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.project.kovid.function.repository.MapRepository
 import com.project.kovid.model.HospDBItem
-import com.project.kovid.model.HospItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

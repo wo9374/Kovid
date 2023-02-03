@@ -59,6 +59,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 setOnTouchListener(chartOnTouchListener)
             }
             chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
+            areaRecycler.apply {
+                adapter = listAdapter
+                addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)) //구분선
+            }
         }
 
         lifecycleScope.launch {
@@ -95,6 +99,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     }
             }
 
+            launch {
+                chartViewModel.areaList
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .distinctUntilChanged()
+                    .collectLatest {
+                        listAdapter.submitList(it)
+                    }
+            }
         }
     }
 

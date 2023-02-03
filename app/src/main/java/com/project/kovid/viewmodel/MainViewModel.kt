@@ -1,4 +1,4 @@
-package com.project.kovid.function
+package com.project.kovid.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

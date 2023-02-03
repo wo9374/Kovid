@@ -1,5 +1,5 @@
 @EpoxyDataBindingPattern(rClass = R.class, layoutPrefix = "epoxy")
-package com.project.kovid.extenstion;
+package com.project.kovid.widget;
 
 import com.airbnb.epoxy.EpoxyDataBindingPattern;
 import com.project.kovid.R;

@@ -1,4 +1,4 @@
-package com.project.kovid.extenstion.customview
+package com.project.kovid.widget.extension.customview
 
 import android.app.Activity
 import android.view.LayoutInflater

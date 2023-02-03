@@ -6,15 +6,15 @@
 
     <keep_state_fragment
         android:id="@+id/homeFragment"
-        android:name="com.project.kovid.function.home.HomeFragment"
+        android:name="com.project.kovid.view.HomeFragment"
         android:label="HomeFragment" />
     <!--<keep_state_fragment
         android:id="@+id/worldFragment"
-        android:name="com.project.kovid.function.world.WorldFragment"
+        android:name="com.project.kovid.view.WorldFragment"
         android:label="WorldFragment" />-->
     <keep_state_fragment
         android:id="@+id/mapFragment"
-        android:name="com.project.kovid.function.map.MapsFragment"
+        android:name="com.project.kovid.view.MapsFragment"
         android:label="MapFragment" />
     <keep_state_fragment
         android:id="@+id/newsContainerFragment"

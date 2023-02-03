@@ -1,4 +1,4 @@
-package com.project.kovid.function.map
+package com.project.kovid.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -18,17 +18,17 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.ktx.cameraMoveEvents
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import com.project.kovid.function.MainViewModel
+import com.project.kovid.viewmodel.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
-import com.project.kovid.extenstion.customview.ContentsLoadingProgress
-import com.project.kovid.extenstion.customview.HospMapInfoWindow
-import com.project.kovid.extenstion.customview.HospClusterMarker
+import com.project.kovid.viewmodel.MapsViewModel
+import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
+import com.project.kovid.widget.extension.customview.HospMapInfoWindow
+import com.project.kovid.widget.extension.customview.HospClusterMarker
 import com.project.kovid.model.HospDBItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 

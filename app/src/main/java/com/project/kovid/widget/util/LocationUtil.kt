@@ -1,4 +1,4 @@
-package com.project.kovid.util
+package com.project.kovid.widget.util
 
 import android.content.Context
 import android.location.Geocoder
