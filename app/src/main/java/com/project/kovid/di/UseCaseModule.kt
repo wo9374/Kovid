@@ -18,5 +18,6 @@ class UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetChartListUseCase(repository: ChartRepository) = GetChartListUseCase(repository)
+    fun provideGetChartUseCase(repository: ChartRepository) = GetChartListUseCase(repository)
+
 }

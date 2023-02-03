@@ -1,6 +1,7 @@
 package com.ljb.domain.usecase
 
 import com.ljb.domain.NetworkState
+import com.ljb.domain.entity.Area
 import com.ljb.domain.entity.WeekCovid
 import com.ljb.domain.repository.ChartRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,5 +13,5 @@ import javax.inject.Inject
 class GetChartListUseCase @Inject constructor(
     private val repository: ChartRepository
 ) {
-    suspend fun invoke(): Flow<NetworkState<List<WeekCovid>>> = repository.getChartList()
+    operator fun invoke(): Flow<NetworkState<List<WeekCovid>>> = repository.getChartList()
 }

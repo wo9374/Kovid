@@ -1,6 +1,5 @@
 package com.ljb.data.repository
 
-import com.ljb.data.mapper.ChartMapper
 import com.ljb.data.repository.remote.datasource.ChartRemoteDataSource
 import com.ljb.data.util.StringUtil
 import com.ljb.domain.NetworkState
@@ -16,13 +15,13 @@ import javax.inject.Inject
 class ChartRepositoryImpl @Inject constructor(
     private val dataSource: ChartRemoteDataSource
 ) : ChartRepository{
-    override suspend fun getChartList(): Flow<NetworkState<List<WeekCovid>>> {
 
+    override fun getChartList(): Flow<NetworkState<List<WeekCovid>>> {
         return flow {
-            val networkResult = dataSource.getCovidChart()
+            val chartResult = dataSource.getCovidChart()
 
-            if (networkResult.isSuccessful){
-                val data = dataSource.getCovidChart().body()?.chartBody?.chartItems?.chartItem
+            if (chartResult.isSuccessful){
+                val data = chartResult.body()?.chartBody?.chartItems?.chartItem
                     ?.sortedBy { it.stateDt }
                     //?.map { ChartMapper.mapperToChartItem(it) } //아래 ChartItem -> WeekCovid 로 2차 가공을 위한 매퍼 미사용
                     ?: emptyList()
@@ -36,7 +35,7 @@ class ChartRepositoryImpl @Inject constructor(
                 }
                 emit(NetworkState.Success(computeList))
             }else{
-                emit(NetworkState.Error(networkResult.message()))
+                emit(NetworkState.Error(chartResult.message()))
             }
         }
     }

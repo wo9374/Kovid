@@ -3,20 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.project.kovid.function.home.HomeViewModel" />
-    </data>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/home_nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:paddingHorizontal="8dp"
-        tools:context=".function.home.HomeFragment">
+        tools:context=".view.HomeFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -37,7 +30,6 @@
                     android:id="@+id/txtCurrentDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.topDecideDate == null ? @string/data_loading : @string/current_covid(viewModel.topDecideDate)}"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     tools:text="3.2 신규확진자" />
@@ -47,7 +39,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@{viewModel.topDecide == null ? @string/default_decide : viewModel.topDecide}"
                     android:textColor="@color/fab_red"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -69,7 +60,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_margin="6dp"
-                    app:dataList="@{viewModel.currentDecide}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.cardview.widget.CardView>
@@ -118,31 +108,68 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/chart_tab_layout" />
 
-            <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-                android:id="@+id/worm_dots_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:dotsColor="@color/purple_200"
-                app:dotsCornerRadius="8dp"
-                app:dotsSize="12dp"
-                app:dotsSpacing="4dp"
-                app:dotsStrokeColor="@color/purple_200"
-                app:dotsStrokeWidth="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/area_view_pager"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_coner_round"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <TextView
+                    android:id="@+id/area_country"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/widjet_bg_color"
+                    android:gravity="center"
+                    android:paddingVertical="8dp"
+                    android:text="@string/country"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/area_total_case"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/area_total_case"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/widjet_bg_color"
+                    android:gravity="center"
+                    android:paddingVertical="8dp"
+                    android:text="@string/accumulate_deice"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/area_country"
+                    app:layout_constraintEnd_toStartOf="@id/area_new_case"
+                    app:layout_constraintStart_toEndOf="@id/area_country"
+                    app:layout_constraintTop_toTopOf="@id/area_country" />
+
+                <TextView
+                    android:id="@+id/area_new_case"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/widjet_bg_color"
+                    android:gravity="center"
+                    android:paddingVertical="8dp"
+                    android:text="@string/new_decide"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/area_total_case"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/area_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:nestedScrollingEnabled="false"
-                android:orientation="horizontal"
-                android:paddingVertical="12dp"
-                app:layout_constraintTop_toBottomOf="@+id/worm_dots_indicator" />
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/constraint" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </layout>

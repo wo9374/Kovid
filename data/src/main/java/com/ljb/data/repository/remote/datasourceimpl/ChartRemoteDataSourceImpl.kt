@@ -10,9 +10,9 @@ import javax.inject.Inject
  * ChartRemoteDataSource 상속받아 사용
  * */
 class ChartRemoteDataSourceImpl @Inject constructor(
-    private val api: CovidAPI
+    private val chartApi: CovidAPI
 ) : ChartRemoteDataSource {
     override suspend fun getCovidChart(): Response<ChartData> {
-        return api.getCovidChart()
+        return chartApi.getCovidChart()
     }
 }

@@ -24,15 +24,11 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
-    @Singleton
-    fun provideHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .addInterceptor(getLoggingInterceptor())
-            .build()
-    }
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class ChartType
+
+    @Retention(AnnotationRetention.BINARY)
 
     @Provides
     @Singleton
@@ -44,7 +40,6 @@ object NetworkModule {
 
         return Retrofit.Builder()
             .baseUrl(CovidAPI.COVID_19_CHART)
-            .client(okHttpClient)
             .client(provideHttpClient())
             .addConverterFactory(tikXmlConverterFactory)
             .build()
@@ -66,8 +61,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
+        return retrofit.create(CovidAPI::class.java)
+    }
+
     }
 
     @Provides
@@ -80,6 +77,11 @@ object NetworkModule {
     @Singleton
     fun provideCovidApiService(retrofit: Retrofit): CovidAPI{
         return retrofit.create(CovidAPI::class.java)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .addInterceptor(getLoggingInterceptor())
+            .build()
     }
 
     private fun getLoggingInterceptor(): HttpLoggingInterceptor =

@@ -70,4 +70,9 @@ dependencies {
     implementation "com.tickaroo.tikxml:core:$tikxml_version"
     implementation "com.tickaroo.tikxml:retrofit-converter:$tikxml_version"
     kapt "com.tickaroo.tikxml:processor:$tikxml_version"
+
+    //OkHttp: 통신 로그 확인하기 위함
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
 }
