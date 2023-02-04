@@ -1,7 +1,7 @@
 package com.ljb.data.repository
 
 import com.ljb.data.mapper.AreaMapper
-import com.ljb.data.repository.remote.datasource.AreaRemoteDataSource
+import com.ljb.data.repository.remote.datasource.AreaDataSource
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.Area
 import com.ljb.domain.repository.AreaRepository
@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Domain layer의 ChartRepository 상속받아 사용
  */
 class AreaRepositoryImpl @Inject constructor(
-    private val dataSource: AreaRemoteDataSource
+    private val dataSource: AreaDataSource
 ) : AreaRepository{
     override fun getAreaList(): Flow<NetworkState<List<Area>>> {
         return flow {

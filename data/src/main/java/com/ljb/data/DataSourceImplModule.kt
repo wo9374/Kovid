@@ -2,8 +2,8 @@ package com.ljb.data
 
 import com.ljb.data.remote.api.AreaAPI
 import com.ljb.data.remote.api.CovidAPI
-import com.ljb.data.repository.remote.datasource.AreaRemoteDataSource
-import com.ljb.data.repository.remote.datasource.ChartRemoteDataSource
+import com.ljb.data.repository.remote.datasource.AreaDataSource
+import com.ljb.data.repository.remote.datasource.ChartDataSource
 import com.ljb.data.repository.remote.datasourceimpl.AreaRemoteDataSourceImpl
 import com.ljb.data.repository.remote.datasourceimpl.ChartRemoteDataSourceImpl
 import dagger.Module
@@ -24,7 +24,7 @@ class DataSourceImplModule {
     @Singleton
     fun provideChartDataSource(
         chartApi: CovidAPI
-    ) : ChartRemoteDataSource {
+    ) : ChartDataSource {
         return ChartRemoteDataSourceImpl(chartApi)
     }
 
@@ -32,7 +32,7 @@ class DataSourceImplModule {
     @Singleton
     fun provideAreaDataSource(
         areaAPI: AreaAPI
-    ) : AreaRemoteDataSource {
+    ) : AreaDataSource {
         return AreaRemoteDataSourceImpl(areaAPI)
     }
 }

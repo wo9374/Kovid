@@ -1,6 +1,6 @@
 package com.ljb.data.repository
 
-import com.ljb.data.repository.remote.datasource.ChartRemoteDataSource
+import com.ljb.data.repository.remote.datasource.ChartDataSource
 import com.ljb.data.util.StringUtil
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.WeekCovid
@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Domain layer의 ChartRepository 상속받아 사용
  */
 class ChartRepositoryImpl @Inject constructor(
-    private val dataSource: ChartRemoteDataSource
+    private val dataSource: ChartDataSource
 ) : ChartRepository{
 
     override fun getChartList(): Flow<NetworkState<List<WeekCovid>>> {
