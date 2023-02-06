@@ -34,8 +34,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         binding.mainViewModel = viewModel
 
         initLayout()
-
-        subscribeUI()
     }
 
     private fun initLayout() {
@@ -51,10 +49,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         //val currentFragment = supportFragmentManager.primaryNavigationFragment // keepState 현재 프래그먼트
     }
 
-    private fun subscribeUI() {
-
-    }
-
     override fun onBackPressed() {
         if(System.currentTimeMillis() - waitTime >=1500 ) {
             waitTime = System.currentTimeMillis()
@@ -63,25 +57,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
             finish() // 액티비티 종료
         }
     }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == MapsFragment.TAG_CODE_PERMISSION_LOCATION) {
-            if (grantResults.isNotEmpty()) {
-                var permission = false
-
-                for (grant in grantResults) {
-                    permission = grant == PackageManager.PERMISSION_GRANTED
-                }
-
-                if (permission) viewModel.mapPermission.value = true
-                else {
-                    Toast.makeText(this, "설정에서 권한을 허가 해주세요.", Toast.LENGTH_SHORT).show()
-                    ContentsLoadingProgress.hideProgress(this.javaClass.name)
-                }
-            }
-        }
-    }
-
 }

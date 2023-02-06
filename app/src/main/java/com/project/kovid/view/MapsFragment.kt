@@ -2,31 +2,36 @@ package com.project.kovid.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.ktx.cameraMoveEvents
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.normal.TedPermission
-import com.project.kovid.viewmodel.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
+import com.project.kovid.model.HospDBItem
+import com.project.kovid.viewmodel.MainViewModel
 import com.project.kovid.viewmodel.MapsViewModel
 import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
-import com.project.kovid.widget.extension.customview.HospMapInfoWindow
 import com.project.kovid.widget.extension.customview.HospClusterMarker
-import com.project.kovid.model.HospDBItem
+import com.project.kovid.widget.extension.customview.HospMapInfoWindow
+import com.project.kovid.widget.util.LocationUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,19 +44,46 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var clusterManager: ClusterManager<HospDBItem>
 
-    var TAG = MapsFragment::class.java.simpleName
-
     companion object {
         const val TAG_CODE_PERMISSION_LOCATION = 100
+
+        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     }
+
+    private
+
+    var TAG = MapsFragment::class.java.simpleName
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mapViewModel = mapsViewModel
-        binding.lifecycleOwner = this
 
+        binding.mapViewModel = mapsViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.mapView.onCreate(savedInstanceState)
-        subscribe(this)
+
+        if (mapsViewModel.checkLocationPermission()) {
+            binding.mapView.getMapAsync(this)
+
+            //ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true, getString(R.string.init_db_check))
+            /*CoroutineScope(Dispatchers.IO).launch {
+                if (mapsViewModel.getAll().isNullOrEmpty()) {
+                    mapsViewModel.getHospData()
+                } else {
+                    mapsViewModel.symptomTestHospData.postValue(mapsViewModel.getAll())
+                }
+            }*/
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permissions[0])) {
+                Snackbar.make(binding.root, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("확인") {
+                        ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
+                    }.show()
+            } else {
+                ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
+            }
+        }
+
+        observeData(this)
     }
 
 
@@ -86,30 +118,18 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
     }
 
-    fun subscribe(owner: LifecycleOwner) {
-        mainViewModel.mapPermission.observe(owner) {
-            if (it == true) {
-                binding.mapView.getMapAsync(this)
-
-                mapsViewModel.startLocation()
-
-                ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true, getString(R.string.init_db_check))
-                CoroutineScope(Dispatchers.IO).launch {
-                    if (mapsViewModel.getAll().isNullOrEmpty()) {
-                        mapsViewModel.getHospData()
-                    } else {
-                        mapsViewModel.symptomTestHospData.postValue(mapsViewModel.getAll())
-                    }
-                }
-            } else {
-                permissionCheck()
+    fun observeData(owner: LifecycleOwner) {
+        lifecycleScope.launch {
+            mapsViewModel.currentLocation.collect{
+                val latLng = LatLng(it.latitude, it.longitude)
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
             }
         }
 
-        mapsViewModel.myLocation.observe(owner) {
+        /*mapsViewModel.myLocation.observe(owner) {
             val latLng = LatLng(it.latitude, it.longitude)
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-        }
+        }*/
 
         mapsViewModel.symptomTestHospData.observe(owner) {
             it?.forEachIndexed { index, hospDBItem ->
@@ -149,6 +169,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
+        if (mapsViewModel.checkLocationPermission()) mapsViewModel.startLocation()
     }
 
     override fun onPause() {
@@ -177,24 +198,34 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         binding.mapView.onSaveInstanceState(outState)
     }
 
-    private fun permissionCheck() {
-        if (mapsViewModel.permissionNotAllowCheck()) {
-            mainViewModel.mapPermission.value = true
-        } else {
-            //tedPermission()
-            val permissions = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                permissions,
-                TAG_CODE_PERMISSION_LOCATION
-            )
-        }
-    }
+    /*private fun permissionCheck() {
+        if (mapsViewModel.checkLocationPermission()) {
+            binding.mapView.getMapAsync(this)
 
-    fun tedPermission() {
+            mapsViewModel.startLocation()
+
+            //ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true, getString(R.string.init_db_check))
+
+            CoroutineScope(Dispatchers.IO).launch {
+                if (mapsViewModel.getAll().isNullOrEmpty()) {
+                    mapsViewModel.getHospData()
+                } else {
+                    mapsViewModel.symptomTestHospData.postValue(mapsViewModel.getAll())
+                }
+            }
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permissions[0])) {
+                Snackbar.make(binding.root, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("확인") {
+                        ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
+                    }.show()
+            } else {
+                ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
+            }
+        }
+    }*/
+
+    /*fun tedPermission() {
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
                 mapsViewModel.startLocation()
@@ -214,5 +245,5 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
             .check()
-    }
+    }*/
 }

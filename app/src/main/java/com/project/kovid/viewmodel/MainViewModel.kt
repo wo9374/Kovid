@@ -10,8 +10,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val botNaviViewVisibility = MutableLiveData(true)
 
-    val mapPermission = MutableLiveData(false)
-
     //private val covidRepo: CovidRepository = CovidRepository()
 
 

@@ -20,7 +20,7 @@ interface CovidAPI {
 
     @GET(COVID_19_END_POINT)
     suspend fun getCovidChart(
-        @Query("serviceKey") serviceKey: String = BuildConfig.DATA_GO_KR_API_KEY,
+        @Query("serviceKey") serviceKey: String = BuildConfig.DATA_GO_KR_API_KEY_DECODE,
         @Query("startCreateDt") startCreateDt : String = TimeUtil.getPast1MonthCovid(),
         @Query("endCreateDt") endCreateDt : String = TimeUtil.getTodayDate(),
     ): Response<ChartData>

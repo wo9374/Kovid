@@ -7,7 +7,7 @@ object TimeUtil {
 
     fun getTodayDate() : String{
         val today = Date()
-        val date = SimpleDateFormat("yyyyMMdd")
+        val date = SimpleDateFormat("yyyy-MM-dd")
         val toDay: String = date.format(today)
 
         return toDay
