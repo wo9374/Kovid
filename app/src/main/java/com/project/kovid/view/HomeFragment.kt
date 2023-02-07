@@ -28,7 +28,7 @@ import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentHomeBinding
 import com.project.kovid.widget.extension.customview.CustomChartMarker
-import com.project.kovid.function.home.AreaListAdapter
+import com.project.kovid.widget.AreaListAdapter
 import com.project.kovid.widget.util.StringUtil
 import com.project.kovid.viewmodel.HomeViewModel
 import com.project.kovid.widget.extension.MyXAxisFormatter
@@ -46,6 +46,7 @@ import kotlin.math.pow
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val chartViewModel: HomeViewModel by viewModels()
+
     private val listAdapter = AreaListAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

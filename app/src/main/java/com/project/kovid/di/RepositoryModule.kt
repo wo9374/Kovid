@@ -1,11 +1,9 @@
 package com.project.kovid.di
 
-import com.ljb.data.repository.AreaRepositoryImpl
-import com.ljb.data.repository.ChartRepositoryImpl
-import com.ljb.data.repository.remote.datasourceimpl.AreaDataSourceImpl
-import com.ljb.data.repository.remote.datasourceimpl.ChartDataSourceImpl
-import com.ljb.domain.repository.AreaRepository
-import com.ljb.domain.repository.ChartRepository
+//import com.ljb.data.repository.AreaRepositoryImpl
+import com.ljb.data.repository.CovidRepositoryImpl
+import com.ljb.data.repository.remote.datasource.CovidDataSourceImpl
+import com.ljb.domain.repository.CovidRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,15 +20,15 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideChartRepository(
-        chartRemoteDataSourceImpl: ChartDataSourceImpl
-    ): ChartRepository{
-        return ChartRepositoryImpl(
-            chartRemoteDataSourceImpl
+    fun provideCovidRepository(
+        covidDataSourceImpl: CovidDataSourceImpl
+    ): CovidRepository{
+        return CovidRepositoryImpl(
+            covidDataSourceImpl
         )
     }
 
-    @Provides
+    /*@Provides
     @Singleton
     fun provideAreaRepository(
         areaRemoteDataSourceImpl: AreaDataSourceImpl
@@ -38,5 +36,5 @@ class RepositoryModule {
         return AreaRepositoryImpl(
             areaRemoteDataSourceImpl
         )
-    }
+    }*/
 }

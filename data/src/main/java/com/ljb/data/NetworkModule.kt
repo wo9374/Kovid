@@ -1,6 +1,5 @@
 package com.ljb.data
 
-import com.ljb.data.remote.api.AreaAPI
 import com.ljb.data.remote.api.CovidAPI
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
@@ -14,7 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
-
 
 /**
  * Hilt로 Retrofit관련 의존성 주입을 해주기 위한 모듈
@@ -31,80 +29,82 @@ object NetworkModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class AreaType
 
-    /**
-     * CovidApi
-     * */
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class HospType
+
+
     @Provides
     @Singleton
     @ChartType
     fun provideCovidChartRetrofit(
-        tikXmlConverterFactory: TikXmlConverterFactory
-    ): Retrofit{
+        okHttpClient: OkHttpClient,
+        tikXmlConverterFactory: TikXmlConverterFactory,
+    ): Retrofit {
         //val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
 
         return Retrofit.Builder()
             .baseUrl(CovidAPI.COVID_19_CHART)
-            .client(provideHttpClient())
+            .client(okHttpClient)
             .addConverterFactory(tikXmlConverterFactory)
             .build()
     }
 
-    /**
-     * AreaApi
-     * */
     @Provides
     @Singleton
     @AreaType
     fun provideCovidAreaRetrofit(
-        gsonConverterFactory: GsonConverterFactory
-    ): Retrofit{
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory,
+    ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(AreaAPI.COVID_19_AREA)
-            .client(provideHttpClient())
+            .baseUrl(CovidAPI.COVID_19_AREA)
+            .client(okHttpClient)
             .addConverterFactory(gsonConverterFactory)
             .build()
     }
 
-    /**
-     * CovidService
-     * */
     @Provides
     @Singleton
-    fun provideCovidChartService(@ChartType retrofit: Retrofit): CovidAPI{
+    @ChartType
+    fun provideCovidChartService(@ChartType retrofit: Retrofit): CovidAPI {
         return retrofit.create(CovidAPI::class.java)
     }
 
-    /**
-     * AreaService
-     * */
     @Provides
     @Singleton
-    fun provideCovidAreaService(@AreaType retrofit: Retrofit): AreaAPI{
-        return retrofit.create(AreaAPI::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideTikXmlConverterFactory(): TikXmlConverterFactory{
-        return TikXmlConverterFactory.create()
+    @AreaType
+    fun provideCovidAreaService(@AreaType retrofit: Retrofit): CovidAPI {
+        return retrofit.create(CovidAPI::class.java)
     }
 
 
+
+    //공용으로 쓰는 Gson, Constructor 안에 넣어서 바로 사용가능
     @Provides
     @Singleton
     fun provideConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
 
+    //공용으로 쓰는 TikXml, Constructor 안에 넣어서 바로 사용가능
+    @Provides
+    @Singleton
+    fun provideTikXmlConverterFactory(): TikXmlConverterFactory {
+        return TikXmlConverterFactory.create()
+    }
+
+    //공용으로 쓰는 okHttp, Constructor 안에 넣어서 바로 사용가능
+    @Provides
+    @Singleton
     fun provideHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
-            .addInterceptor(getLoggingInterceptor())
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
             .build()
     }
-
-    private fun getLoggingInterceptor(): HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 }

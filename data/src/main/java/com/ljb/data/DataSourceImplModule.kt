@@ -1,11 +1,8 @@
 package com.ljb.data
 
-import com.ljb.data.remote.api.AreaAPI
 import com.ljb.data.remote.api.CovidAPI
-import com.ljb.data.repository.remote.datasource.AreaDataSource
-import com.ljb.data.repository.remote.datasource.ChartDataSource
-import com.ljb.data.repository.remote.datasourceimpl.AreaDataSourceImpl
-import com.ljb.data.repository.remote.datasourceimpl.ChartDataSourceImpl
+import com.ljb.data.repository.remote.datasource.CovidDataSource
+import com.ljb.data.repository.remote.datasource.CovidDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,17 +19,10 @@ class DataSourceImplModule {
 
     @Provides
     @Singleton
-    fun provideChartDataSource(
-        chartApi: CovidAPI
-    ) : ChartDataSource {
-        return ChartDataSourceImpl(chartApi)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAreaDataSource(
-        areaAPI: AreaAPI
-    ) : AreaDataSource {
-        return AreaDataSourceImpl(areaAPI)
+    fun provideCovidDataSource(
+        @NetworkModule.ChartType chartApi: CovidAPI,
+        @NetworkModule.AreaType areaAPI: CovidAPI
+    ): CovidDataSource {
+        return CovidDataSourceImpl(chartApi, areaAPI)
     }
 }

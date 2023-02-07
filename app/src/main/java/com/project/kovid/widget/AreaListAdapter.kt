@@ -1,4 +1,4 @@
-package com.project.kovid.function.home
+package com.project.kovid.widget
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
