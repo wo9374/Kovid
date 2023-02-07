@@ -35,15 +35,13 @@ object NetworkModule {
     annotation class HospType
 
 
+    @ChartType
     @Provides
     @Singleton
-    @ChartType
     fun provideCovidChartRetrofit(
         okHttpClient: OkHttpClient,
         tikXmlConverterFactory: TikXmlConverterFactory,
     ): Retrofit {
-        //val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
-
         return Retrofit.Builder()
             .baseUrl(ApiInfo.COVID_CHART_URL)
             .client(okHttpClient)
@@ -51,9 +49,9 @@ object NetworkModule {
             .build()
     }
 
+    @AreaType
     @Provides
     @Singleton
-    @AreaType
     fun provideCovidAreaRetrofit(
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory,
@@ -65,37 +63,36 @@ object NetworkModule {
             .build()
     }
 
+    @ChartType
     @Provides
     @Singleton
-    @ChartType
     fun provideCovidChartService(@ChartType retrofit: Retrofit): CovidAPI {
         return retrofit.create(CovidAPI::class.java)
     }
 
+    @AreaType
     @Provides
     @Singleton
-    @AreaType
     fun provideCovidAreaService(@AreaType retrofit: Retrofit): CovidAPI {
         return retrofit.create(CovidAPI::class.java)
     }
 
 
-
-    //공용으로 쓰는 Gson, Constructor 안에 넣어서 바로 사용가능
+    //공용 Gson
     @Provides
     @Singleton
     fun provideConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
 
-    //공용으로 쓰는 TikXml, Constructor 안에 넣어서 바로 사용가능
+    //공용 TikXml
     @Provides
     @Singleton
     fun provideTikXmlConverterFactory(): TikXmlConverterFactory {
         return TikXmlConverterFactory.create()
     }
 
-    //공용으로 쓰는 okHttp, Constructor 안에 넣어서 바로 사용가능
+    //공용 okHttp
     @Provides
     @Singleton
     fun provideHttpClient(): OkHttpClient {
