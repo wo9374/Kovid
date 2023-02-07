@@ -2,7 +2,10 @@ package com.ljb.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-data class KoreaArea(
+/**
+ *  AreaAPI 에서 반환형으로 사용되는 지역별 일일 확진자 Response
+ * */
+data class AreaData(
     @SerializedName("resultCode") var resultCode : Int,
     @SerializedName("resultMessage") var resultMessage : String,
 

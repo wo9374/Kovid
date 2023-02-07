@@ -1,6 +1,6 @@
 package com.ljb.domain.entity
 
-data class Area(
+data class AreaCovid(
     var countryName : String,   //시도명(지역명)
     var newCase : String,       //신규확진환자수
     var totalCase : String,     //확진환자수

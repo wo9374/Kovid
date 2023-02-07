@@ -1,7 +1,7 @@
 package com.ljb.domain.usecase
 
 import com.ljb.domain.NetworkState
-import com.ljb.domain.entity.Area
+import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.repository.AreaRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -12,5 +12,5 @@ import javax.inject.Inject
 class GetAreaListUseCase @Inject constructor(
     private val repository: AreaRepository
 ) {
-    operator fun invoke(): Flow<NetworkState<List<Area>>> = repository.getAreaList()
+    operator fun invoke(): Flow<NetworkState<List<AreaCovid>>> = repository.getAreaList()
 }

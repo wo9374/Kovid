@@ -3,7 +3,7 @@ package com.ljb.data.repository
 import com.ljb.data.mapper.AreaMapper
 import com.ljb.data.repository.remote.datasource.AreaDataSource
 import com.ljb.domain.NetworkState
-import com.ljb.domain.entity.Area
+import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.repository.AreaRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class AreaRepositoryImpl @Inject constructor(
     private val dataSource: AreaDataSource
 ) : AreaRepository{
-    override fun getAreaList(): Flow<NetworkState<List<Area>>> {
+    override fun getAreaList(): Flow<NetworkState<List<AreaCovid>>> {
         return flow {
             val areaResult = dataSource.getCovidArea()
 

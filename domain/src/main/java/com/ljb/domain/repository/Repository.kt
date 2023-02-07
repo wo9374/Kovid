@@ -1,7 +1,7 @@
 package com.ljb.domain.repository
 
 import com.ljb.domain.NetworkState
-import com.ljb.domain.entity.Area
+import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.entity.WeekCovid
 import kotlinx.coroutines.flow.Flow
 
@@ -10,5 +10,5 @@ interface ChartRepository {
 }
 
 interface AreaRepository{
-    fun getAreaList(): Flow<NetworkState<List<Area>>>
+    fun getAreaList(): Flow<NetworkState<List<AreaCovid>>>
 }

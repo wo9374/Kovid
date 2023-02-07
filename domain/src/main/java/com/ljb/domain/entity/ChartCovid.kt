@@ -1,6 +1,6 @@
 package com.ljb.domain.entity
 
-data class ChartItem(
+data class ChartCovid(
     var createDt: String,           //등록일시분초
     var deathCnt: Int,              //사망자 수
     var decideCnt: Int,             //확진자 수

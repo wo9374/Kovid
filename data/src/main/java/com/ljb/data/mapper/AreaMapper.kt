@@ -1,11 +1,11 @@
 package com.ljb.data.mapper
 
 import com.ljb.data.remote.model.AreaResponse
-import com.ljb.domain.entity.Area
+import com.ljb.domain.entity.AreaCovid
 
 object AreaMapper {
-    fun mapperToArea(areaResponse: AreaResponse): Area {
-        return Area(
+    fun mapperToArea(areaResponse: AreaResponse): AreaCovid {
+        return AreaCovid(
             countryName = areaResponse.countryName,
             newCase = areaResponse.newCase,
             totalCase = areaResponse.totalCase,

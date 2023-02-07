@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
-import com.ljb.domain.entity.Area
+import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.entity.WeekCovid
 import com.ljb.domain.usecase.GetAreaListUseCase
 import com.ljb.domain.usecase.GetChartListUseCase
@@ -38,8 +38,8 @@ class HomeViewModel @Inject constructor(
     val covidList : StateFlow<List<WeekCovid>> get() = _covidList
 
     //지역별 확진자
-    private val _areaList = MutableStateFlow<List<Area>>(mutableListOf())
-    val areaList : StateFlow<List<Area>> get() = _areaList
+    private val _areaList = MutableStateFlow<List<AreaCovid>>(mutableListOf())
+    val areaList : StateFlow<List<AreaCovid>> get() = _areaList
 
     init {
         viewModelScope.launch {

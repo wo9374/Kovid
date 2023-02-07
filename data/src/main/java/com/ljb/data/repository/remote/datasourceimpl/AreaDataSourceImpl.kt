@@ -1,7 +1,7 @@
 package com.ljb.data.repository.remote.datasourceimpl
 
 import com.ljb.data.remote.api.AreaAPI
-import com.ljb.data.remote.model.KoreaArea
+import com.ljb.data.remote.model.AreaData
 import com.ljb.data.repository.remote.datasource.AreaDataSource
 import retrofit2.Response
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
 class AreaDataSourceImpl @Inject constructor(
     private val areaAPI: AreaAPI
 ) : AreaDataSource {
-    override suspend fun getCovidArea(): Response<KoreaArea>{
+    override suspend fun getCovidArea(): Response<AreaData>{
         return areaAPI.getCovidArea()
     }
 }

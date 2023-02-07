@@ -5,7 +5,7 @@ import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
 
 /**
- * CovidAPI에서 반환형으로 사용되는 response data class
+ *  CovidAPI 에서 반환형으로 사용되는 날짜별 일일 확진자 Response
  * */
 @Xml(name = "response")
 data class ChartData(

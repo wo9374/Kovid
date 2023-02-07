@@ -1,7 +1,6 @@
 package com.ljb.domain.usecase
 
 import com.ljb.domain.NetworkState
-import com.ljb.domain.entity.Area
 import com.ljb.domain.entity.WeekCovid
 import com.ljb.domain.repository.ChartRepository
 import kotlinx.coroutines.flow.Flow

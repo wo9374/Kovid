@@ -1,16 +1,14 @@
 package com.ljb.data.mapper
 
-import com.ljb.data.remote.model.AreaResponse
 import com.ljb.data.remote.model.ChartResponse
-import com.ljb.domain.entity.Area
-import com.ljb.domain.entity.ChartItem
+import com.ljb.domain.entity.ChartCovid
 
 /**
  * domain layer는 data layer를 모르기 때문에 data에서 domain layer의 data class로 자료형을 변환
  * */
 object ChartMapper {
-    fun mapperToChartItem(chartResponse: ChartResponse) : ChartItem {
-        return ChartItem(
+    fun mapperToChartItem(chartResponse: ChartResponse) : ChartCovid {
+        return ChartCovid(
             createDt = chartResponse.createDt,
             deathCnt = chartResponse.deathCnt,
             decideCnt = chartResponse.deathCnt,
@@ -21,7 +19,7 @@ object ChartMapper {
         )
     }
 
-    fun mapperToChartResponse(chartItem: ChartItem): ChartResponse {
+    fun mapperToChartResponse(chartItem: ChartCovid): ChartResponse {
         return ChartResponse(
             createDt = chartItem.createDt,
             deathCnt = chartItem.deathCnt,
