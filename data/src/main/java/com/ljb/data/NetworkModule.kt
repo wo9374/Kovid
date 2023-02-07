@@ -1,5 +1,6 @@
 package com.ljb.data
 
+import com.ljb.data.remote.api.ApiInfo
 import com.ljb.data.remote.api.CovidAPI
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
@@ -44,7 +45,7 @@ object NetworkModule {
         //val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
 
         return Retrofit.Builder()
-            .baseUrl(CovidAPI.COVID_19_CHART)
+            .baseUrl(ApiInfo.COVID_CHART_URL)
             .client(okHttpClient)
             .addConverterFactory(tikXmlConverterFactory)
             .build()
@@ -58,7 +59,7 @@ object NetworkModule {
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(CovidAPI.COVID_19_AREA)
+            .baseUrl(ApiInfo.COVID_AREA_URL)
             .client(okHttpClient)
             .addConverterFactory(gsonConverterFactory)
             .build()
