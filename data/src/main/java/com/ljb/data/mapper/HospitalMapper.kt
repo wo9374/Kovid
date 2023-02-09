@@ -1,8 +1,8 @@
 package com.ljb.data.mapper
 
 import com.google.android.gms.maps.model.LatLng
-import com.ljb.data.remote.model.SelectiveCluster
-import com.ljb.data.remote.model.SelectiveResponse
+import com.ljb.data.model.SelectiveCluster
+import com.ljb.data.model.SelectiveResponse
 import com.ljb.domain.entity.SelectiveClinic
 
 /**

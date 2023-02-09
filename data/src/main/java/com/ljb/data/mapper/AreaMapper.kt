@@ -1,6 +1,6 @@
 package com.ljb.data.mapper
 
-import com.ljb.data.remote.model.AreaResponse
+import com.ljb.data.model.AreaResponse
 import com.ljb.domain.entity.AreaCovid
 
 object AreaMapper {

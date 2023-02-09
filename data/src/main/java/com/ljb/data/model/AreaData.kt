@@ -1,4 +1,4 @@
-package com.ljb.data.remote.model
+package com.ljb.data.model
 
 import com.google.gson.annotations.SerializedName
 

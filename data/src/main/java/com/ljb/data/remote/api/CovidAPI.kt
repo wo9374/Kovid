@@ -1,8 +1,8 @@
 package com.ljb.data.remote.api
 
 import com.ljb.data.BuildConfig
-import com.ljb.data.remote.model.AreaData
-import com.ljb.data.remote.model.ChartData
+import com.ljb.data.model.AreaData
+import com.ljb.data.model.ChartData
 import com.ljb.data.util.TimeUtil
 import retrofit2.Response
 import retrofit2.http.GET

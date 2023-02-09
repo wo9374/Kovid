@@ -1,7 +1,7 @@
 package com.ljb.data.remote.api
 
 import com.ljb.data.BuildConfig
-import com.ljb.data.remote.model.ClinicResponse
+import com.ljb.data.model.ClinicResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

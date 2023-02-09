@@ -1,6 +1,6 @@
 package com.ljb.data.mapper
 
-import com.ljb.data.remote.model.ChartResponse
+import com.ljb.data.model.ChartResponse
 import com.ljb.domain.entity.ChartCovid
 
 /**

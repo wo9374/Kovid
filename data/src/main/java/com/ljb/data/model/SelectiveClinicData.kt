@@ -1,5 +1,7 @@
-package com.ljb.data.remote.model
+package com.ljb.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import com.tickaroo.tikxml.annotation.Element
@@ -55,6 +57,7 @@ data class SelectiveResponse(
     @PropertyElement(name = "weekendYn")val weekendYn: String,                 //주말 공휴일 운영여부   //Y
 )
 
+@Entity(tableName = "selective_clinic")
 data class SelectiveCluster(
     val addr: String,
     val sido: String,
@@ -68,9 +71,9 @@ data class SelectiveCluster(
     val weekendYn: String,
     val weekendOperTime: String,
 
-    val latLng: LatLng,
+    @PrimaryKey(autoGenerate = false) val latLng : Pair<Double, Double>
 ) : ClusterItem{
-    override fun getPosition(): LatLng = latLng
+    override fun getPosition(): LatLng = LatLng(latLng.first, latLng.second)
     override fun getTitle(): String = clinicName
     override fun getSnippet(): String = "$addr\n$telNo"
 }

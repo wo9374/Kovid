@@ -3,8 +3,8 @@ package com.ljb.data.repository.remote.datasource
 import com.ljb.data.NetworkModule
 //import com.ljb.data.remote.api.AreaAPI
 import com.ljb.data.remote.api.CovidAPI
-import com.ljb.data.remote.model.AreaData
-import com.ljb.data.remote.model.ChartData
+import com.ljb.data.model.AreaData
+import com.ljb.data.model.ChartData
 import retrofit2.Response
 import javax.inject.Inject
 

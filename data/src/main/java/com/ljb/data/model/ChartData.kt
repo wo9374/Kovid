@@ -1,4 +1,4 @@
-package com.ljb.data.remote.model
+package com.ljb.data.model
 
 import com.tickaroo.tikxml.annotation.Element
 import com.tickaroo.tikxml.annotation.PropertyElement
