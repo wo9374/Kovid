@@ -1,8 +1,11 @@
 package com.ljb.data
 
 import com.ljb.data.remote.api.CovidAPI
+import com.ljb.data.remote.api.HospitalAPI
 import com.ljb.data.repository.remote.datasource.CovidDataSource
 import com.ljb.data.repository.remote.datasource.CovidDataSourceImpl
+import com.ljb.data.repository.remote.datasource.HospitalDataSource
+import com.ljb.data.repository.remote.datasource.HospitalDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,5 +27,13 @@ class DataSourceImplModule {
         @NetworkModule.AreaType areaAPI: CovidAPI
     ): CovidDataSource {
         return CovidDataSourceImpl(chartApi, areaAPI)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHospitalDataSource(
+        hospitalAPI: HospitalAPI
+    ): HospitalDataSource{
+        return HospitalDataSourceImpl(hospitalAPI)
     }
 }

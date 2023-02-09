@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="mapViewModel"
-            type="com.project.kovid.viewmodel.MapsViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -72,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:gravity="center"
-                android:text="@string/hosp_code_31"
+                android:text="@string/selective_clinic"
                 app:layout_constraintBottom_toBottomOf="@+id/ic_1"
                 app:layout_constraintStart_toEndOf="@+id/ic_1"
                 app:layout_constraintTop_toTopOf="@+id/ic_1" />
@@ -83,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:gravity="center"
-                android:text="@string/hosp_code_21"
+                android:text="@string/temporary_clinic"
                 app:layout_constraintBottom_toBottomOf="@+id/ic_2"
                 app:layout_constraintStart_toEndOf="@+id/ic_2"
                 app:layout_constraintTop_toTopOf="@+id/ic_2" />
@@ -94,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:gravity="center"
-                android:text="@string/hosp_code_11"
+                android:text="@string/general_clinic"
                 app:layout_constraintBottom_toBottomOf="@+id/ic_3"
                 app:layout_constraintStart_toEndOf="@+id/ic_3"
                 app:layout_constraintTop_toTopOf="@+id/ic_3" />

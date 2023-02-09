@@ -1,7 +1,10 @@
 package com.ljb.data
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.ljb.data.remote.api.ApiInfo
 import com.ljb.data.remote.api.CovidAPI
+import com.ljb.data.remote.api.HospitalAPI
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -11,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -32,7 +36,7 @@ object NetworkModule {
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
-    annotation class HospType
+    annotation class HospitalType
 
 
     @ChartType
@@ -43,7 +47,7 @@ object NetworkModule {
         tikXmlConverterFactory: TikXmlConverterFactory,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiInfo.COVID_CHART_URL)
+            .baseUrl(ApiInfo.CHART_URL)
             .client(okHttpClient)
             .addConverterFactory(tikXmlConverterFactory)
             .build()
@@ -57,9 +61,23 @@ object NetworkModule {
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiInfo.COVID_AREA_URL)
+            .baseUrl(ApiInfo.AREA_URL)
             .client(okHttpClient)
             .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @HospitalType
+    @Provides
+    @Singleton
+    fun provideHospitalRetrofit(
+        okHttpClient: OkHttpClient,
+        tikXmlConverterFactory: TikXmlConverterFactory,
+    ): Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(ApiInfo.HOSPITAL_URL)
+            .client(okHttpClient)
+            .addConverterFactory(tikXmlConverterFactory)
             .build()
     }
 
@@ -77,28 +95,34 @@ object NetworkModule {
         return retrofit.create(CovidAPI::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideHospitalService(@HospitalType retrofit: Retrofit): HospitalAPI{
+        return retrofit.create(HospitalAPI::class.java)
+    }
+
 
     //공용 Gson
     @Provides
-    @Singleton
     fun provideConverterFactory(): GsonConverterFactory {
-        return GsonConverterFactory.create()
+        val gson : Gson = GsonBuilder()
+            .setLenient()
+            .create()
+        return GsonConverterFactory.create(gson)
     }
 
     //공용 TikXml
     @Provides
-    @Singleton
     fun provideTikXmlConverterFactory(): TikXmlConverterFactory {
         return TikXmlConverterFactory.create()
     }
 
     //공용 okHttp
     @Provides
-    @Singleton
     fun provideHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY

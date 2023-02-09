@@ -20,10 +20,10 @@
     <string name="new_decide">신규확진자</string>
 
     <string name="init_db_check">DB 확인중..</string>
-    <string name="init_database">초기 DB 다운로드 중...</string>
-    <string name="init_map">DB 정보로 지도 구성중...</string>
+    <string name="init_database">초기 DB 다운로드 중…</string>
+    <string name="init_map">DB 정보로 지도 구성중…</string>
 
-    <string name="hosp_code_11">종합병원</string>
-    <string name="hosp_code_21">병원</string>
-    <string name="hosp_code_31">의원</string>
+    <string name="general_clinic">종합병원</string>
+    <string name="temporary_clinic">임시 선별 진료소</string>
+    <string name="selective_clinic">선별 진료소</string>
 </resources>

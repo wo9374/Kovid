@@ -2,7 +2,7 @@ package com.ljb.domain.repository
 
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.AreaCovid
-import com.ljb.domain.entity.Hospital
+import com.ljb.domain.entity.SelectiveClinic
 import com.ljb.domain.entity.WeekCovid
 import kotlinx.coroutines.flow.Flow
 
@@ -11,6 +11,6 @@ interface CovidRepository {
     fun getAreaList(): Flow<NetworkState<List<AreaCovid>>>
 }
 
-interface HospRepository{
-    fun getHospitalList(): Flow<NetworkState<List<Hospital>>>
+interface HospitalRepository{
+    fun getSelectiveClinic(): Flow<NetworkState<List<SelectiveClinic>>>
 }

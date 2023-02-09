@@ -5,21 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
+import com.ljb.data.remote.model.SelectiveCluster
 import com.project.kovid.databinding.CustomInfoWindowLayoutBinding
-import com.project.kovid.model.HospDBItem
-import com.project.kovid.model.HospItem
 
 internal class HospMapInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{
     lateinit var binding : CustomInfoWindowLayoutBinding
 
     override fun getInfoContents(marker: Marker): View {
-        val hospItem = marker.tag as HospDBItem
+        val hospItem = marker.tag as SelectiveCluster
 
         binding = CustomInfoWindowLayoutBinding.inflate(LayoutInflater.from(context))
 
-        binding.txtMarkerTitle.text = hospItem.yadmNm
+        binding.txtMarkerTitle.text = hospItem.clinicName
         binding.txtMarkerAddr.text = hospItem.addr
-        binding.txtMarkerTel.text = hospItem.telno
+        binding.txtMarkerTel.text = hospItem.telNo
 
         return binding.root
     }

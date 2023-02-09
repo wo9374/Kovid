@@ -1,10 +1,7 @@
 package com.project.kovid
 
-import com.project.kovid.function.map.HospitalAPI
 import com.project.kovid.function.news.NaverAPI
 import com.project.kovid.function.news.NewsAPI
-import com.tickaroo.tikxml.TikXml
-import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -62,7 +59,7 @@ object RetrofitObject {
         return covidInstance
     }*/
 
-    fun getRetrofitHospital(): Retrofit {
+    /*fun getRetrofitHospital(): Retrofit {
         val tikXml = TikXml.Builder().exceptionOnUnreadXml(false).build()
         hospitalInstance = Retrofit.Builder()
             .baseUrl(HospitalAPI.HOSPITAL_URL)
@@ -70,7 +67,7 @@ object RetrofitObject {
             .addConverterFactory(TikXmlConverterFactory.create(tikXml))
             .build()
         return hospitalInstance
-    }
+    }*/
 
     private fun createOkHttpNaver(): OkHttpClient{
         val httpLoggingInterceptor = HttpLoggingInterceptor()

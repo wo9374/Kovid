@@ -2,8 +2,8 @@ package com.project.kovid.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.project.kovid.model.HospDBItem
 
+/*
 @Dao
 interface HospDao {
     @Query("SELECT * FROM HospDBItem")
@@ -17,4 +17,4 @@ interface HospDao {
 
     @Delete
     fun delete(hospDBItem: HospDBItem)
-}
+}*/

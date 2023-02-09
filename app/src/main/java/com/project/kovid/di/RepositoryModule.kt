@@ -1,9 +1,11 @@
 package com.project.kovid.di
 
-//import com.ljb.data.repository.AreaRepositoryImpl
 import com.ljb.data.repository.CovidRepositoryImpl
+import com.ljb.data.repository.HospitalRepositoryImpl
 import com.ljb.data.repository.remote.datasource.CovidDataSourceImpl
+import com.ljb.data.repository.remote.datasource.HospitalDataSourceImpl
 import com.ljb.domain.repository.CovidRepository
+import com.ljb.domain.repository.HospitalRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,18 +25,14 @@ class RepositoryModule {
     fun provideCovidRepository(
         covidDataSourceImpl: CovidDataSourceImpl
     ): CovidRepository{
-        return CovidRepositoryImpl(
-            covidDataSourceImpl
-        )
+        return CovidRepositoryImpl(covidDataSourceImpl)
     }
 
-    /*@Provides
+    @Provides
     @Singleton
-    fun provideAreaRepository(
-        areaRemoteDataSourceImpl: AreaDataSourceImpl
-    ): AreaRepository{
-        return AreaRepositoryImpl(
-            areaRemoteDataSourceImpl
-        )
-    }*/
+    fun provideHospitalRepository(
+        hospitalDataSourceImpl: HospitalDataSourceImpl
+    ): HospitalRepository{
+        return HospitalRepositoryImpl(hospitalDataSourceImpl)
+    }
 }

@@ -1,14 +1,12 @@
 package com.project.kovid.database
 
 import android.content.Context
-import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.project.kovid.model.HospDBItem
 
-@Database(entities = [HospDBItem::class], version = 1)
+//@Database(entities = [HospDBItem::class], version = 1)
 abstract class HospDatabase : RoomDatabase(){
-    abstract fun hospDao() : HospDao
+    //abstract fun hospDao() : HospDao
 
     companion object{
         private var Instance : HospDatabase? = null

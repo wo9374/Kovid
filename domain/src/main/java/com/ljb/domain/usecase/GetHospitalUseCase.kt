@@ -1,11 +1,17 @@
 package com.ljb.domain.usecase
 
-/**
- * repository를 hilt를 이용해 주입받아 하나의 하나의 세부적인 기능을 선언
- * */
-/*
-class GetHospitalUseCase @Inject constructor(
-    private val repository: ChartRepository
+import com.ljb.domain.NetworkState
+import com.ljb.domain.entity.SelectiveClinic
+import com.ljb.domain.repository.HospitalRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class GetSelectiveClinicUseCase @Inject constructor(
+    private val repository: HospitalRepository
 ) {
-    operator fun invoke(): Flow<NetworkState<List<Hospital>>> = repository.getHospital()
-}*/
+    operator fun invoke(): Flow<NetworkState<List<SelectiveClinic>>> = repository.getSelectiveClinic()
+}
+
+class GetTemporaryClinicUseCase{
+
+}
