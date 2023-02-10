@@ -1,61 +1,55 @@
 package com.ljb.data.util
 
+import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
 
-object TimeUtil {
+@SuppressLint("SimpleDateFormat")
+fun Date.getTodayDateString(): String {
+    val date = SimpleDateFormat("yyyyMMdd")
+    return date.format(this)
+}
 
-    fun getTodayDate() : String{
-        val today = Date()
-        val date = SimpleDateFormat("yyyyMMdd")
-        val toDay: String = date.format(today)
+@SuppressLint("SimpleDateFormat")
+fun Date.getPast1Hour(): String {
+    val today = this
 
-        return toDay
-    }
+    // 1시간전
+    val cal: Calendar = Calendar.getInstance()
+    cal.time = today
+    cal.add(Calendar.HOUR, -1)
 
-    fun getPast1Hour(): String{
-        val today = Date()
-        val date = SimpleDateFormat("yyyy-MM-dd")
+    val sdFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")  // 포맷변경 ( 년월일 시분초)
+    sdFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-        // 1시간전
-        val cal: Calendar = Calendar.getInstance()
-        cal.time = today
-        cal.add(Calendar.HOUR, -1)
+    return sdFormat.format(cal.time)
+}
 
-        val sdformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")  // 포맷변경 ( 년월일 시분초)
-        sdformat.timeZone = TimeZone.getTimeZone("UTC")
+@SuppressLint("SimpleDateFormat")
+fun Date.getPast1Day(): String {
+    val day: Calendar = Calendar.getInstance()
+    day.add(Calendar.DATE, -1)
 
-        val beforeHour: String = sdformat.format(cal.time)
+    return SimpleDateFormat("yyyyMMdd").format(day.time)
+}
 
-        return beforeHour
-    }
+@SuppressLint("SimpleDateFormat")
+fun Date.getPast7Day(): String {
+    val week: Calendar = Calendar.getInstance()
+    week.add(Calendar.DATE, -7)
+    return SimpleDateFormat("yyyyMMdd").format(week.time)
+}
 
-    fun getPast1Day():String{
-        val day: Calendar = Calendar.getInstance()
-        day.add(Calendar.DATE, -1)
-        val beforeDate = SimpleDateFormat("yyyyMMdd").format(day.time)
+@SuppressLint("SimpleDateFormat")
+fun Date.getPast1MonthCovid(): String {
+    val mon: Calendar = Calendar.getInstance()
+    mon.add(Calendar.DATE, -31)
+    return SimpleDateFormat("yyyyMMdd").format(mon.time)
+}
 
-        return beforeDate
-    }
-
-    fun getPast7Day():String{
-        val week: Calendar = Calendar.getInstance()
-        week.add(Calendar.DATE, -7)
-        val beforeWeek = SimpleDateFormat("yyyyMMdd").format(week.time)
-        return beforeWeek
-    }
-
-    fun getPast1MonthCovid():String{
-        val mon: Calendar = Calendar.getInstance()
-        mon.add(Calendar.DATE, -31)
-        val beforeMonth = SimpleDateFormat("yyyyMMdd").format(mon.time)
-        return beforeMonth
-    }
-
-    fun getPast1Month(): String{
-        val mon: Calendar = Calendar.getInstance()
-        mon.add(Calendar.MONTH, -1)
-        val beforeMonth = SimpleDateFormat("yyyy-MM-dd").format(mon.time)
-        return beforeMonth
-    }
+@SuppressLint("SimpleDateFormat")
+fun Date.getPast1Month(): String {
+    val mon: Calendar = Calendar.getInstance()
+    mon.add(Calendar.MONTH, -1)
+    return SimpleDateFormat("yyyy-MM-dd").format(mon.time)
 }
