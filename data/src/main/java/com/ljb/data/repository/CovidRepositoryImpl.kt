@@ -2,7 +2,7 @@ package com.ljb.data.repository
 
 import com.ljb.data.mapper.AreaMapper
 import com.ljb.data.repository.remote.datasource.CovidDataSource
-import com.ljb.data.util.StringUtil
+import com.ljb.data.util.computeStringToInt
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.entity.WeekCovid
@@ -31,7 +31,7 @@ class CovidRepositoryImpl @Inject constructor(
                 //확진날짜, 신규 확진자수 Data Class 생성
                 val computeList = arrayListOf<WeekCovid>()
                 for (i in 1 until data.size) { // 31일치 구해오기 때문에 -1 계산
-                    val currentDate = StringUtil.computeStringToInt(data[i].stateDt)
+                    val currentDate = data[i].stateDt.computeStringToInt()
                     val decideCnt = (data[i].decideCnt - data[i - 1].decideCnt)  //현재날 - 어제날
                     computeList.add(WeekCovid(currentDate, decideCnt))
                 }

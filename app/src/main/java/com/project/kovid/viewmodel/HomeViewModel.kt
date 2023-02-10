@@ -10,12 +10,14 @@ import com.ljb.domain.entity.WeekCovid
 import com.ljb.domain.usecase.GetAreaListUseCase
 import com.ljb.domain.usecase.GetChartListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -28,14 +30,13 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val tag: String = this::class.java.simpleName
 
-    private lateinit var resultDecide: List<WeekCovid>
 
-    //Covid Chart UI 상태 체크
-    val uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private lateinit var monthDecide: List<WeekCovid>
+    private lateinit var weekDecide: List<WeekCovid>
 
     //7일, 30일 교체하면서 보여줄 StateFlow
-    private val _covidList = MutableStateFlow<List<WeekCovid>>(mutableListOf())
-    val covidList : StateFlow<List<WeekCovid>> get() = _covidList
+    private val _covidList = MutableStateFlow<UiState<List<WeekCovid>>>(UiState.Loading)
+    val covidList : StateFlow<UiState<List<WeekCovid>>> get() = _covidList
 
     //지역별 확진자
     private val _areaList = MutableStateFlow<List<AreaCovid>>(mutableListOf())
@@ -43,61 +44,56 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getChartListUseCase()
-                .onStart {} //로딩시작때
-                .catch { exception ->
-                    Log.d(tag, "CovidChart - Exception Error : ${exception.message}")
-                }
-                .collectLatest { result ->
-                    when(result){
-                        is NetworkState.Success -> {
-                            resultDecide = result.data
-                            Log.d(tag, "CovidList - Network Success : ${result.data}")
-                            uiState.value = UiState.Complete
-                        }
-                        is NetworkState.Error -> {
-                            Log.d(tag, "CovidList - Network Error : ${result.message}")
-                            uiState.value = UiState.Fail
-                        }
-                        else -> {
-                            uiState.value = UiState.Loading
+            withContext(Dispatchers.IO){
+                getChartListUseCase()
+                    .onStart {} //로딩시작때
+                    .catch { exception ->
+                        Log.d(tag, "CovidChart - Exception Error : ${exception.message}")
+                    }
+                    .collect{ result ->
+                        when(result){
+                            is NetworkState.Success -> {
+                                monthDecide = result.data
+
+                                val weekCovid = arrayListOf<WeekCovid>()
+                                for (i in monthDecide.size - 7 until monthDecide.size) {
+                                    weekCovid.add(monthDecide[i])
+                                }
+                                weekDecide = weekCovid
+                                _covidList.emit(UiState.Complete(weekDecide))
+                                Log.d(tag, "CovidList - Network Success : ${result.data}")
+                            }
+                            is NetworkState.Error -> {
+                                _covidList.emit(UiState.Fail(result.message))
+                                Log.d(tag, "CovidList - Network Error : ${result.message}")
+                            }
+                            is NetworkState.Loading -> {
+                                _covidList.emit(UiState.Loading)
+                            }
                         }
                     }
-                }
 
-            getAreaListUseCase()
-                .catch { exception ->
-                    Log.d(tag, "CovidArea - Exception Error : ${exception.message}")
-                }.collectLatest { result ->
-                    when(result){
-                        is NetworkState.Success -> {
-                            _areaList.value = result.data
-                            Log.d(tag, "CovidArea - Network Success : ${result.data}")
-                        }
-                        is NetworkState.Error -> {
+                getAreaListUseCase()
+                    .catch { exception ->
+                        Log.d(tag, "CovidArea - Exception Error : ${exception.message}")
+                    }.collectLatest { result ->
+                        when(result){
+                            is NetworkState.Success -> {
+                                _areaList.value = result.data
+                                Log.d(tag, "CovidArea - Network Success : ${result.data}")
+                            }
+                            is NetworkState.Error -> {
+                                Log.d(tag, "CovidArea - Network Error : ${result.message}")
+                            }
+                            else -> {
 
-                            Log.d(tag, "CovidArea - Network Error : ${result.message}")
-                        }
-                        else -> {
-
+                            }
                         }
                     }
-                }
-        }
-    }
-
-    fun weekDataSet() {
-        if (resultDecide.isNotEmpty()) {
-            val weekCovid = arrayListOf<WeekCovid>()
-            for (i in resultDecide.size - 7 until resultDecide.size) {
-                weekCovid.add(resultDecide[i])
             }
-            _covidList.value = weekCovid
         }
     }
 
-    fun monthDataSet() {
-        if (resultDecide.isNotEmpty())
-            _covidList.value = resultDecide
-    }
+    fun weekDataSet(){ _covidList.value = UiState.Complete(weekDecide) }
+    fun monthDataSet() { _covidList.value = UiState.Complete(monthDecide) }
 }

@@ -40,7 +40,7 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
 
         if (list != null) {
             if (list.size == 0) {
-                Log.d("GeoCoding", "해당 주소로 찾는 위도 경도가 없습니다. 올바른 주소를 입력해주세요.")
+                Log.d("GeoCoding", "해당 주소로 찾은 위도 경도가 없습니다. $address")
             } else {
                 val addressLatLng = list[0]
                 location = LatLng(addressLatLng.latitude, addressLatLng.longitude)

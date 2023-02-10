@@ -27,18 +27,17 @@ import com.ljb.domain.entity.WeekCovid
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentHomeBinding
-import com.project.kovid.widget.extension.customview.CustomChartMarker
-import com.project.kovid.widget.AreaListAdapter
-import com.project.kovid.widget.util.StringUtil
 import com.project.kovid.viewmodel.HomeViewModel
+import com.project.kovid.widget.AreaListAdapter
 import com.project.kovid.widget.extension.MyXAxisFormatter
+import com.project.kovid.widget.extension.customview.CustomChartMarker
+import com.project.kovid.widget.util.StringUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.pow
-
 
 /**
  * Fragment 생성시 HomeViewModel 생성되어, api 결과를 flow로 데이터 발생시 수집
@@ -69,9 +68,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         lifecycleScope.launch {
 
             launch {
-                chartViewModel.uiState
+                chartViewModel.covidList
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .distinctUntilChanged()
                     .collectLatest { uiState ->
                         when (uiState) {
                             is UiState.Loading -> {
@@ -82,13 +80,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                                 }
                             }
                             is UiState.Complete -> {    //받아온 확진자 데이터 Collect 시작
-                                chartViewModel.apply {
-                                    weekDataSet() //일주일 리스트부터 init
-                                    chartViewModel.covidList
-                                        .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                                        .distinctUntilChanged()
-                                        .collectLatest { setChartSetting(binding.chart, it) }
-                                }
+                                setChartSetting(binding.chart, uiState.data)
                             }
                             is UiState.Fail -> {
                                 binding.apply {
@@ -111,7 +103,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
     }
 
-    fun setChartSetting(chart: BarChart, dataList: List<WeekCovid>) {
+    private fun setChartSetting(chart: BarChart, dataList: List<WeekCovid>) {
         binding.apply {
             val todayCovid = dataList[dataList.lastIndex]
             txtCurrentDate.text = getString(R.string.current_covid, todayCovid.day)
