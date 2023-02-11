@@ -4,11 +4,12 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
-import com.ljb.data.remote.model.SelectiveCluster
+import com.ljb.data.model.SelectiveCluster
 import com.project.kovid.R
 import com.project.kovid.widget.util.CanvasUtil
 
@@ -35,7 +36,7 @@ class HospClusterMarker(private val context: Context, map: GoogleMap, clusterMan
         markerOptions.icon(markerIcon)
         markerOptions.snippet(item.snippet)
         markerOptions.title(item.title)
-        markerOptions.position(item.latLng)
+        markerOptions.position(LatLng(item.lat,item.lng))
         //super.onBeforeClusterItemRendered(item, markerOptions)
     }
 

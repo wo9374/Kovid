@@ -10,4 +10,6 @@ object ApiInfo {
     const val HOSPITAL_URL = "http://apis.data.go.kr/"
     const val SELECTIVE_CLINIC_END_POINT = "1352000/ODMS_COVID_07/callCovid07Api"
 
+    const val JSON_FORMAT = "JSON"
+    const val XML_FORMAT = "XML"
 }

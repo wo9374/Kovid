@@ -3,7 +3,7 @@ package com.ljb.domain.entity
 data class SelectiveClinic(
     val addr: String,               //주소                //경기도 하남시 신장2동 520
     val clinicName: String,         //선별 진료소명        //하남시보건소
-    val crate_dt: String,           //등록일자             //2022-04-06
+    val create_dt: String,           //등록일자             //2022-04-06
     val disabledFacility: String,   //장애인시설           //""
     val gubun: String,              //진료소 구분          //null
     val satdayOperTime: String,     //토요일 운영시간       //09:00~17:00
