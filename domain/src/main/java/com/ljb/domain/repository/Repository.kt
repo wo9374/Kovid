@@ -11,6 +11,12 @@ interface CovidRepository {
     fun getAreaList(): Flow<NetworkState<List<AreaCovid>>>
 }
 
-interface HospitalRepository{
-    fun getSelectiveClinic(): Flow<NetworkState<List<SelectiveClinic>>>
+interface RemoteClinicRepository{
+    fun getRemoteSelectiveClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>>
+}
+
+interface LocalClinicRepository{
+    fun getLocalSelectiveClinic(): List<SelectiveClinic>
+    suspend fun insertSelectiveClinic(selectiveClinic: SelectiveClinic)
+    suspend fun clearSelectiveClinics()
 }

@@ -1,6 +1,6 @@
-package com.ljb.data.repository.remote.datasource
+package com.ljb.data.remote.datasource
 
-import com.ljb.data.NetworkModule
+import com.ljb.data.di.NetworkModule
 //import com.ljb.data.remote.api.AreaAPI
 import com.ljb.data.remote.api.CovidAPI
 import com.ljb.data.model.AreaData

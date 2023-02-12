@@ -1,10 +1,14 @@
 package com.project.kovid.di
 
 import com.ljb.domain.repository.CovidRepository
-import com.ljb.domain.repository.HospitalRepository
+import com.ljb.domain.repository.LocalClinicRepository
+import com.ljb.domain.repository.RemoteClinicRepository
+import com.ljb.domain.usecase.ClearSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetAreaListUseCase
 import com.ljb.domain.usecase.GetChartListUseCase
+import com.ljb.domain.usecase.GetDbSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetSelectiveClinicUseCase
+import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +24,18 @@ import javax.inject.Singleton
 class UseCaseModule {
 
     @Provides
-    @Singleton
     fun provideGetChartUseCase(repository: CovidRepository) = GetChartListUseCase(repository)
-
     @Provides
-    @Singleton
     fun provideGetAreaUseCase(repository: CovidRepository) = GetAreaListUseCase(repository)
 
+
     @Provides
-    @Singleton
-    fun provideGetSelectiveClinicUseCase(repository: HospitalRepository) = GetSelectiveClinicUseCase(repository)
+    fun provideGetSelectiveClinicUseCase(repository: RemoteClinicRepository) = GetSelectiveClinicUseCase(repository)
+
+    @Provides
+    fun provideGetDbSelectiveClinicUseCase(repository: LocalClinicRepository) = GetDbSelectiveClinicUseCase(repository)
+    @Provides
+    fun provideInsertSelectiveClinicUseCase(repository: LocalClinicRepository) = InsertSelectiveClinicUseCase(repository)
+    @Provides
+    fun provideClearSelectiveClinicUseCase(repository: LocalClinicRepository) = ClearSelectiveClinicUseCase(repository)
 }

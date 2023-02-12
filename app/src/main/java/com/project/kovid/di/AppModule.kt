@@ -1,11 +1,6 @@
 package com.project.kovid.di
 
 import android.content.Context
-import com.ljb.domain.repository.CovidRepository
-import com.ljb.domain.repository.HospitalRepository
-import com.ljb.domain.usecase.GetAreaListUseCase
-import com.ljb.domain.usecase.GetChartListUseCase
-import com.ljb.domain.usecase.GetSelectiveClinicUseCase
 import com.project.kovid.widget.extension.MyLocationManager
 import dagger.Module
 import dagger.Provides

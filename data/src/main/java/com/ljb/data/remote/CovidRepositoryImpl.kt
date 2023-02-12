@@ -1,7 +1,7 @@
-package com.ljb.data.repository
+package com.ljb.data.remote
 
 import com.ljb.data.mapper.AreaMapper
-import com.ljb.data.repository.remote.datasource.CovidDataSource
+import com.ljb.data.remote.datasource.CovidDataSource
 import com.ljb.data.util.computeStringToInt
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.AreaCovid

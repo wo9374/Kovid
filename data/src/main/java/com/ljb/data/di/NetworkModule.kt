@@ -1,4 +1,4 @@
-package com.ljb.data
+package com.ljb.data.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -73,11 +72,12 @@ object NetworkModule {
     fun provideHospitalRetrofit(
         okHttpClient: OkHttpClient,
         tikXmlConverterFactory: TikXmlConverterFactory,
+        gsonConverterFactory: GsonConverterFactory,
     ): Retrofit{
         return Retrofit.Builder()
             .baseUrl(ApiInfo.HOSPITAL_URL)
             .client(okHttpClient)
-            .addConverterFactory(tikXmlConverterFactory)
+            .addConverterFactory(gsonConverterFactory)
             .build()
     }
 
@@ -121,9 +121,9 @@ object NetworkModule {
     @Provides
     fun provideHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })

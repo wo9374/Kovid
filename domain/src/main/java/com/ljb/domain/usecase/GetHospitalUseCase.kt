@@ -2,16 +2,24 @@ package com.ljb.domain.usecase
 
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.SelectiveClinic
-import com.ljb.domain.repository.HospitalRepository
+import com.ljb.domain.repository.LocalClinicRepository
+import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetSelectiveClinicUseCase @Inject constructor(
-    private val repository: HospitalRepository
-) {
-    operator fun invoke(): Flow<NetworkState<List<SelectiveClinic>>> = repository.getSelectiveClinic()
+class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) {
+    operator fun invoke(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>> =
+        repository.getRemoteSelectiveClinic(sido, sigungu)
 }
 
-class GetTemporaryClinicUseCase{
+class GetDbSelectiveClinicUseCase(private val repository: LocalClinicRepository){
+    operator fun invoke() : List<SelectiveClinic> = repository.getLocalSelectiveClinic()
+}
 
+class InsertSelectiveClinicUseCase(private val repository: LocalClinicRepository){
+    suspend operator fun invoke(value : SelectiveClinic) = repository.insertSelectiveClinic(value)
+}
+
+class ClearSelectiveClinicUseCase(private val repository: LocalClinicRepository){
+    suspend operator fun invoke() = repository.clearSelectiveClinics()
 }

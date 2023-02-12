@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
-import com.ljb.data.remote.model.SelectiveCluster
+import com.ljb.data.model.SelectiveCluster
 import com.project.kovid.databinding.CustomInfoWindowLayoutBinding
 
 internal class HospMapInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{

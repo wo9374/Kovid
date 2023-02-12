@@ -6,8 +6,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -17,14 +20,17 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
-import com.ljb.data.remote.model.SelectiveCluster
+import com.ljb.data.model.SelectiveCluster
+import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
 import com.project.kovid.viewmodel.MapsViewModel
+import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
 import com.project.kovid.widget.extension.customview.HospClusterMarker
 import com.project.kovid.widget.extension.customview.HospMapInfoWindow
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -48,7 +54,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         if (checkLocationPermission()) {
             binding.mapView.getMapAsync(this)
-            //ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true, getString(R.string.init_db_check))
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permissions[0])) {
                 Snackbar.make(binding.root, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Snackbar.LENGTH_INDEFINITE)
@@ -67,9 +72,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         val seoul = LatLng(37.554891, 126.970814)
         mGoogleMap = googleMap
 
-        clusterManager = ClusterManager(mContext, mGoogleMap)
+        clusterManager = ClusterManager<SelectiveCluster>(mContext, mGoogleMap)
         clusterManager.apply {
             renderer = HospClusterMarker(mContext, mGoogleMap, clusterManager)
+            markerCollection.setInfoWindowAdapter(HospMapInfoWindow(mContext))
             setOnClusterItemClickListener {
                 return@setOnClusterItemClickListener false
             }
@@ -80,7 +86,9 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
             setOnCameraIdleListener {
                 clusterManager
-                visibleDisplayCluster(mapsViewModel.hospitalClusters.value)
+                mapsViewModel.hospitalClusters.value.let {
+                    if (it is UiState.Complete) visibleDisplayCluster(it.data)
+                }
             }
             setOnMarkerClickListener(clusterManager)
 
@@ -98,13 +106,28 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 mapsViewModel.currentLocation.collect {
                     val latLng = LatLng(it.latitude, it.longitude)
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+
+                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, mapsViewModel.detailAddress.first))
                 }
             }
             launch {
-                mapsViewModel.hospitalClusters.collect {
-                    visibleDisplayCluster(it)
-                    //ContentsLoadingProgress.hideProgress(this.javaClass.name)
-                }
+                mapsViewModel.hospitalClusters
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collectLatest {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Complete -> {
+                                visibleDisplayCluster(it.data)
+                                ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
+                            }
+                            is UiState.Fail -> {
+                                Toast.makeText(mContext, "네트워크 오류!", Toast.LENGTH_SHORT).show()
+                                ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
+                            }
+                        }
+                    }
             }
         }
     }
@@ -117,11 +140,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     (northeast.latitude >= cluster.latitude() && northeast.longitude >= cluster.longitude()) &&
                     (southwest.latitude <= cluster.latitude() && southwest.longitude <= cluster.longitude())
                 ){
-                    clusterManager.markerCollection.setInfoWindowAdapter(HospMapInfoWindow(mContext))
                     clusterManager.addItem(cluster)
                     clusterManager.cluster()
-
-                    Log.d(TAG, "lat : ${cluster.latitude()} lng: ${cluster.longitude()}")
                 }else{
                     clusterManager.removeItem(cluster)
                 }
@@ -129,6 +149,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
 
     }
+
+    private fun checkLocationPermission(): Boolean =
+        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     override fun onStart() {
         super.onStart()
@@ -167,57 +191,4 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         super.onSaveInstanceState(outState)
         binding.mapView.onSaveInstanceState(outState)
     }
-
-    private fun checkLocationPermission(): Boolean =
-        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-
-    /*private fun permissionCheck() {
-        if (mapsViewModel.checkLocationPermission()) {
-            binding.mapView.getMapAsync(this)
-
-            mapsViewModel.startLocation()
-
-            //ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true, getString(R.string.init_db_check))
-
-            CoroutineScope(Dispatchers.IO).launch {
-                if (mapsViewModel.getAll().isNullOrEmpty()) {
-                    mapsViewModel.getHospData()
-                } else {
-                    mapsViewModel.symptomTestHospData.postValue(mapsViewModel.getAll())
-                }
-            }
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permissions[0])) {
-                Snackbar.make(binding.root, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("확인") {
-                        ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
-                    }.show()
-            } else {
-                ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
-            }
-        }
-    }*/
-
-    /*fun tedPermission() {
-        val permissionListener = object : PermissionListener {
-            override fun onPermissionGranted() {
-                mapsViewModel.startLocation()
-            }
-
-            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                Toast.makeText(mContext, "설정에서 권한을 허가 해주세요.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        TedPermission.create()
-            .setPermissionListener(permissionListener)
-            .setRationaleMessage("서비스 사용을 위해서 몇가지 권한이 필요합니다.")
-            .setDeniedMessage("[설정] > [권한] 에서 권한을 설정할 수 있습니다.")
-            .setPermissions(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            .check()
-    }*/
 }

@@ -4,9 +4,13 @@ buildscript {
         kotlin_version = "1.6.0" //1.4.32, 1.5.0, 1.6.0
         hilt_version = '2.42'
 
-        tikxml_version = '0.8.13'
         retrofit_version = '2.9.0'
+        tikxml_version = '0.8.13'
         okhttp_version = '4.10.0'
+
+        googlemaps_ktx = '3.2.1'
+
+        room_version = '2.4.2'
     }
 
     repositories {
