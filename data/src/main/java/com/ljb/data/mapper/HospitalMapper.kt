@@ -1,6 +1,6 @@
 package com.ljb.data.mapper
 
-import com.google.android.gms.maps.model.LatLng
+import android.location.Location
 import com.ljb.data.model.SelectiveClinicJson
 import com.ljb.data.model.SelectiveCluster
 import com.ljb.domain.entity.SelectiveClinic
@@ -45,7 +45,7 @@ fun SelectiveClinic.mapperToSelectiveJson() = SelectiveClinicJson(
     weekendYn = this.weekendYn,
 )
 
-fun SelectiveClinic.mapperToCluster(latLng: LatLng) = SelectiveCluster(
+fun SelectiveClinic.mapperToCluster(location: Location) = SelectiveCluster(
     addr = this.addr,
     clinicName = this.clinicName,
     satdayOperTime= this.satdayOperTime,
@@ -58,8 +58,8 @@ fun SelectiveClinic.mapperToCluster(latLng: LatLng) = SelectiveCluster(
     weekendOperTime = this.weekendOperTime,
     weekendYn = this.weekendYn,
 
-    lat = latLng.latitude,
-    lng = latLng.longitude,
+    lat = location.latitude,
+    lng = location.longitude,
 )
 
 /*fun SelectiveClinicXml.mapperToSelective() = SelectiveClinic(

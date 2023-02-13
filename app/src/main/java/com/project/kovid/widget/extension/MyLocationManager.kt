@@ -33,23 +33,27 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
     }
 
     //주소로 위도,경도 구하는 GeoCoding
-    fun getGeoCoding(address: String): LatLng {
-        val geoCoder = Geocoder(context, Locale.KOREA)
-        val list = geoCoder.getFromLocationName(address, 3)
+    fun getGeoCoding(address: String): Location {
+        return try {
+            with(Geocoder(context, Locale.KOREA).getFromLocationName(address, 1)){
+                if (this.size == 0){
+                    Log.d("GeoCoding", "해당 주소로 찾은 위도 경도가 없습니다. $address")
 
-        var location = LatLng(37.554891, 126.970814) //임시 서울역
-
-        if (list != null) {
-            if (list.size == 0) {
-                Log.d("GeoCoding", "해당 주소로 찾은 위도 경도가 없습니다. $address")
-            } else {
-                val addressLatLng = list[0]
-                location = LatLng(addressLatLng.latitude, addressLatLng.longitude)
-                return location
+                    Location("").apply {
+                        latitude = 37.554891
+                        longitude = 126.970814
+                    } //임시 서울역
+                }else{
+                    Location("").apply {
+                        latitude = this.latitude
+                        longitude = this.longitude
+                    }
+                }
             }
+        }catch (e:Exception) {
+            e.printStackTrace()
+            getGeoCoding(address) //재시도
         }
-
-        return location
     }
 
     // 위도 경도로 주소 구하는 Reverse-GeoCoding
@@ -60,7 +64,7 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
 
         //GRPC 오류? try catch 문으로 오류 대처
         try {
-            addr = geoCoder.getFromLocation(position.latitude, position.longitude, 3).first()
+            addr = geoCoder.getFromLocation(position.latitude, position.longitude, 1).first()
                 .getAddressLine(0)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -68,14 +72,13 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
         return addr
     }
 
+
+    // 위도 경도로 주소 구하는 Reverse-GeoCoding
     fun reverseGeoCoding(location: Location) : Pair<String, String>{
         return try {
             // Geocoder 로 자기 나라에 맞게 설정
-            with(Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 3).first()){
-                Pair(
-                    Geocoder(context, Locale.KOREA).getFromLocation(this.latitude, this.longitude, 3).first().adminArea,   //ex. 서울특별시
-                    Geocoder(context, Locale.KOREA).getFromLocation(this.latitude, this.longitude, 3).first().locality     //ex. 마포구
-                )
+            with(Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1).first()){
+                Pair(adminArea, locality) //ex. 서울특별시, 마포구
             }
         } catch (e: Exception) { //GRPC 오류시 재시도
             e.printStackTrace()
