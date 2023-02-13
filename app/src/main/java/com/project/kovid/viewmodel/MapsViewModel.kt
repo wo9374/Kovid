@@ -6,10 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.model.LatLng
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.model.SelectiveCluster
-import com.ljb.data.util.splitSido
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
 import com.ljb.domain.usecase.ClearSelectiveClinicUseCase
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -58,21 +55,15 @@ class MapsViewModel @Inject constructor(
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            locationResult.lastLocation.apply {
-                locationManager.getReverseGeocoding(LatLng(latitude, longitude)).let { address ->
-                    address.split(" ").let { detail ->
-                        val siDo = detail[1].splitSido()
-                        val siGunGu = ""//detail[2]
+            with(locationResult.lastLocation){
+                val currentAddress = locationManager.reverseGeoCoding(this)
+                if (detailAddress != currentAddress){
+                    detailAddress = currentAddress
+                    getDbData()
+                }
 
-                        //시도와 시군구가 동일하지 않을때 Data 새로 Load
-                        if (detailAddress != Pair(siDo, siGunGu)) {
-                            detailAddress = Pair(siDo, siGunGu)
-                            getDbData()
-                        }
-                        Log.d(tag, "getData($siDo, $siGunGu) 전체주소 : $address")
-
-                        viewModelScope.launch { _currentLocation.emit(locationResult.lastLocation) }
-                    }
+                viewModelScope.launch {
+                    _currentLocation.emit(this@with)
                 }
             }
         }

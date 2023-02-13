@@ -21,6 +21,7 @@ import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
 import com.ljb.data.model.SelectiveCluster
+import com.ljb.data.util.splitSido
 import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
@@ -107,7 +108,11 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     val latLng = LatLng(it.latitude, it.longitude)
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
-                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, mapsViewModel.detailAddress.first))
+                    if (mapsViewModel.hospitalClusters.value == UiState.Loading)
+                        ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
+                            requireActivity(), true,
+                            getString(R.string.searching_sido, mapsViewModel.detailAddress.first.splitSido())
+                        )
                 }
             }
             launch {

@@ -3,6 +3,7 @@ package com.project.kovid.widget.extension
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
@@ -65,5 +66,20 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
             e.printStackTrace()
         }
         return addr
+    }
+
+    fun reverseGeoCoding(location: Location) : Pair<String, String>{
+        return try {
+            // Geocoder 로 자기 나라에 맞게 설정
+            with(Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 3).first()){
+                Pair(
+                    Geocoder(context, Locale.KOREA).getFromLocation(this.latitude, this.longitude, 3).first().adminArea,   //ex. 서울특별시
+                    Geocoder(context, Locale.KOREA).getFromLocation(this.latitude, this.longitude, 3).first().locality     //ex. 마포구
+                )
+            }
+        } catch (e: Exception) { //GRPC 오류시 재시도
+            e.printStackTrace()
+            reverseGeoCoding(location)
+        }
     }
 }
