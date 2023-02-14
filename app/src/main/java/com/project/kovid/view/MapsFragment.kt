@@ -111,7 +111,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     if (mapsViewModel.hospitalClusters.value == UiState.Loading)
                         ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
                             requireActivity(), true,
-                            getString(R.string.searching_sido, mapsViewModel.detailAddress.first.splitSido())
+                            getString(R.string.searching_sido, mapsViewModel.detailAddress.splitSido())
                         )
                 }
             }

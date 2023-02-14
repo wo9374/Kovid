@@ -15,7 +15,7 @@ class RemoteClinicRepositoryImpl @Inject constructor(
 ) : RemoteClinicRepository {
     private val tag = RemoteClinicRepositoryImpl::class.java.simpleName
 
-    override fun getRemoteSelectiveClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
             val result = remoteSource.getSelectiveClinic(sido, sigungu)
             if (result.isSuccessful){

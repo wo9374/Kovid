@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 
 interface RemoteClinicSource {
-    suspend fun getSelectiveClinic(sido:String, sigungu:String): Response<SelectiveClinicJsonResponse>
+    suspend fun getSelectiveClinic(sido:String): Response<SelectiveClinicJsonResponse>
 }
 
 class RemoteClinicSourceImpl @Inject constructor(

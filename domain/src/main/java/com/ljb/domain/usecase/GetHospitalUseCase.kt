@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) {
-    operator fun invoke(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>> =
-        repository.getRemoteSelectiveClinic(sido, sigungu)
+    operator fun invoke(sido:String): Flow<NetworkState<List<SelectiveClinic>>> =
+        repository.getRemoteSelectiveClinic(sido)
 }
 
 class GetDbSelectiveClinicUseCase(private val repository: LocalClinicRepository){

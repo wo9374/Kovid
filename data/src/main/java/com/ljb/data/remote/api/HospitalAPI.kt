@@ -15,6 +15,6 @@ interface HospitalAPI {
         @Query("numOfRows") numOfRows : Int = 100,
         @Query("apiType") apiType : String = ApiInfo.JSON_FORMAT,
         @Query("sido") sido : String,
-        @Query("sigungu") sigungu : String,
+        @Query("sigungu") sigungu : String? = "",
     ): Response<SelectiveClinicJsonResponse>
 }
