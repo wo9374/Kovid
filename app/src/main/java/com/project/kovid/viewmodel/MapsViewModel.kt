@@ -8,6 +8,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.model.SelectiveCluster
+import com.ljb.data.util.splitSido
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
 import com.ljb.domain.usecase.ClearSelectiveClinicUseCase
@@ -51,7 +52,7 @@ class MapsViewModel @Inject constructor(
     )
     val currentLocation = _currentLocation.asSharedFlow()
 
-    var detailAddress = Pair("", "") //주소가 바꼈을때를 판단하기 위한 Pair
+    var detailAddress = "" //주소가 바꼈을때를 판단하기 위한 Pair
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -80,34 +81,50 @@ class MapsViewModel @Inject constructor(
                 getDbSelectiveClinicUseCase().apply {
                     if (isEmpty()) {
                         //DB Data 없을시 Remote API 호출
-                        getRemoteData(detailAddress.first, detailAddress.second)
+                        getRemoteData(detailAddress.splitSido())
                     } else {
-                        _hospitalClusters.emit(UiState.Complete(map {
-                            it.mapperToCluster(locationManager.getGeoCoding(it.addr))
-                        }))
+                        _hospitalClusters.emit(
+                            UiState.Complete(
+                                map {
+                                    it.mapperToCluster(locationManager.geoCoding(it.addr))
+                                }
+                            )
+                        )
                     }
+
                 }
             }
         }
     }
 
-    fun getRemoteData(siDo: String, siGunGu: String) {
+    fun getRemoteData(siDo: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
 
-                getSelectiveClinicUseCase(siDo, siGunGu)
+                getSelectiveClinicUseCase(siDo)
                     .catch { exception ->
                         Log.d(tag, "SelectiveClinic Exception Error: ${exception.message}")
                     }.collect { result ->
                         when (result) {
                             is NetworkState.Success -> {
-                                //Data UI 마커 먼저 처리
-                                val cluster = result.data.map { it.mapperToCluster(locationManager.getGeoCoding(it.addr)) }
-                                _hospitalClusters.emit(UiState.Complete(cluster))
+                                //Location 값이 정상 반환일때를 위한 필터링
+                                val filteringAddress = result.data.filter {
+                                    with(locationManager.geoCoding(it.addr)){
+                                        latitude != 0.0 && longitude != 0.0
+                                    }
+                                }
+
+                                _hospitalClusters.emit(
+                                    UiState.Complete(filteringAddress.map {
+                                        it.mapperToCluster(locationManager.geoCoding(it.addr))
+                                    })
+                                )
                                 Log.d(tag, "SelectiveClinic Success: Total${result.data.size} ${result.data}")
 
                                 //이후 DB 저장
-                                result.data.forEach { insertSelectiveClinicUseCase(it) }
+                                filteringAddress.forEach {
+                                    insertSelectiveClinicUseCase(it)
+                                }
                             }
                             is NetworkState.Error -> {
                                 _hospitalClusters.emit(UiState.Fail(result.message))
