@@ -33,20 +33,24 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
 
     //주소로 위도,경도 구하는 GeoCoding
     fun geoCoding(address: String): Location {
-        return try {
-            Geocoder(context, Locale.KOREA).getFromLocationName(address, 1)?.let{
-                Location("").apply {
-                    latitude =  it[0].latitude
-                    longitude = it[0].longitude
+        try {
+            Geocoder(context, Locale.KOREA).getFromLocationName(address, 1).apply {
+                return if (size != 0){
+                    Location("").apply {
+                        this.latitude =  get(0).latitude
+                        this.longitude = get(0).longitude
+                    }
+                }else{
+                    Location("").apply{
+                        this.latitude =  0.0
+                        this.longitude = 0.0
+                    }
                 }
-            }?: Location("").apply {
-                latitude = 0.0
-                longitude = 0.0
             }
         }catch (e:Exception) {
             e.printStackTrace()
 
-            Location("").apply {
+            return Location("").apply {
                 latitude = 0.0
                 longitude = 0.0
             }
@@ -64,9 +68,5 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
             e.printStackTrace()
             reverseGeoCoding(location)
         }
-    }
-
-    fun tt(location: Location){
-        Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)
     }
 }

@@ -7,7 +7,7 @@
         android:id="@+id/loading_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1A000000">
+        android:background="#4A000000">
 
         <ImageView
             android:id="@+id/loading_progress_img"

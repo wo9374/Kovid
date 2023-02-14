@@ -2,11 +2,17 @@ package com.project.kovid.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.provider.Settings.ACTION_SETTINGS
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,28 +49,39 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private val mapsViewModel: MapsViewModel by viewModels()
 
-    companion object {
-        const val TAG_CODE_PERMISSION_LOCATION = 100
-        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+    private val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    private val activityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        val deniedList: List<String> = result.filter { !it.value }.map {
+            it.key
+        }
+        when {
+            deniedList.isNotEmpty() -> {
+                val map = deniedList.groupBy { permission ->
+                    if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
+                }
+                map["DENIED"]?.let {
+                    showPermissionDialog()
+                }
+                map["EXPLAINED"]?.let {
+                    showPermissionDialog(goSetting = true)
+                }
+            }
+            else -> {
+                //binding.mapView.getMapAsync(this)
+            }
+        }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mapView.onCreate(savedInstanceState)
 
-        if (checkLocationPermission()) {
-            binding.mapView.getMapAsync(this)
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permissions[0])) {
-                Snackbar.make(binding.root, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("확인") {
-                        ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
-                    }.show()
-            } else {
-                ActivityCompat.requestPermissions(requireActivity(), permissions, TAG_CODE_PERMISSION_LOCATION)
-            }
-        }
+        activityResultLauncher.launch(permissions)
     }
 
 
@@ -159,6 +176,23 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
+    private fun showPermissionDialog(goSetting: Boolean = false){
+        Snackbar.make(binding.root,
+            if (goSetting) "위치 권한이 없을시 해당 기능을 이용할 수 없습니다. 권한을 허용해주세요."
+            else "이 기능을 실행하려면 위치 접근 권한이 필요합니다.",
+            Snackbar.LENGTH_INDEFINITE).setAction(
+                if (goSetting) "설정 이동"
+                else "확인"
+            ) {
+                if (goSetting){
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + requireActivity().packageName))
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                } else
+                    activityResultLauncher.launch(permissions)
+            }.show()
+    }
+
     override fun onStart() {
         super.onStart()
         binding.mapView.onStart()
@@ -167,8 +201,12 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
-        if (checkLocationPermission())
+        if (checkLocationPermission()){
+            if (!::mGoogleMap.isInitialized)
+                binding.mapView.getMapAsync(this)
+
             mapsViewModel.startLocation()
+        }
     }
 
     override fun onPause() {
