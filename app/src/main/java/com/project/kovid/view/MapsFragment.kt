@@ -128,15 +128,13 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect {
                     val latLng = LatLng(it.latitude, it.longitude)
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                    if (mapsViewModel.hospitalClusters.value == UiState.Loading){
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
-                    if (mapsViewModel.hospitalClusters.value == UiState.Loading)
                         ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
                             requireActivity(), true,
-                            getString(
-                                R.string.searching_sido,
-                                mapsViewModel.detailAddress.splitSido()
-                            ))
+                            getString(R.string.searching_sido, mapsViewModel.detailAddress.splitSido()))
+                    }
                 }
         }
 

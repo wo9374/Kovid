@@ -75,10 +75,9 @@ class MapsViewModel @Inject constructor(
             with(locationResult.lastLocation){
                 val currentAddress = locationManager.reverseGeoCoding(this)
 
-                getMapsPolyGon(currentAddress.splitSido())
-
                 if (detailAddress != currentAddress){
                     detailAddress = currentAddress
+                    getMapsPolyGon(currentAddress.splitSido())
                     getDbData()
                 }
 
