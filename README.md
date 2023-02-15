@@ -4,7 +4,7 @@
 - 공공데이터활용지원센터_보건복지부 코로나19 감염 현황 <https://www.data.go.kr/data/15043376/openapi.do>
 
  지역별 코로나 확진자 \<Home>
-- GoodBye Corona API <https://github.com/dhlife09/Corona-19-API/blob/master/README.md#-%EA%B5%AD%EB%82%B4-%EC%A0%95%EB%B3%B4>
+- GoodBye Corona API <https://github.com/dhlife09/Corona-19-API>
 
 <img src="https://user-images.githubusercontent.com/55440637/217118907-c6c070b0-2006-4c43-9aa8-fc023ff569b0.jpg" width="260" height="500"> <img src="https://user-images.githubusercontent.com/55440637/217118912-4d3d4c98-dfff-4658-bba3-0b745740f9db.jpg" width="260" height="500"/> <img src="https://user-images.githubusercontent.com/55440637/217118915-0fbe5d12-82c2-43fd-b99a-d5994d44899d.jpg" width="260" height="500"/>
   
