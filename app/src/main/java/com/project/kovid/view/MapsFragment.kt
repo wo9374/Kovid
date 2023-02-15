@@ -2,14 +2,12 @@ package com.project.kovid.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.provider.Settings.ACTION_SETTINGS
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,7 +20,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.maps.android.PolyUtil
 import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
@@ -40,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
     var TAG = MapsFragment::class.java.simpleName
@@ -49,7 +50,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private val mapsViewModel: MapsViewModel by viewModels()
 
-    private val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+    private val permissions = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
 
     private val activityResultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -119,27 +123,50 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     }
 
     private fun observeData() {
-        lifecycleScope.launch {
-            launch {
-                mapsViewModel.currentLocation.collect {
+        lifecycleScope.launchWhenStarted {
+            mapsViewModel.currentLocation
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect {
                     val latLng = LatLng(it.latitude, it.longitude)
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
                     if (mapsViewModel.hospitalClusters.value == UiState.Loading)
                         ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
                             requireActivity(), true,
-                            getString(R.string.searching_sido, mapsViewModel.detailAddress.splitSido())
-                        )
+                            getString(
+                                R.string.searching_sido,
+                                mapsViewModel.detailAddress.splitSido()
+                            ))
+                }
+        }
+
+        lifecycleScope.launch {
+
+            //Maps Polygon
+            launch {
+                mapsViewModel.mapsPolygon.collectLatest {
+                    mGoogleMap.addPolygon(
+                        PolygonOptions()
+                            .addAll(it)
+                            .fillColor(Color.argb(70, 204, 153, 255))
+                            .strokeColor(R.color.purple_700)
+                            .strokeWidth(5.0f)
+                    )
                 }
             }
+            launch {
+                mapsViewModel.polygonCenter.collectLatest {
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 11F))
+                }
+            }
+
+            //Clinic Marker
             launch {
                 mapsViewModel.hospitalClusters
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .collectLatest {
                         when (it) {
-                            is UiState.Loading -> {
-
-                            }
+                            is UiState.Loading -> {}
                             is UiState.Complete -> {
                                 visibleDisplayCluster(it.data)
                                 ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
@@ -150,6 +177,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                             }
                         }
                     }
+
             }
         }
     }
@@ -161,10 +189,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 if (
                     (northeast.latitude >= cluster.latitude() && northeast.longitude >= cluster.longitude()) &&
                     (southwest.latitude <= cluster.latitude() && southwest.longitude <= cluster.longitude())
-                ){
+                ) {
                     clusterManager.addItem(cluster)
                     clusterManager.cluster()
-                }else{
+                } else {
                     clusterManager.removeItem(cluster)
                 }
             }
@@ -173,24 +201,35 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     }
 
     private fun checkLocationPermission(): Boolean =
-        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ActivityCompat.checkSelfPermission(
+            mContext,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(
+            mContext,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
-    private fun showPermissionDialog(goSetting: Boolean = false){
-        Snackbar.make(binding.root,
-            if (goSetting) "위치 권한이 없을시 해당 기능을 이용할 수 없습니다. 권한을 허용해주세요."
-            else "이 기능을 실행하려면 위치 접근 권한이 필요합니다.",
-            Snackbar.LENGTH_INDEFINITE).setAction(
-                if (goSetting) "설정 이동"
-                else "확인"
-            ) {
-                if (goSetting){
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + requireActivity().packageName))
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                } else
-                    activityResultLauncher.launch(permissions)
-            }.show()
+    private fun showPermissionDialog(goSetting: Boolean = false) {
+        Snackbar.make(
+            binding.root,
+            if (goSetting) getString(R.string.permission_setting)
+            else getString(R.string.permission_check),
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(
+            if (goSetting) getString(R.string.move_setting)
+            else getString(R.string.ok)
+        ) {
+            if (goSetting) {
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + requireActivity().packageName)
+                )
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            } else
+                activityResultLauncher.launch(permissions)
+        }.show()
     }
 
     override fun onStart() {
@@ -201,7 +240,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
-        if (checkLocationPermission()){
+        if (checkLocationPermission()) {
             if (!::mGoogleMap.isInitialized)
                 binding.mapView.getMapAsync(this)
 

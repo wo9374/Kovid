@@ -21,11 +21,13 @@
     
     <string name="searching_sido">%1s시에 위치한 진료소 정보를 찾는중…</string>
 
-    <string name="init_db_check">DB 확인중..</string>
-    <string name="init_database">초기 DB 다운로드 중…</string>
-    <string name="init_map">DB 정보로 지도 구성중…</string>
-
     <string name="general_clinic">종합병원</string>
     <string name="temporary_clinic">임시 선별 진료소</string>
     <string name="selective_clinic">선별 진료소</string>
+
+    <string name="permission_check">이 기능을 실행하려면 위치 접근 권한이 필요합니다.</string>
+    <string name="permission_setting">위치 권한이 없을시 해당 기능을 이용할 수 없습니다. 권한을 허용해주세요.</string>
+    <string name="move_setting">설정 이동</string>
+
+    <string name="ok">확인</string>
 </resources>

@@ -2,6 +2,7 @@ package com.ljb.domain.repository
 
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.AreaCovid
+import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.SelectiveClinic
 import com.ljb.domain.entity.WeekCovid
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ interface CovidRepository {
 }
 
 interface RemoteClinicRepository{
+    fun getMapsPolygon(sido:String): Flow<NetworkState<MapsPolygon>>
     fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>>
 }
 

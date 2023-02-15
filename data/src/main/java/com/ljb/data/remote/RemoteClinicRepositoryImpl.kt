@@ -1,9 +1,11 @@
 package com.ljb.data.remote
 
 import android.util.Log
+import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.mapper.mapperToSelective
 import com.ljb.data.remote.datasource.RemoteClinicSource
 import com.ljb.domain.NetworkState
+import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.SelectiveClinic
 import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,13 +15,32 @@ import javax.inject.Inject
 class RemoteClinicRepositoryImpl @Inject constructor(
     private val remoteSource: RemoteClinicSource,
 ) : RemoteClinicRepository {
-    private val tag = RemoteClinicRepositoryImpl::class.java.simpleName
+    private val TAG = RemoteClinicRepositoryImpl::class.java.simpleName
+
+    override fun getMapsPolygon(sido: String): Flow<NetworkState<MapsPolygon>> {
+        return flow {
+            remoteSource.apply {
+                val osmId = getPolygonOsmId(sido) //osmId 먼저 get
+                if (osmId.isNotEmpty()){
+                    val result = getPolygonData(osmId[0].osm_id) //polygon Data get
+                    if (result.isSuccessful){
+                        val polygon = result.body()?.geometry?.polygonLatLng?.get(0) ?: emptyList()
+                        val centerLatLng = result.body()?.centroid?.centerLatLng ?: emptyList()
+                        emit(NetworkState.Success(MapsPolygon(polygon, centerLatLng)))
+                    } else
+                        emit(NetworkState.Error(result.message()))
+                }else
+                    emit(NetworkState.Error("OsmId is Empty"))
+            }
+        }
+    }
 
     override fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = remoteSource.getSelectiveClinic(sido, sigungu)
+            val result = remoteSource.getSelectiveClinic(sido)
+
             if (result.isSuccessful){
-                Log.d(tag, "${result.body()}")
+                Log.d(TAG, "${result.body()}")
                 val data= result.body()?.items?.map {
                     it.mapperToSelective()
                 }?: emptyList()

@@ -33,8 +33,10 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun provideRemoteClinicSource(hospitalAPI: HospitalAPI): RemoteClinicSource =
-        RemoteClinicSourceImpl(hospitalAPI)
+    fun provideRemoteClinicSource(
+      @NetworkModule.HospitalType hospitalAPI: HospitalAPI,
+      @NetworkModule.NominatimType nominatimAPI: HospitalAPI,
+    ): RemoteClinicSource = RemoteClinicSourceImpl(hospitalAPI, nominatimAPI)
 
     @Provides
     @Singleton

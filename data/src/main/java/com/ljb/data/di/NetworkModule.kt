@@ -37,6 +37,10 @@ object NetworkModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class HospitalType
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class NominatimType
+
 
     @ChartType
     @Provides
@@ -81,6 +85,20 @@ object NetworkModule {
             .build()
     }
 
+    @NominatimType
+    @Provides
+    @Singleton
+    fun provideNominatimRetrofit(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory,
+    ): Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(ApiInfo.NOMINATIM_URL)
+            .client(okHttpClient)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
     @ChartType
     @Provides
     @Singleton
@@ -95,9 +113,17 @@ object NetworkModule {
         return retrofit.create(CovidAPI::class.java)
     }
 
+    @HospitalType
     @Provides
     @Singleton
     fun provideHospitalService(@HospitalType retrofit: Retrofit): HospitalAPI{
+        return retrofit.create(HospitalAPI::class.java)
+    }
+
+    @NominatimType
+    @Provides
+    @Singleton
+    fun provideNominatimService(@NominatimType retrofit: Retrofit): HospitalAPI{
         return retrofit.create(HospitalAPI::class.java)
     }
 

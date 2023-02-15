@@ -1,11 +1,16 @@
 package com.ljb.domain.usecase
 
 import com.ljb.domain.NetworkState
+import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.SelectiveClinic
 import com.ljb.domain.repository.LocalClinicRepository
 import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+
+class GetMapsPolygonUseCase(private val repository: RemoteClinicRepository) {
+    operator fun invoke(sido: String): Flow<NetworkState<MapsPolygon>> =
+        repository.getMapsPolygon(sido)
+}
 
 class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) {
     operator fun invoke(sido:String): Flow<NetworkState<List<SelectiveClinic>>> =

@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
 import com.ljb.data.mapper.mapperToCluster
+import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.model.SelectiveCluster
 import com.ljb.data.util.splitSido
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
-import com.ljb.domain.usecase.ClearSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetDbSelectiveClinicUseCase
+import com.ljb.domain.usecase.GetMapsPolygonUseCase
 import com.ljb.domain.usecase.GetSelectiveClinicUseCase
 import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
 import com.project.kovid.widget.extension.MyLocationManager
@@ -30,17 +32,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapsViewModel @Inject constructor(
+    private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
     private val getSelectiveClinicUseCase: GetSelectiveClinicUseCase,
     private val locationManager: MyLocationManager,
 
     private val getDbSelectiveClinicUseCase: GetDbSelectiveClinicUseCase,
-    private val insertSelectiveClinicUseCase: InsertSelectiveClinicUseCase,
-    private val clearSelectiveClinicUseCase: ClearSelectiveClinicUseCase,
+    private val insertSelectiveClinicUseCase: InsertSelectiveClinicUseCase
 ) : ViewModel() {
     private val tag = MapsViewModel::class.java.simpleName
 
     private val _hospitalClusters = MutableStateFlow<UiState<List<SelectiveCluster>>>(UiState.Loading)
     val hospitalClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _hospitalClusters
+
+
+    /** 검색한 시도 지역의 영역 Polygon */
+    private val _mapsPolygon = MutableSharedFlow <List<LatLng>>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val mapsPolygon = _mapsPolygon.asSharedFlow()
+
+
+    /** 검색한 시도 지역의 센터 Point */
+    private val _polygonCenter = MutableSharedFlow <LatLng>()
+    val polygonCenter = _polygonCenter.asSharedFlow()
 
     /**
      *현위치 get
@@ -58,6 +74,9 @@ class MapsViewModel @Inject constructor(
         override fun onLocationResult(locationResult: LocationResult) {
             with(locationResult.lastLocation){
                 val currentAddress = locationManager.reverseGeoCoding(this)
+
+                getMapsPolyGon(currentAddress.splitSido())
+
                 if (detailAddress != currentAddress){
                     detailAddress = currentAddress
                     getDbData()
@@ -73,11 +92,31 @@ class MapsViewModel @Inject constructor(
     fun startLocation() = locationManager.startLocationUpdates(mLocationCallback)
     fun stopLocation() = locationManager.stopLocationUpdates(mLocationCallback)
 
+    fun getMapsPolyGon(sido:String){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                getMapsPolygonUseCase(sido).catch { exception ->
+                    Log.d(tag, "getMapsPolygonUseCase Exception Error: ${exception.message}")
+                }.collect { result ->
+                    when(result){
+                        is NetworkState.Success -> {
+                            _polygonCenter.emit(result.data.centerLatLng.mapperToLatLng())
+
+                            _mapsPolygon.emit(
+                                result.data.polygon.map { it.mapperToLatLng() }
+                            )
+                        }
+                        is NetworkState.Error -> {}
+                        is NetworkState.Loading -> {}
+                    }
+                }
+            }
+        }
+    }
 
     fun getDbData() {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-
                 getDbSelectiveClinicUseCase().apply {
                     if (isEmpty()) {
                         //DB Data 없을시 Remote API 호출
@@ -85,9 +124,7 @@ class MapsViewModel @Inject constructor(
                     } else {
                         _hospitalClusters.emit(
                             UiState.Complete(
-                                map {
-                                    it.mapperToCluster(locationManager.geoCoding(it.addr))
-                                }
+                                map { it.mapperToCluster(locationManager.geoCoding(it.addr)) }
                             )
                         )
                     }
@@ -100,6 +137,7 @@ class MapsViewModel @Inject constructor(
     fun getRemoteData(siDo: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+
 
                 getSelectiveClinicUseCase(siDo)
                     .catch { exception ->

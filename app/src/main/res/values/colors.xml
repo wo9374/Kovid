@@ -13,6 +13,8 @@
     <color name="fab_yellow">#F4FA58</color>
     <color name="fab_green">#ACFA58</color>
 
+    <color name="polygon_bg">#f2e6e6ff</color>
+
 
     <color name="widjet_bg_color">#fEfEfE</color>
     <color name="day_night_color">#FF000000</color>
