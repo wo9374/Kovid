@@ -2,15 +2,25 @@
 buildscript {
     ext{
         kotlin_version = "1.6.0" //1.4.32, 1.5.0, 1.6.0
-        hilt_version = '2.42'
 
+
+        //App, Data, Domain Module
+        hilt_version = '2.42'
+        coroutine_version = '1.6.4'
+
+        //Data Module Only
+        room_version = '2.4.2'
         retrofit_version = '2.9.0'
         tikxml_version = '0.8.13'
         okhttp_version = '4.10.0'
 
-        googlemaps_ktx = '3.2.1'
+        //App Module Only
+        lifecycle_version = "2.4.0"
+        glide_version = '4.14.2'
+        airbnb_epoxy = '3.9.0'
 
-        room_version = '2.4.2'
+        //Data, App Module
+        googlemaps_ktx = '3.2.1'
     }
 
     repositories {
@@ -24,15 +34,6 @@ buildscript {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }
 }
-
-/* //최신 버전 그래들
-plugins {
-    id 'com.android.application' version '7.1.1' apply false
-    id 'com.android.library' version '7.1.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
-    id 'com.google.dagger.hilt.android' version '2.41' apply false
-}
-*/
 
 task clean(type: Delete) {
     delete rootProject.buildDir
