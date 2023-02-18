@@ -9,6 +9,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <queries>
+        <package android:name="com.google.android.gms.maps"/>
+    </queries>
+
     <application
         android:name=".di.MyApplication"
         android:allowBackup="true"
