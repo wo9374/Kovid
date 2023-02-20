@@ -96,8 +96,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 chartViewModel.areaList
                     .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                     .distinctUntilChanged()
-                    .collectLatest {
-                        listAdapter.submitList(it)
+                    .collectLatest {uiState ->
+                        when (uiState) {
+                            is UiState.Loading -> {
+                                binding.areaErrorText.text = getString(R.string.data_loading)
+                            }
+                            is UiState.Complete -> {
+                                binding.areaErrorText.visibility = View.GONE
+                                listAdapter.submitList(uiState.data)
+                            }
+                            is UiState.Fail -> {
+                                binding.apply {
+                                    areaErrorText.visibility = View.VISIBLE
+                                    areaErrorText.text = uiState.message
+                                }
+                            }
+                        }
+
                     }
             }
         }

@@ -39,8 +39,8 @@ class HomeViewModel @Inject constructor(
     val covidList : StateFlow<UiState<List<WeekCovid>>> get() = _covidList
 
     //지역별 확진자
-    private val _areaList = MutableStateFlow<List<AreaCovid>>(mutableListOf())
-    val areaList : StateFlow<List<AreaCovid>> get() = _areaList
+    private val _areaList = MutableStateFlow<UiState<List<AreaCovid>>>(UiState.Loading)
+    val areaList : StateFlow<UiState<List<AreaCovid>>> get() = _areaList
 
     init {
         viewModelScope.launch {
@@ -76,13 +76,15 @@ class HomeViewModel @Inject constructor(
                 getAreaListUseCase()
                     .catch { exception ->
                         Log.d(tag, "CovidArea - Exception Error : ${exception.message}")
+                        _areaList.emit(UiState.Fail("서버 오류"))
                     }.collectLatest { result ->
                         when(result){
                             is NetworkState.Success -> {
-                                _areaList.value = result.data
+                                _areaList.emit(UiState.Complete(result.data))
                                 Log.d(tag, "CovidArea - Network Success : ${result.data}")
                             }
                             is NetworkState.Error -> {
+                                _areaList.emit(UiState.Fail(result.message))
                                 Log.d(tag, "CovidArea - Network Error : ${result.message}")
                             }
                             else -> {
