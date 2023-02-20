@@ -5,8 +5,8 @@ import android.content.Context
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Looper
-import android.util.Log
 import com.google.android.gms.location.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
@@ -30,43 +30,61 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
     fun stopLocationUpdates(mLocationCallback: LocationCallback) {
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback)
     }
-
     //주소로 위도,경도 구하는 GeoCoding
-    fun geoCoding(address: String): Location {
+    @Suppress("DEPRECATION")
+    fun getGeocoding(address: String): Location{
         try {
-            Geocoder(context, Locale.KOREA).getFromLocationName(address, 1).apply {
-                return if (size != 0){
-                    Location("").apply {
-                        this.latitude =  get(0).latitude
-                        this.longitude = get(0).longitude
+            var location = Location("")
+
+            with(Geocoder(context, Locale.KOREA)){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    getFromLocationName(address, 1) {
+                        it.firstOrNull()?.let {
+                            location = Location("").apply {
+                                latitude = it.latitude
+                                longitude = it.longitude
+                            }
+                        }
                     }
                 }else{
-                    Location("").apply{
-                        this.latitude =  0.0
-                        this.longitude = 0.0
+                    getFromLocationName(address, 1)?.first()?.let {
+                        location = Location("").apply {
+                            latitude = it.latitude
+                            longitude = it.longitude
+                        }
                     }
                 }
             }
-        }catch (e:Exception) {
+            return location
+        }catch (e:Exception){
             e.printStackTrace()
-
-            return Location("").apply {
-                latitude = 0.0
-                longitude = 0.0
-            }
+            return Location("")
         }
     }
 
     // 위도 경도로 주소 구하는 Reverse-GeoCoding
-    fun reverseGeoCoding(location: Location) : String{
-        return try {
-            // Geocoder 로 자기 나라에 맞게 설정
-            with(Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1).first()){
-                adminArea //ex. 서울특별시,
+    @Suppress("DEPRECATION")
+    fun getReverseGeocoding(location: Location): String{
+        try {
+            var str = ""
+
+            with(Geocoder(context, Locale.KOREA)){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    getFromLocation(location.latitude, location.longitude, 1){
+                        it.firstOrNull()?.let { addr ->
+                            str = addr.adminArea
+                        }
+                    }
+                }else{
+                    Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.let {
+                        str = it.adminArea
+                    }
+                }
             }
-        } catch (e: Exception) { //GRPC 오류시 재시도
+            return str
+        }catch (e:Exception){
             e.printStackTrace()
-            reverseGeoCoding(location)
+            return ""
         }
     }
 }
