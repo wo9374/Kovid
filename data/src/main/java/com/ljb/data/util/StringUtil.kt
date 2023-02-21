@@ -17,8 +17,8 @@ fun String.computeStringToInt() = if (this.length == 8) {
     "compute 오류"
 }
 
-fun String.getDecimalFormatNum(num:Int) : String {
-    val numString = num.toString()
+fun Int.getDecimalFormatNum() : String {
+    val numString = this.toString()
     var result = "0"
     if (numString.isEmpty()) return result
 

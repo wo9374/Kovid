@@ -7,8 +7,8 @@ import android.widget.TextView
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
+import com.ljb.data.util.getDecimalFormatNum
 import com.project.kovid.R
-import com.project.kovid.widget.util.StringUtil
 
 @SuppressLint("ViewConstructor")
 class CustomChartMarker(context: Context, layoutResource: Int) : MarkerView(context, layoutResource) {
@@ -26,7 +26,7 @@ class CustomChartMarker(context: Context, layoutResource: Int) : MarkerView(cont
 
     // entry를 content의 텍스트에 지정
     override fun refreshContent(e: Entry, highlight: Highlight?) {
-        tvContent.text = StringUtil.getDecimalFormatNum(e.y.toInt())
+        tvContent.text = e.y.toInt().getDecimalFormatNum()
         super.refreshContent(e, highlight)
     }
 }
