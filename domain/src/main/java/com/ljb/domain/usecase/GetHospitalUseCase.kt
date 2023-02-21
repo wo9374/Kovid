@@ -18,7 +18,7 @@ class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) 
 }
 
 class GetDbSelectiveClinicUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke() : List<SelectiveClinic> = repository.getLocalSelectiveClinic()
+    operator fun invoke(sido:String) : List<SelectiveClinic> = repository.getLocalSelectiveClinic(sido)
 }
 
 class InsertSelectiveClinicUseCase(private val repository: LocalClinicRepository){

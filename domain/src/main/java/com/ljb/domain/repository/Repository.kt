@@ -18,7 +18,7 @@ interface RemoteClinicRepository{
 }
 
 interface LocalClinicRepository{
-    fun getLocalSelectiveClinic(): List<SelectiveClinic>
+    fun getLocalSelectiveClinic(sido: String): List<SelectiveClinic>
     suspend fun insertSelectiveClinic(selectiveClinic: SelectiveClinic)
     suspend fun clearSelectiveClinics()
 }

@@ -6,15 +6,15 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface LocalClinicSource {
-    fun getSelectiveClinic(): List<SelectiveClinicJson>
+    fun getSelectiveClinic(sido: String): List<SelectiveClinicJson>
     suspend fun insertSelectiveClinic(selectiveCluster: SelectiveClinicJson)
     suspend fun clearSelectiveClinics()
 }
 
 class LocalClinicSourceImpl @Inject constructor(private val selectiveClinicDao: SelectiveClinicDao):
     LocalClinicSource {
-    override fun getSelectiveClinic(): List<SelectiveClinicJson> {
-        return selectiveClinicDao.getSelectiveClinic()
+    override fun getSelectiveClinic(sido : String): List<SelectiveClinicJson> {
+        return selectiveClinicDao.getSelectiveClinic(sido)
     }
 
     override suspend fun insertSelectiveClinic(selectiveCluster: SelectiveClinicJson) {

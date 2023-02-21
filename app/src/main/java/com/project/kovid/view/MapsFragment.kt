@@ -22,7 +22,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.snackbar.Snackbar
-import com.google.maps.android.PolyUtil
 import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
@@ -116,7 +115,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
             isMyLocationEnabled = true
             uiSettings.isMyLocationButtonEnabled = true
-            uiSettings.isZoomControlsEnabled = true
+            //uiSettings.isZoomControlsEnabled = true
         }
 
         observeData()
@@ -124,9 +123,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private fun observeData() {
         lifecycleScope.launchWhenStarted {
-            mapsViewModel.currentLocation
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect {
+            mapsViewModel.currentLocation.collect {
                     val latLng = LatLng(it.latitude, it.longitude)
                     if (mapsViewModel.hospitalClusters.value == UiState.Loading){
                         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
@@ -199,14 +196,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     }
 
     private fun checkLocationPermission(): Boolean =
-        ActivityCompat.checkSelfPermission(
-            mContext,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(
-            mContext,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private fun showPermissionDialog(goSetting: Boolean = false) {
         Snackbar.make(
@@ -219,10 +210,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             else getString(R.string.ok)
         ) {
             if (goSetting) {
-                val intent = Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + requireActivity().packageName)
-                )
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + requireActivity().packageName))
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             } else

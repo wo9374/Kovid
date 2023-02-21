@@ -19,45 +19,44 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_marginBottom="6dp"
+            android:layout_margin="6dp"
             android:background="@drawable/bg_coner_round"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="6dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:padding="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ic_1"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_marginBottom="4dp"
                 android:src="@drawable/ic_hosp_doctor_office"
-                app:layout_constraintBottom_toTopOf="@+id/ic_2"
+                app:layout_constraintBottom_toTopOf="@id/ic_2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <ImageView
                 android:id="@+id/ic_2"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_marginBottom="4dp"
                 android:src="@drawable/ic_hosp_general"
-                app:layout_constraintBottom_toTopOf="@+id/ic_3"
+                app:layout_constraintBottom_toTopOf="@id/ic_3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ic_1" />
+                app:layout_constraintTop_toBottomOf="@id/ic_1" />
 
             <ImageView
                 android:id="@+id/ic_3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_hosp_comprehensive"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ic_2" />
+                app:layout_constraintTop_toBottomOf="@id/ic_2" />
 
             <TextView
                 android:id="@+id/textView1"
@@ -66,9 +65,10 @@
                 android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:text="@string/selective_clinic"
-                app:layout_constraintBottom_toBottomOf="@+id/ic_1"
-                app:layout_constraintStart_toEndOf="@+id/ic_1"
-                app:layout_constraintTop_toTopOf="@+id/ic_1" />
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/ic_1"
+                app:layout_constraintStart_toEndOf="@id/ic_1"
+                app:layout_constraintTop_toTopOf="@id/ic_1" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -77,9 +77,10 @@
                 android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:text="@string/temporary_clinic"
-                app:layout_constraintBottom_toBottomOf="@+id/ic_2"
-                app:layout_constraintStart_toEndOf="@+id/ic_2"
-                app:layout_constraintTop_toTopOf="@+id/ic_2" />
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/ic_2"
+                app:layout_constraintStart_toEndOf="@id/ic_2"
+                app:layout_constraintTop_toTopOf="@id/ic_2" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -88,9 +89,10 @@
                 android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:text="@string/general_clinic"
-                app:layout_constraintBottom_toBottomOf="@+id/ic_3"
-                app:layout_constraintStart_toEndOf="@+id/ic_3"
-                app:layout_constraintTop_toTopOf="@+id/ic_3" />
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/ic_3"
+                app:layout_constraintStart_toEndOf="@id/ic_3"
+                app:layout_constraintTop_toTopOf="@id/ic_3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

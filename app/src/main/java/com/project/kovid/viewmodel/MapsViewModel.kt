@@ -72,17 +72,17 @@ class MapsViewModel @Inject constructor(
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            with(locationResult.lastLocation){
-                val currentAddress = locationManager.reverseGeoCoding(this)
+            locationResult.lastLocation?.let {
+                val currentAddress = locationManager.getReverseGeocoding(it)
 
-                if (detailAddress != currentAddress){
+                if (currentAddress.isNotEmpty() && detailAddress != currentAddress){
                     detailAddress = currentAddress
                     getMapsPolyGon(currentAddress.splitSido())
-                    getDbData()
+                    getDbData(currentAddress.splitSido())
                 }
 
                 viewModelScope.launch {
-                    _currentLocation.emit(this@with)
+                    _currentLocation.emit(it)
                 }
             }
         }
@@ -113,17 +113,17 @@ class MapsViewModel @Inject constructor(
         }
     }
 
-    fun getDbData() {
+    fun getDbData(sido: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                getDbSelectiveClinicUseCase().apply {
+                getDbSelectiveClinicUseCase(sido).apply {
                     if (isEmpty()) {
                         //DB Data 없을시 Remote API 호출
-                        getRemoteData(detailAddress.splitSido())
+                        getRemoteData(sido)
                     } else {
                         _hospitalClusters.emit(
                             UiState.Complete(
-                                map { it.mapperToCluster(locationManager.geoCoding(it.addr)) }
+                                map { it.mapperToCluster(locationManager.getGeocoding(it.addr)) }
                             )
                         )
                     }
@@ -146,14 +146,14 @@ class MapsViewModel @Inject constructor(
                             is NetworkState.Success -> {
                                 //Location 값이 정상 반환일때를 위한 필터링
                                 val filteringAddress = result.data.filter {
-                                    with(locationManager.geoCoding(it.addr)){
+                                    with(locationManager.getGeocoding(it.addr)){
                                         latitude != 0.0 && longitude != 0.0
                                     }
                                 }
 
                                 _hospitalClusters.emit(
                                     UiState.Complete(filteringAddress.map {
-                                        it.mapperToCluster(locationManager.geoCoding(it.addr))
+                                        it.mapperToCluster(locationManager.getGeocoding(it.addr))
                                     })
                                 )
                                 Log.d(tag, "SelectiveClinic Success: Total${result.data.size} ${result.data}")

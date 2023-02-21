@@ -22,6 +22,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.tabs.TabLayout
+import com.ljb.data.util.getDecimalFormatNum
 import com.ljb.domain.UiState
 import com.ljb.domain.entity.WeekCovid
 import com.project.kovid.R
@@ -31,7 +32,6 @@ import com.project.kovid.viewmodel.HomeViewModel
 import com.project.kovid.widget.AreaListAdapter
 import com.project.kovid.widget.extension.MyXAxisFormatter
 import com.project.kovid.widget.extension.customview.CustomChartMarker
-import com.project.kovid.widget.util.StringUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -122,7 +122,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.apply {
             val todayCovid = dataList[dataList.lastIndex]
             txtCurrentDate.text = getString(R.string.current_covid, todayCovid.day)
-            txtDecideCnt.text = StringUtil.getDecimalFormatNum(todayCovid.decideCnt)
+            txtDecideCnt.text = todayCovid.decideCnt.getDecimalFormatNum()
         }
 
         val cntList = arrayListOf<Int>()    //Bar ChartSet / Max 확진자수 구하기위한 배열
@@ -225,7 +225,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             e.let {
                 val weekCovid = e?.data as WeekCovid
                 binding.txtCurrentDate.text = getString(R.string.current_covid, weekCovid.day)
-                binding.txtDecideCnt.text = StringUtil.getDecimalFormatNum(weekCovid.decideCnt)
+                binding.txtDecideCnt.text = weekCovid.decideCnt.getDecimalFormatNum()
                 Log.d("타입", weekCovid.day)
             }
         }

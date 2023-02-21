@@ -15,8 +15,8 @@ import javax.inject.Inject
 class LocalClinicRepositoryImpl @Inject constructor(private val localSource: LocalClinicSource) : LocalClinicRepository {
 
     //선별 진료소 DB get
-    override fun getLocalSelectiveClinic(): List<SelectiveClinic> =
-        localSource.getSelectiveClinic().map {
+    override fun getLocalSelectiveClinic(sido : String): List<SelectiveClinic> =
+        localSource.getSelectiveClinic(sido).map {
             it.mapperToSelective()
         }
 
