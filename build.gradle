@@ -1,11 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext{
-        kotlin_version = "1.6.0" //1.4.32, 1.5.0, 1.6.0
-
+        kotlin_version = "1.8.0"
 
         //App, Data, Domain Module
-        hilt_version = '2.42'
+        hilt_version = '2.43.2'
         coroutine_version = '1.6.4'
 
         //Data Module Only
@@ -30,6 +29,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:7.4.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
         classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
