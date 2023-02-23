@@ -1,5 +1,12 @@
 package com.ljb.data.mapper
 
 import com.google.android.gms.maps.model.LatLng
+import com.ljb.data.model.PolygonData
+import com.ljb.domain.entity.MapsPolygon
 
-fun List<Double>.mapperToLatLng() = LatLng(this[1], this[0])
+fun MapsPolygon.mapperToLatLng() = PolygonData(
+    centerLatLng = LatLng(centerLatLng[1], centerLatLng[0]),
+    polygonLatLng = mapsPolygon.map {
+        LatLng(it[1], it[0])
+    }
+)

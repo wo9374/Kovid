@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,13 +21,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
 import com.ljb.data.model.SelectiveCluster
-import com.ljb.data.util.splitSido
 import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
@@ -46,6 +47,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var clusterManager: ClusterManager<SelectiveCluster>
+    private lateinit var mPolygon: Polygon
 
     private val mapsViewModel: MapsViewModel by viewModels()
 
@@ -73,7 +75,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 }
             }
             else -> {
-                //binding.mapView.getMapAsync(this)
+                mapsViewModel.startLocation()
+                binding.mapView.getMapAsync(this)
             }
         }
     }
@@ -84,7 +87,12 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mapView.onCreate(savedInstanceState)
 
-        activityResultLauncher.launch(permissions)
+        if (checkLocationPermission()){
+            binding.mapView.getMapAsync(this)
+            mapsViewModel.startLocation()
+        }
+        else
+            activityResultLauncher.launch(permissions)
     }
 
 
@@ -115,7 +123,18 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
             isMyLocationEnabled = true
             uiSettings.isMyLocationButtonEnabled = true
-            //uiSettings.isZoomControlsEnabled = true
+            uiSettings.isZoomControlsEnabled = true
+        }
+
+        binding.regionSpinner.apply {
+            searchBtn.setOnClickListener {
+                getSelectedItemPair().apply {
+                    Log.d(TAG, "1: $first 2: $second")
+
+                    mapsViewModel.getMapsPolyGon(first, second)
+                    mapsViewModel.getDbData(first, second)
+                }
+            }
         }
 
         observeData()
@@ -124,34 +143,36 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     private fun observeData() {
         lifecycleScope.launchWhenStarted {
             mapsViewModel.currentLocation.collect {
-                    val latLng = LatLng(it.latitude, it.longitude)
-                    if (mapsViewModel.hospitalClusters.value == UiState.Loading){
-                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+                val latLng = LatLng(it.latitude, it.longitude)
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
-                        ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
-                            requireActivity(), true,
-                            getString(R.string.searching_sido, mapsViewModel.detailAddress.splitSido()))
-                    }
+                if (mapsViewModel.hospitalClusters.value == UiState.Loading){
+                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
+                        requireActivity(), true, getString(R.string.searching_sido, mapsViewModel.detailAddress.value))
                 }
+
+                mapsViewModel.stopLocation() //첫 데이터 init 후 정지
+            }
         }
 
         lifecycleScope.launch {
 
             //Maps Polygon
             launch {
-                mapsViewModel.mapsPolygon.collectLatest {
-                    mGoogleMap.addPolygon(
-                        PolygonOptions()
-                            .addAll(it)
-                            .fillColor(Color.argb(70, 204, 153, 255))
-                            .strokeColor(R.color.purple_700)
-                            .strokeWidth(5.0f)
-                    )
-                }
-            }
-            launch {
-                mapsViewModel.polygonCenter.collectLatest {
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 11F))
+                mapsViewModel.polygonData.collectLatest {
+                    if (::mPolygon.isInitialized)
+                        mPolygon.remove()
+
+                    mPolygon =  mGoogleMap.addPolygon(PolygonOptions()
+                        .addAll(it.polygonLatLng)
+                        .fillColor(Color.argb(70, 204, 153, 255))
+                        .strokeColor(R.color.purple_700)
+                        .strokeWidth(5.0f))
+
+                    if (it.polygonLatLng.size >= 1000)
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.centerLatLng, 11F))
+                    else
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.centerLatLng, 12F))
                 }
             }
 
@@ -163,7 +184,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         when (it) {
                             is UiState.Loading -> {}
                             is UiState.Complete -> {
+                                clusterManager.clearItems()
+
                                 visibleDisplayCluster(it.data)
+
                                 ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
                             }
                             is UiState.Fail -> {
@@ -226,12 +250,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
-        if (checkLocationPermission()) {
-            if (!::mGoogleMap.isInitialized)
-                binding.mapView.getMapAsync(this)
-
-            mapsViewModel.startLocation()
-        }
     }
 
     override fun onPause() {

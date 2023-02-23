@@ -7,8 +7,12 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
+import androidx.annotation.RequiresApi
 import com.google.android.gms.location.*
+import com.ljb.data.util.splitSido
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -68,23 +72,41 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
         try {
             var str = ""
 
-            with(Geocoder(context, Locale.KOREA)){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    getFromLocation(location.latitude, location.longitude, 1){
-                        it.firstOrNull()?.let { addr ->
-                            str = addr.adminArea
-                        }
-                    }
-                }else{
-                    Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.let {
-                        str = it.adminArea
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1){
+                    it.firstOrNull()?.let { addr ->
+                        str = addr.adminArea
                     }
                 }
+            }else{
+                Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.let {
+                    str = it.adminArea
+                }
             }
-            return str
+            return str.splitSido()
         }catch (e:Exception){
             e.printStackTrace()
             return ""
         }
+    }
+
+    suspend fun getReverseGeo(location: Location): String {
+        var str = ""
+        withContext(Dispatchers.IO){
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1){
+                        str = it.first().adminArea
+                    }
+                }else{
+                    str = Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.adminArea ?:""
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
+                getReverseGeo(location)
+            }
+        }
+
+        return str
     }
 }

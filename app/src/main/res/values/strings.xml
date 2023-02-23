@@ -19,7 +19,7 @@
     <string name="accumulate_deice">누적확진자</string>
     <string name="new_decide">신규확진자</string>
     
-    <string name="searching_sido">%1s시에 위치한 진료소 정보를 찾는중…</string>
+    <string name="searching_sido">%1s에 위치한 진료소 정보를 찾는중…</string>
 
     <string name="general_clinic">종합병원</string>
     <string name="temporary_clinic">임시 선별 진료소</string>

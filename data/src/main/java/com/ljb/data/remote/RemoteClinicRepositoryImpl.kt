@@ -1,7 +1,6 @@
 package com.ljb.data.remote
 
 import android.util.Log
-import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.mapper.mapperToSelective
 import com.ljb.data.remote.datasource.RemoteClinicSource
 import com.ljb.domain.NetworkState
@@ -17,16 +16,22 @@ class RemoteClinicRepositoryImpl @Inject constructor(
 ) : RemoteClinicRepository {
     private val TAG = RemoteClinicRepositoryImpl::class.java.simpleName
 
-    override fun getMapsPolygon(sido: String): Flow<NetworkState<MapsPolygon>> {
+    override fun getMapsPolygon(sido: String, sigungu:String): Flow<NetworkState<MapsPolygon>> {
         return flow {
             remoteSource.apply {
-                val osmId = getPolygonOsmId(sido) //osmId 먼저 get
+                val addr = if (sigungu.isEmpty() || sigungu == "전체")
+                    sido
+                else "$sido+$sigungu"
+
+                val osmId = getPolygonOsmId(addr) //osmId 먼저 get
                 if (osmId.isNotEmpty()){
                     val result = getPolygonData(osmId[0].osm_id) //polygon Data get
                     if (result.isSuccessful){
                         val polygon = result.body()?.geometry?.polygonLatLng?.get(0) ?: emptyList()
                         val centerLatLng = result.body()?.centroid?.centerLatLng ?: emptyList()
-                        emit(NetworkState.Success(MapsPolygon(polygon, centerLatLng)))
+                        emit(
+                            NetworkState.Success(MapsPolygon(centerLatLng, polygon))
+                        )
                     } else
                         emit(NetworkState.Error(result.message()))
                 }else

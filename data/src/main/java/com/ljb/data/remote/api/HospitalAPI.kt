@@ -22,14 +22,14 @@ interface HospitalAPI {
 
     @GET(ApiInfo.OSM_ID_END_POINT)
     suspend fun getPolygonOsmId(
-        @Query("city") city: String,
+        @Query("q") city: String,
         @Query("format") format: String = ApiInfo.JSON_FORMAT_V2,
     ): List<PolygonOsmId>
 
     @GET(ApiInfo.POLYGON_END_POINT)
     suspend fun getPolygonGeoJson(
         @Query("osmtype") osmtype: String = "R",
-        @Query("osmid") osmid: Int,
+        @Query("osmid") osmid: Long,
         //@Query("addressdetails") addressdetails: Int = 1,
         //@Query("hierarchy") hierarchy: Int = 0,
         //@Query("group_hierarchy") group_hierarchy: Int = 1,

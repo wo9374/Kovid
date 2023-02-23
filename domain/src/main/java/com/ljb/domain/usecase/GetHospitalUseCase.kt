@@ -8,8 +8,8 @@ import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetMapsPolygonUseCase(private val repository: RemoteClinicRepository) {
-    operator fun invoke(sido: String): Flow<NetworkState<MapsPolygon>> =
-        repository.getMapsPolygon(sido)
+    operator fun invoke(sido: String, sigungu: String): Flow<NetworkState<MapsPolygon>> =
+        repository.getMapsPolygon(sido, sigungu)
 }
 
 class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) {
@@ -18,7 +18,7 @@ class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) 
 }
 
 class GetDbSelectiveClinicUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke(sido:String) : List<SelectiveClinic> = repository.getLocalSelectiveClinic(sido)
+    operator fun invoke(sido: String, sigungu: String) : List<SelectiveClinic> = repository.getLocalSelectiveClinic(sido, sigungu)
 }
 
 class InsertSelectiveClinicUseCase(private val repository: LocalClinicRepository){

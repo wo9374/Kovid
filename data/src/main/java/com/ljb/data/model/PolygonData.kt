@@ -1,5 +1,6 @@
 package com.ljb.data.model
 
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,7 +10,7 @@ data class PolygonOsmId(
     @SerializedName("addr")val place_id : Int,
     //@SerializedName("licence")val licence : String,
     @SerializedName("osm_type")val osm_type : String,
-    @SerializedName("osm_id")val osm_id : Int,
+    @SerializedName("osm_id")val osm_id : Long,
     @SerializedName("boundingbox")val boundingbox : List<String>,
     @SerializedName("lat")val lat: String,
     @SerializedName("lon")val lon: String,
@@ -34,4 +35,9 @@ data class PolygonCenter(
 data class PolygonGeoJson(
     @SerializedName("type") val type: String,
     @SerializedName("coordinates") val polygonLatLng: List<List<List<Double>>>
+)
+
+data class PolygonData(
+    val centerLatLng: LatLng,
+    val polygonLatLng: List<LatLng>
 )

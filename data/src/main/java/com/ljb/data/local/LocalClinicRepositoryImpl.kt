@@ -15,10 +15,18 @@ import javax.inject.Inject
 class LocalClinicRepositoryImpl @Inject constructor(private val localSource: LocalClinicSource) : LocalClinicRepository {
 
     //선별 진료소 DB get
-    override fun getLocalSelectiveClinic(sido : String): List<SelectiveClinic> =
-        localSource.getSelectiveClinic(sido).map {
-            it.mapperToSelective()
+    override fun getLocalSelectiveClinic(sido: String, sigungu: String): List<SelectiveClinic> {
+        if (sigungu.isEmpty() || sigungu == "전체"){
+            return localSource.getSelectiveClinic(sido).map {
+                it.mapperToSelective()
+            }
+        }else{
+            return localSource.getSelectiveClinicSigungu(sido, sigungu).map {
+                it.mapperToSelective()
+            }
         }
+    }
+
 
     override suspend fun insertSelectiveClinic(selectiveClinic: SelectiveClinic) {
         val selectiveClinicModel = selectiveClinic.mapperToSelectiveJson()

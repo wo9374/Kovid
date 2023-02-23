@@ -17,6 +17,9 @@ interface SelectiveClinicDao{
     @Query("SELECT * From selective_clinic WHERE sido = :sido")
     fun getSelectiveClinic(sido: String): List<SelectiveClinicJson>
 
+    @Query("SELECT * From selective_clinic WHERE sido = :sido AND sigungu= :sigungu")
+    fun getSelectiveClinicSigungu(sido: String, sigungu: String): List<SelectiveClinicJson>
+
     @Insert
     suspend fun insertClinic(selectiveCluster: SelectiveClinicJson)
 

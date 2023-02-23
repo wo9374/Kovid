@@ -12,7 +12,7 @@ import javax.inject.Inject
 interface RemoteClinicSource {
     suspend fun getSelectiveClinic(sido:String): Response<SelectiveClinicJsonResponse>
     suspend fun getPolygonOsmId(adminArea: String): List<PolygonOsmId>
-    suspend fun getPolygonData(osm_id : Int): Response<PolyGonResponse>
+    suspend fun getPolygonData(osm_id : Long): Response<PolyGonResponse>
 }
 
 class RemoteClinicSourceImpl @Inject constructor(
@@ -25,6 +25,6 @@ class RemoteClinicSourceImpl @Inject constructor(
     override suspend fun getPolygonOsmId(adminArea: String): List<PolygonOsmId> =
         polygonAPI.getPolygonOsmId(city = adminArea)
 
-    override suspend fun getPolygonData(osm_id: Int): Response<PolyGonResponse> =
+    override suspend fun getPolygonData(osm_id: Long): Response<PolyGonResponse> =
         polygonAPI.getPolygonGeoJson(osmid = osm_id)
 }

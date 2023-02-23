@@ -13,12 +13,12 @@ interface CovidRepository {
 }
 
 interface RemoteClinicRepository{
-    fun getMapsPolygon(sido:String): Flow<NetworkState<MapsPolygon>>
+    fun getMapsPolygon(sido:String, sigungu:String): Flow<NetworkState<MapsPolygon>>
     fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>>
 }
 
 interface LocalClinicRepository{
-    fun getLocalSelectiveClinic(sido: String): List<SelectiveClinic>
+    fun getLocalSelectiveClinic(sido: String, sigungu: String): List<SelectiveClinic>
     suspend fun insertSelectiveClinic(selectiveClinic: SelectiveClinic)
     suspend fun clearSelectiveClinics()
 }

@@ -9,10 +9,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.mapper.mapperToLatLng
+import com.ljb.data.model.PolygonData
 import com.ljb.data.model.SelectiveCluster
 import com.ljb.data.util.splitSido
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
+import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.usecase.GetDbSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetMapsPolygonUseCase
 import com.ljb.domain.usecase.GetSelectiveClinicUseCase
@@ -26,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -45,18 +48,13 @@ class MapsViewModel @Inject constructor(
     val hospitalClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _hospitalClusters
 
 
-    /** 검색한 시도 지역의 영역 Polygon */
-    private val _mapsPolygon = MutableSharedFlow <List<LatLng>>(
+    /** 검색한 시도 지역의 영역 Polygon, centerPosition */
+    private val _polygonData = MutableSharedFlow<PolygonData>(
         replay = 0,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val mapsPolygon = _mapsPolygon.asSharedFlow()
-
-
-    /** 검색한 시도 지역의 센터 Point */
-    private val _polygonCenter = MutableSharedFlow <LatLng>()
-    val polygonCenter = _polygonCenter.asSharedFlow()
+    val polygonData = _polygonData.asSharedFlow()
 
     /**
      *현위치 get
@@ -68,22 +66,27 @@ class MapsViewModel @Inject constructor(
     )
     val currentLocation = _currentLocation.asSharedFlow()
 
-    var detailAddress = "" //주소가 바꼈을때를 판단하기 위한 Pair
+
+    private val _detailAddress = MutableStateFlow("")
+    val detailAddress get() = _detailAddress
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             locationResult.lastLocation?.let {
-                val currentAddress = locationManager.getReverseGeocoding(it)
-
-                if (currentAddress.isNotEmpty() && detailAddress != currentAddress){
-                    detailAddress = currentAddress
-                    getMapsPolyGon(currentAddress.splitSido())
-                    getDbData(currentAddress.splitSido())
-                }
 
                 viewModelScope.launch {
+                    val sido = locationManager.getReverseGeo(it)
+                    _detailAddress.emit(sido)
                     _currentLocation.emit(it)
+
+                    detailAddress.collectLatest {
+                        if (it.isNotEmpty()){
+                            getMapsPolyGon(it)
+                            getDbData(it.splitSido())
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -91,19 +94,15 @@ class MapsViewModel @Inject constructor(
     fun startLocation() = locationManager.startLocationUpdates(mLocationCallback)
     fun stopLocation() = locationManager.stopLocationUpdates(mLocationCallback)
 
-    fun getMapsPolyGon(sido:String){
+    fun getMapsPolyGon(addr:String, sigungu: String = ""){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                getMapsPolygonUseCase(sido).catch { exception ->
+                getMapsPolygonUseCase(addr, sigungu).catch { exception ->
                     Log.d(tag, "getMapsPolygonUseCase Exception Error: ${exception.message}")
                 }.collect { result ->
                     when(result){
                         is NetworkState.Success -> {
-                            _polygonCenter.emit(result.data.centerLatLng.mapperToLatLng())
-
-                            _mapsPolygon.emit(
-                                result.data.polygon.map { it.mapperToLatLng() }
-                            )
+                            _polygonData.emit(result.data.mapperToLatLng())
                         }
                         is NetworkState.Error -> {}
                         is NetworkState.Loading -> {}
@@ -113,17 +112,19 @@ class MapsViewModel @Inject constructor(
         }
     }
 
-    fun getDbData(sido: String) {
+    fun getDbData(sido: String, sigungu: String = "") {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                getDbSelectiveClinicUseCase(sido).apply {
+                getDbSelectiveClinicUseCase(sido, sigungu).apply {
                     if (isEmpty()) {
                         //DB Data 없을시 Remote API 호출
                         getRemoteData(sido)
                     } else {
                         _hospitalClusters.emit(
                             UiState.Complete(
-                                map { it.mapperToCluster(locationManager.getGeocoding(it.addr)) }
+                                map {
+                                    it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                                }
                             )
                         )
                     }
@@ -136,7 +137,6 @@ class MapsViewModel @Inject constructor(
     fun getRemoteData(siDo: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-
 
                 getSelectiveClinicUseCase(siDo)
                     .catch { exception ->
