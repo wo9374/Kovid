@@ -6,15 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.model.LatLng
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.model.PolygonData
 import com.ljb.data.model.SelectiveCluster
-import com.ljb.data.util.splitSido
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
-import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.usecase.GetDbSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetMapsPolygonUseCase
 import com.ljb.domain.usecase.GetSelectiveClinicUseCase
@@ -67,7 +64,7 @@ class MapsViewModel @Inject constructor(
     val currentLocation = _currentLocation.asSharedFlow()
 
 
-    private val _detailAddress = MutableStateFlow("")
+    private val _detailAddress = MutableStateFlow(Pair("",""))
     val detailAddress get() = _detailAddress
 
     private val mLocationCallback = object : LocationCallback() {
@@ -75,19 +72,21 @@ class MapsViewModel @Inject constructor(
             locationResult.lastLocation?.let {
 
                 viewModelScope.launch {
-                    val sido = locationManager.getReverseGeo(it)
+                    val sido = locationManager.getReverseGeocoding(it)
                     _detailAddress.emit(sido)
                     _currentLocation.emit(it)
 
+
                     detailAddress.collectLatest {
-                        if (it.isNotEmpty()){
-                            getMapsPolyGon(it)
-                            getDbData(it.splitSido())
+                        if (it.first.isNotEmpty()){
+                            getMapsPolyGon(it.first, it.second)
+                            getDbData(it.first, it.second)
                         }
                     }
                 }
 
             }
+
         }
     }
 

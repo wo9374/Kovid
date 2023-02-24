@@ -131,6 +131,9 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 getSelectedItemPair().apply {
                     Log.d(TAG, "1: $first 2: $second")
 
+                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
+                        requireActivity(), true, getString(R.string.searching_sido, "$first $second"))
+
                     mapsViewModel.getMapsPolyGon(first, second)
                     mapsViewModel.getDbData(first, second)
                 }
@@ -146,10 +149,15 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 val latLng = LatLng(it.latitude, it.longitude)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
-                if (mapsViewModel.hospitalClusters.value == UiState.Loading){
-                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
-                        requireActivity(), true, getString(R.string.searching_sido, mapsViewModel.detailAddress.value))
-                }
+//                if (mapsViewModel.hospitalClusters.value == UiState.Loading){
+                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true,
+                        getString(R.string.searching_sido,
+                            with(mapsViewModel.detailAddress.value){
+                                if (second.isEmpty()) first
+                                else "$first $second"
+                            }
+                        ))
+//                }
 
                 mapsViewModel.stopLocation() //첫 데이터 init 후 정지
             }
@@ -187,7 +195,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                                 clusterManager.clearItems()
 
                                 visibleDisplayCluster(it.data)
-
                                 ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
                             }
                             is UiState.Fail -> {

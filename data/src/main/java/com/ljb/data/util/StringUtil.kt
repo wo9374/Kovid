@@ -3,10 +3,10 @@ package com.ljb.data.util
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-fun String.splitSido() : String {
-    val sido = this.replace("특별시", "")
-    sido.replace("광역시", "")
-    return sido
+fun String.splitSi() : String {
+    var str = this.replace("특별시", "")
+    str = str.replace("광역시", "")
+    return str
 }
 
 fun String.computeStringToInt() = if (this.length == 8) {

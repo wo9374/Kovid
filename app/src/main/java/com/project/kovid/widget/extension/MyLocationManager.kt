@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
 import android.location.Location
-import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
-import androidx.annotation.RequiresApi
 import com.google.android.gms.location.*
-import com.ljb.data.util.splitSido
+import com.ljb.data.util.splitSi
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,28 +18,32 @@ import javax.inject.Inject
  * Provide [AppModule]
  * */
 class MyLocationManager @Inject constructor(@ApplicationContext val context: Context) {
-    val TAG = LocationManager::class.java.name
 
-    private var mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context) // 현재 위치를 가져오기 위한 변수
-    private lateinit var mLocationRequest: LocationRequest // 위치 정보 요청의 매개변수를 저장하는
+    private var mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    private lateinit var mLocationRequest: LocationRequest
 
     @SuppressLint("MissingPermission")
     fun startLocationUpdates(mLocationCallback: LocationCallback) {
-        mLocationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        mLocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1500)
+            .setWaitForAccurateLocation(false)  //위치 요청할 때 정확한 위치를 기다리는 기능 설정
+            .setMinUpdateIntervalMillis(2000)   //위치 업데이트를 요청하는데 사용되는 최소 업데이트 간격
+            .setMaxUpdateDelayMillis(1000)       //위치 업데이트를 받기 전에 시스템이 대기하는 최대 시간을 설정
+            .build()
         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper()!!)
     }
 
     fun stopLocationUpdates(mLocationCallback: LocationCallback) {
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback)
     }
+
     //주소로 위도,경도 구하는 GeoCoding
     @Suppress("DEPRECATION")
-    fun getGeocoding(address: String): Location{
+    fun getGeocoding(address: String): Location {
         try {
             var location = Location("")
 
-            with(Geocoder(context, Locale.KOREA)){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            with(Geocoder(context, Locale.KOREA)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     getFromLocationName(address, 1) {
                         it.firstOrNull()?.let {
                             location = Location("").apply {
@@ -50,7 +52,7 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
                             }
                         }
                     }
-                }else{
+                } else {
                     getFromLocationName(address, 1)?.first()?.let {
                         location = Location("").apply {
                             latitude = it.latitude
@@ -60,53 +62,40 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
                 }
             }
             return location
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             return Location("")
         }
     }
 
     // 위도 경도로 주소 구하는 Reverse-GeoCoding
-    @Suppress("DEPRECATION")
-    fun getReverseGeocoding(location: Location): String{
-        try {
-            var str = ""
+    suspend fun getReverseGeocoding(location: Location): Pair<String, String> {
+        var pair: Pair<String, String> = Pair("", "")
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1){
-                    it.firstOrNull()?.let { addr ->
-                        str = addr.adminArea
-                    }
-                }
-            }else{
-                Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.let {
-                    str = it.adminArea
-                }
-            }
-            return str.splitSido()
-        }catch (e:Exception){
-            e.printStackTrace()
-            return ""
-        }
-    }
-
-    suspend fun getReverseGeo(location: Location): String {
-        var str = ""
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1){
-                        str = it.first().adminArea
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1) {
+                        with(it.first()) {
+                            pair = if (adminArea.contains("특별시") || adminArea.contains("광역시"))
+                                Pair(adminArea.splitSi(), "")
+                            else
+                                Pair(adminArea, locality)
+                        }
                     }
-                }else{
-                    str = Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.adminArea ?:""
+                } else {
+                    Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.apply {
+                        pair = if (adminArea.contains("특별시") || adminArea.contains("광역시"))
+                            Pair(adminArea.splitSi(), "")
+                        else
+                            Pair(adminArea, locality)
+                    }
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
-                getReverseGeo(location)
+                getReverseGeocoding(location)
             }
         }
-
-        return str
+        return pair
     }
 }
