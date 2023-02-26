@@ -21,6 +21,7 @@ class RemoteClinicRepositoryImpl @Inject constructor(
             remoteSource.apply {
                 val addr = if (sigungu.isEmpty() || sigungu == "전체")
                     sido
+
                 else "$sido+$sigungu"
 
                 val osmId = getPolygonOsmId(addr) //osmId 먼저 get
@@ -40,9 +41,16 @@ class RemoteClinicRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteSelectiveClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = remoteSource.getSelectiveClinic(sido)
+            val result = if (sigungu.isEmpty() || sigungu == "전체")
+                remoteSource.getSelectiveClinic(sido)
+            else{
+                var temp = sido
+                if (temp.contains("제주"))
+                    temp = "제주"
+                remoteSource.getSelectiveClinic(temp, sigungu)
+            }
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")

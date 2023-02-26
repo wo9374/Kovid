@@ -3,6 +3,9 @@ package com.ljb.data.util
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
+fun String.containsMetropolitanCity() : Boolean{
+    return this.contains("특별시") || this.contains("광역시")
+}
 fun String.splitSi() : String {
     var str = this.replace("특별시", "")
     str = str.replace("광역시", "")

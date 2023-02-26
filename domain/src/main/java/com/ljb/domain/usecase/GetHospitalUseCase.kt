@@ -13,8 +13,8 @@ class GetMapsPolygonUseCase(private val repository: RemoteClinicRepository) {
 }
 
 class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) {
-    operator fun invoke(sido:String): Flow<NetworkState<List<SelectiveClinic>>> =
-        repository.getRemoteSelectiveClinic(sido)
+    operator fun invoke(sido:String, sigungu: String): Flow<NetworkState<List<SelectiveClinic>>> =
+        repository.getRemoteSelectiveClinic(sido, sigungu)
 }
 
 class GetDbSelectiveClinicUseCase(private val repository: LocalClinicRepository){

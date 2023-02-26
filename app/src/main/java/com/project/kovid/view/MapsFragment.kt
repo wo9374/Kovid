@@ -149,15 +149,15 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 val latLng = LatLng(it.latitude, it.longitude)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
-//                if (mapsViewModel.hospitalClusters.value == UiState.Loading){
+
+
+                with(mapsViewModel.detailAddress.value){
+                    val addr = if (second.isEmpty()) first else "$first $second"
                     ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true,
-                        getString(R.string.searching_sido,
-                            with(mapsViewModel.detailAddress.value){
-                                if (second.isEmpty()) first
-                                else "$first $second"
-                            }
-                        ))
-//                }
+                        getString(R.string.searching_sido, addr))
+
+
+                }
 
                 mapsViewModel.stopLocation() //첫 데이터 init 후 정지
             }

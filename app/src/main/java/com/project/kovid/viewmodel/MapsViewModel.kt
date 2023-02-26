@@ -117,7 +117,7 @@ class MapsViewModel @Inject constructor(
                 getDbSelectiveClinicUseCase(sido, sigungu).apply {
                     if (isEmpty()) {
                         //DB Data 없을시 Remote API 호출
-                        getRemoteData(sido)
+                        getRemoteData(sido, sigungu)
                     } else {
                         _hospitalClusters.emit(
                             UiState.Complete(
@@ -133,11 +133,11 @@ class MapsViewModel @Inject constructor(
         }
     }
 
-    fun getRemoteData(siDo: String) {
+    fun getRemoteData(siDo: String, sigungu:String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
 
-                getSelectiveClinicUseCase(siDo)
+                getSelectiveClinicUseCase(siDo, sigungu)
                     .catch { exception ->
                         Log.d(tag, "SelectiveClinic Exception Error: ${exception.message}")
                     }.collect { result ->
