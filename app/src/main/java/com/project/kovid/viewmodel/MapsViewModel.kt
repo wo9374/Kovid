@@ -12,11 +12,13 @@ import com.ljb.data.model.PolygonData
 import com.ljb.data.model.SelectiveCluster
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
-import com.ljb.domain.usecase.GetDbSelectiveClinicUseCase
+import com.ljb.domain.usecase.GetDbClinicUseCase
 import com.ljb.domain.usecase.GetMapsPolygonUseCase
 import com.ljb.domain.usecase.GetSelectiveClinicUseCase
+import com.ljb.domain.usecase.GetTemporaryClinicUseCase
 import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
 import com.project.kovid.widget.extension.MyLocationManager
+import com.project.kovid.widget.extension.customview.HospClusterMarker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -25,7 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,8 +38,8 @@ class MapsViewModel @Inject constructor(
     private val getTemporaryClinicUseCase: GetTemporaryClinicUseCase,
     private val locationManager: MyLocationManager,
 
-    private val getDbSelectiveClinicUseCase: GetDbSelectiveClinicUseCase,
-    private val insertSelectiveClinicUseCase: InsertSelectiveClinicUseCase
+    private val getDbClinicUseCase: GetDbClinicUseCase,
+    private val insertClinicUseCase: InsertSelectiveClinicUseCase
 ) : ViewModel() {
     private val tag = MapsViewModel::class.java.simpleName
 
@@ -80,22 +81,48 @@ class MapsViewModel @Inject constructor(
 
                     getDbData(sido.first, sido.second)
                 }
-
             }
-
         }
     }
 
     fun startLocation() = locationManager.startLocationUpdates(mLocationCallback)
     fun stopLocation() = locationManager.stopLocationUpdates(mLocationCallback)
 
-    fun getMapsPolyGon(addr:String, sigungu: String = ""){
+    fun getDbData(siDo: String, siGunGu: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                getMapsPolygonUseCase(addr, sigungu).catch { exception ->
+
+            withContext(Dispatchers.IO) {
+                detailAddress = Pair(siDo, siGunGu)
+                progressState.emit(true)
+
+                with(getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_SELECTIVE)) {
+                    if (isEmpty())
+                        getSelectiveData(siDo, siGunGu) //DB Data 없을시 Remote API 호출
+                    else {
+                        _selectiveClusters.emit(
+                            UiState.Complete(map {
+                                it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                            })
+                        )
+                    }
+                }
+
+                with(getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_TEMPORARY)) {
+                    if (isEmpty())
+                        getTemporaryData(siDo, siGunGu)
+                    else {
+                        _temporaryClusters.emit(
+                            UiState.Complete(map {
+                                it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                            })
+                        )
+                    }
+                }
+
+                getMapsPolygonUseCase(siDo, siGunGu).catch { exception ->
                     Log.d(tag, "getMapsPolygonUseCase Exception Error: ${exception.message}")
                 }.collect { result ->
-                    when(result){
+                    when (result) {
                         is NetworkState.Success -> {
                             _polygonData.emit(result.data.mapperToLatLng())
                         }
@@ -103,6 +130,8 @@ class MapsViewModel @Inject constructor(
                         is NetworkState.Loading -> {}
                     }
                 }
+
+                progressState.emit(false)
             }
         }
     }

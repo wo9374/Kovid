@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -114,9 +113,13 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))
 
             setOnCameraIdleListener {
-                clusterManager
-                mapsViewModel.hospitalClusters.value.let {
-                    if (it is UiState.Complete) visibleDisplayCluster(it.data)
+                mapsViewModel.selectiveClusters.value.let {
+                    if (it is UiState.Complete)
+                        visibleDisplayCluster(it.data)
+                }
+                mapsViewModel.temporaryClusters.value.let {
+                    if (it is UiState.Complete)
+                        visibleDisplayCluster(it.data)
                 }
             }
             setOnMarkerClickListener(clusterManager)
@@ -128,13 +131,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         binding.regionSpinner.apply {
             searchBtn.setOnClickListener {
-                getSelectedItemPair().apply {
-                    Log.d(TAG, "1: $first 2: $second")
-
-                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name,
-                        requireActivity(), true, getString(R.string.searching_sido, "$first $second"))
-
-                    mapsViewModel.getMapsPolyGon(first, second)
+                getSelectedItemPair().run {
+                    clusterManager.clearItems()
                     mapsViewModel.getDbData(first, second)
                 }
             }
@@ -144,26 +142,50 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     }
 
     private fun observeData() {
+
         lifecycleScope.launchWhenStarted {
             mapsViewModel.currentLocation.collect {
                 val latLng = LatLng(it.latitude, it.longitude)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-
-
-
-                with(mapsViewModel.detailAddress.value){
-                    val addr = if (second.isEmpty()) first else "$first $second"
-                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true,
-                        getString(R.string.searching_sido, addr))
-
-
-                }
-
                 mapsViewModel.stopLocation() //첫 데이터 init 후 정지
             }
         }
 
         lifecycleScope.launch {
+            launch {
+                mapsViewModel.progressState.collectLatest {
+                    if (it) {
+                        mapsViewModel.detailAddress.run {
+                            val addr = if (second.isEmpty()) first else "$first $second"
+                            ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, addr))
+                        }
+                    }else{
+                        ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
+                    }
+                }
+            }
+
+            //Clinic Marker
+            launch {
+                mapsViewModel.selectiveClusters.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collectLatest {
+                        when (it) {
+                            is UiState.Loading -> {}
+                            is UiState.Complete -> visibleDisplayCluster(it.data)
+                            is UiState.Fail -> Toast.makeText(mContext, "네트워크 오류!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+            launch {
+                mapsViewModel.temporaryClusters.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .collectLatest {
+                        when (it) {
+                            is UiState.Loading -> {}
+                            is UiState.Complete -> visibleDisplayCluster(it.data)
+                            is UiState.Fail -> Toast.makeText(mContext, "네트워크 오류!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
 
             //Maps Polygon
             launch {
@@ -173,7 +195,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
                     mPolygon =  mGoogleMap.addPolygon(PolygonOptions()
                         .addAll(it.polygonLatLng)
-                        .fillColor(Color.argb(70, 204, 153, 255))
+                        .fillColor(Color.argb(100, 255, 240, 255))
                         .strokeColor(R.color.purple_700)
                         .strokeWidth(5.0f))
 
@@ -182,28 +204,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     else
                         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.centerLatLng, 12F))
                 }
-            }
-
-            //Clinic Marker
-            launch {
-                mapsViewModel.hospitalClusters
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collectLatest {
-                        when (it) {
-                            is UiState.Loading -> {}
-                            is UiState.Complete -> {
-                                clusterManager.clearItems()
-
-                                visibleDisplayCluster(it.data)
-                                ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
-                            }
-                            is UiState.Fail -> {
-                                Toast.makeText(mContext, "네트워크 오류!", Toast.LENGTH_SHORT).show()
-                                ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
-                            }
-                        }
-                    }
-
             }
         }
     }
@@ -231,12 +231,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private fun showPermissionDialog(goSetting: Boolean = false) {
-        Snackbar.make(
-            binding.root,
-            if (goSetting) getString(R.string.permission_setting)
-            else getString(R.string.permission_check),
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction(
+        Snackbar.make(binding.root, if (goSetting) getString(R.string.permission_setting) else getString(R.string.permission_check), Snackbar.LENGTH_INDEFINITE).setAction(
             if (goSetting) getString(R.string.move_setting)
             else getString(R.string.ok)
         ) {

@@ -14,11 +14,11 @@ abstract class ClinicDatabase : RoomDatabase() {
 
 @Dao
 interface SelectiveClinicDao{
-    @Query("SELECT * From selective_clinic WHERE sido = :sido")
-    fun getSelectiveClinic(sido: String): List<SelectiveClinicJson>
+    @Query("SELECT * From selective_clinic WHERE sido = :sido AND clinicType = :clinicType")
+    fun getClinic(sido: String, clinicType: Int): List<SelectiveClinicJson>
 
-    @Query("SELECT * From selective_clinic WHERE sido = :sido AND sigungu= :sigungu")
-    fun getSelectiveClinicSigungu(sido: String, sigungu: String): List<SelectiveClinicJson>
+    @Query("SELECT * From selective_clinic WHERE sido = :sido AND sigungu= :sigungu AND clinicType = :clinicType")
+    fun getClinicSigungu(sido: String, sigungu: String, clinicType: Int): List<SelectiveClinicJson>
 
     @Insert
     suspend fun insertClinic(selectiveCluster: SelectiveClinicJson)

@@ -5,8 +5,6 @@ import com.ljb.data.mapper.mapperToSelectiveJson
 import com.ljb.data.local.datasouce.LocalClinicSource
 import com.ljb.domain.entity.SelectiveClinic
 import com.ljb.domain.repository.LocalClinicRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -15,25 +13,19 @@ import javax.inject.Inject
 class LocalClinicRepositoryImpl @Inject constructor(private val localSource: LocalClinicSource) : LocalClinicRepository {
 
     //선별 진료소 DB get
-    override fun getLocalSelectiveClinic(sido: String, sigungu: String): List<SelectiveClinic> {
-        if (sigungu.isEmpty() || sigungu == "전체"){
-            return localSource.getSelectiveClinic(sido).map {
-                it.mapperToSelective()
-            }
-        }else{
-            return localSource.getSelectiveClinicSigungu(sido, sigungu).map {
-                it.mapperToSelective()
-            }
+    override fun getLocalClinic(sido: String, sigungu: String, clinicType: Int): List<SelectiveClinic> {
+        return localSource.getClinic(sido, sigungu, clinicType).map {
+            it.mapperToSelective()
         }
     }
 
 
-    override suspend fun insertSelectiveClinic(selectiveClinic: SelectiveClinic) {
-        val selectiveClinicModel = selectiveClinic.mapperToSelectiveJson()
+    override suspend fun insertClinic(selectiveClinic: SelectiveClinic, clinicType: Int) {
+        val selectiveClinicModel = selectiveClinic.mapperToSelectiveJson(clinicType)
         localSource.insertSelectiveClinic(selectiveClinicModel)
     }
 
-    override suspend fun clearSelectiveClinics() {
+    override suspend fun clearClinics() {
         localSource.clearSelectiveClinics()
     }
 }
