@@ -9,6 +9,7 @@ object ApiInfo {
 
     const val HOSPITAL_URL = "http://apis.data.go.kr/"
     const val SELECTIVE_CLINIC_END_POINT = "1352000/ODMS_COVID_07/callCovid07Api"
+    const val TEMPORARY_CLINIC_END_POINT = "1352000/ODMS_COVID_08/callCovid08Api"
 
     const val NOMINATIM_URL = "https://nominatim.openstreetmap.org/"
     const val OSM_ID_END_POINT = "search.php"

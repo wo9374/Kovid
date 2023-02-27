@@ -34,6 +34,7 @@ import javax.inject.Inject
 class MapsViewModel @Inject constructor(
     private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
     private val getSelectiveClinicUseCase: GetSelectiveClinicUseCase,
+    private val getTemporaryClinicUseCase: GetTemporaryClinicUseCase,
     private val locationManager: MyLocationManager,
 
     private val getDbSelectiveClinicUseCase: GetDbSelectiveClinicUseCase,
@@ -41,11 +42,19 @@ class MapsViewModel @Inject constructor(
 ) : ViewModel() {
     private val tag = MapsViewModel::class.java.simpleName
 
-    private val _hospitalClusters = MutableStateFlow<UiState<List<SelectiveCluster>>>(UiState.Loading)
-    val hospitalClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _hospitalClusters
+    var progressState = MutableStateFlow(false)
+    var detailAddress = Pair("", "")
+
+    //선별 진료소
+    private val _selectiveClusters = MutableStateFlow<UiState<List<SelectiveCluster>>>(UiState.Loading)
+    val selectiveClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _selectiveClusters
+
+    //임시 선별 진료소
+    private val _temporaryClusters = MutableStateFlow<UiState<List<SelectiveCluster>>>(UiState.Loading)
+    val temporaryClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _temporaryClusters
 
 
-    /** 검색한 시도 지역의 영역 Polygon, centerPosition */
+    //검색한 시도 지역의 영역 Polygon, centerPosition
     private val _polygonData = MutableSharedFlow<PolygonData>(
         replay = 0,
         extraBufferCapacity = 1,
@@ -53,9 +62,7 @@ class MapsViewModel @Inject constructor(
     )
     val polygonData = _polygonData.asSharedFlow()
 
-    /**
-     *현위치 get
-     * */
+    //현위치
     private val _currentLocation = MutableSharedFlow<Location>(
         replay = 0,                         //새로운 구독자에게 이전 이벤트를 전달하지 않음
         extraBufferCapacity = 1,            //추가 버퍼를 생성하여 emit 한 데이터가 버퍼에 유지되도록 함
@@ -63,26 +70,15 @@ class MapsViewModel @Inject constructor(
     )
     val currentLocation = _currentLocation.asSharedFlow()
 
-
-    private val _detailAddress = MutableStateFlow(Pair("",""))
-    val detailAddress get() = _detailAddress
-
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             locationResult.lastLocation?.let {
-
                 viewModelScope.launch {
                     val sido = locationManager.getReverseGeocoding(it)
-                    _detailAddress.emit(sido)
+                    detailAddress = sido
                     _currentLocation.emit(it)
 
-
-                    detailAddress.collectLatest {
-                        if (it.first.isNotEmpty()){
-                            getMapsPolyGon(it.first, it.second)
-                            getDbData(it.first, it.second)
-                        }
-                    }
+                    getDbData(sido.first, sido.second)
                 }
 
             }
@@ -111,66 +107,66 @@ class MapsViewModel @Inject constructor(
         }
     }
 
-    fun getDbData(sido: String, sigungu: String = "") {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                getDbSelectiveClinicUseCase(sido, sigungu).apply {
-                    if (isEmpty()) {
-                        //DB Data 없을시 Remote API 호출
-                        getRemoteData(sido, sigungu)
-                    } else {
-                        _hospitalClusters.emit(
-                            UiState.Complete(
-                                map {
-                                    it.mapperToCluster(locationManager.getGeocoding(it.addr))
-                                }
-                            )
-                        )
-                    }
+    private suspend fun getSelectiveData(siDo: String, siGunGu: String) {
+        getSelectiveClinicUseCase(siDo, siGunGu).catch { exception ->
+            Log.d(tag, "getSelectiveData Exception Error: ${exception.message}")
+        }.collect { result ->
+            when (result) {
+                is NetworkState.Success -> {
+                    Log.d(tag, "getSelectiveData Success: Total${result.data.size} ${result.data}")
 
+                    //Location 값이 정상 반환일 때를 위한 필터링
+                    result.data.filter {
+                        with(locationManager.getGeocoding(it.addr)) {
+                            latitude != 0.0 && longitude != 0.0
+                        }
+                    }.run {
+                        forEach {
+                            insertClinicUseCase(it, HospClusterMarker.HOSP_SELECTIVE) //이후 DB 저장
+                        }
+
+                        val cluster = getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_SELECTIVE).map {
+                            it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                        }
+                        _selectiveClusters.emit(UiState.Complete(cluster))
+                    }
                 }
+                is NetworkState.Error -> {
+                    _selectiveClusters.emit(UiState.Fail(result.message))
+                    Log.d(tag, "getSelectiveData Error : ${result.message}")
+                }
+                is NetworkState.Loading -> _selectiveClusters.emit(UiState.Loading)
             }
         }
     }
 
-    fun getRemoteData(siDo: String, sigungu:String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+    private suspend fun getTemporaryData(siDo: String, siGunGu: String) {
+        getTemporaryClinicUseCase(siDo, siGunGu).catch { exception ->
+            Log.d(tag, "getTemporaryData Exception Error: ${exception.message}")
+        }.collect{ result ->
+            when (result) {
+                is NetworkState.Success -> {
+                    Log.d(tag, "getTemporaryData Success: Total${result.data.size} ${result.data}")
 
-                getSelectiveClinicUseCase(siDo, sigungu)
-                    .catch { exception ->
-                        Log.d(tag, "SelectiveClinic Exception Error: ${exception.message}")
-                    }.collect { result ->
-                        when (result) {
-                            is NetworkState.Success -> {
-                                //Location 값이 정상 반환일때를 위한 필터링
-                                val filteringAddress = result.data.filter {
-                                    with(locationManager.getGeocoding(it.addr)){
-                                        latitude != 0.0 && longitude != 0.0
-                                    }
-                                }
-
-                                _hospitalClusters.emit(
-                                    UiState.Complete(filteringAddress.map {
-                                        it.mapperToCluster(locationManager.getGeocoding(it.addr))
-                                    })
-                                )
-                                Log.d(tag, "SelectiveClinic Success: Total${result.data.size} ${result.data}")
-
-                                //이후 DB 저장
-                                filteringAddress.forEach {
-                                    insertSelectiveClinicUseCase(it)
-                                }
-                            }
-                            is NetworkState.Error -> {
-                                _hospitalClusters.emit(UiState.Fail(result.message))
-                                Log.d(tag, "SelectiveClinic Error : ${result.message}")
-                            }
-                            is NetworkState.Loading -> {
-                                _hospitalClusters.emit(UiState.Loading)
-                            }
+                    //Location 값이 정상 반환일 때를 위한 필터링
+                    result.data.filter {
+                        with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
+                    }.run {
+                        forEach {
+                            insertClinicUseCase(it, HospClusterMarker.HOSP_TEMPORARY)
                         }
+
+                        val cluster = getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_TEMPORARY).map {
+                            it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                        }
+                        _temporaryClusters.emit(UiState.Complete(cluster))
                     }
+                }
+                is NetworkState.Error -> {
+                    _temporaryClusters.emit(UiState.Fail(result.message))
+                    Log.d(tag, "getTemporaryData Error : ${result.message}")
+                }
+                is NetworkState.Loading -> _temporaryClusters.emit(UiState.Loading)
             }
         }
     }

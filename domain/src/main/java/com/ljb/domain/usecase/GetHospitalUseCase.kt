@@ -17,14 +17,20 @@ class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) 
         repository.getRemoteSelectiveClinic(sido, sigungu)
 }
 
-class GetDbSelectiveClinicUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke(sido: String, sigungu: String) : List<SelectiveClinic> = repository.getLocalSelectiveClinic(sido, sigungu)
+class GetTemporaryClinicUseCase(private val repository: RemoteClinicRepository){
+    operator fun invoke(sido:String, sigungu: String): Flow<NetworkState<List<SelectiveClinic>>> =
+        repository.getRemoteTemporaryClinic(sido, sigungu)
+}
+
+class GetDbClinicUseCase(private val repository: LocalClinicRepository){
+    operator fun invoke(sido: String, sigungu: String, clinicType :Int) : List<SelectiveClinic> =
+        repository.getLocalClinic(sido, sigungu, clinicType)
 }
 
 class InsertSelectiveClinicUseCase(private val repository: LocalClinicRepository){
-    suspend operator fun invoke(value : SelectiveClinic) = repository.insertSelectiveClinic(value)
+    suspend operator fun invoke(value : SelectiveClinic, clinicType: Int) = repository.insertClinic(value, clinicType)
 }
 
 class ClearSelectiveClinicUseCase(private val repository: LocalClinicRepository){
-    suspend operator fun invoke() = repository.clearSelectiveClinics()
+    suspend operator fun invoke() = repository.clearClinics()
 }

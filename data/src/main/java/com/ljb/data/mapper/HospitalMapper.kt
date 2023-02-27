@@ -10,39 +10,37 @@ import com.ljb.domain.entity.SelectiveClinic
  * */
 
 fun SelectiveClinicJson.mapperToSelective() = SelectiveClinic(
-    addr = this.addr,
-    clinicName = this.clinicName,
-    create_dt = this.create_dt ?: "",
-    disabledFacility= this.disabledFacility,
-    gubun = this.gubun ?: "",
-    satdayOperTime= this.satdayOperTime,
-    satdayYn = this.satdayYn,
     sido = this.sido,
     sigungu = this.sigungu,
-    smpcolYn = this.smpcolYn,
+    clinicName = this.clinicName,
+    addr = this.addr,
     telNo = this.telNo,
-    weekOperTime = this.weekOperTime,
+    smpcolYn = this.smpcolYn,
     weekYn = this.weekYn,
-    weekendOperTime = this.weekendOperTime,
+    satdayYn = this.satdayYn,
     weekendYn = this.weekendYn,
+    weekOperTime = this.weekOperTime,
+    satdayOperTime= this.satdayOperTime,
+    weekendOperTime = this.weekendOperTime,
+
+    clinicType = this.clinicType
 )
 
-fun SelectiveClinic.mapperToSelectiveJson() = SelectiveClinicJson(
-    addr = this.addr,
-    clinicName = this.clinicName,
-    create_dt = this.create_dt ?: "",
-    disabledFacility= this.disabledFacility,
-    gubun = this.gubun ?: "",
-    satdayOperTime= this.satdayOperTime,
-    satdayYn = this.satdayYn,
+fun SelectiveClinic.mapperToSelectiveJson(clinicType : Int) = SelectiveClinicJson(
     sido = this.sido,
     sigungu = this.sigungu,
-    smpcolYn = this.smpcolYn,
+    clinicName = this.clinicName,
+    addr = this.addr,
     telNo = this.telNo,
-    weekOperTime = this.weekOperTime,
+    smpcolYn = this.smpcolYn,
     weekYn = this.weekYn,
-    weekendOperTime = this.weekendOperTime,
+    satdayYn = this.satdayYn,
     weekendYn = this.weekendYn,
+    weekOperTime = this.weekOperTime,
+    satdayOperTime= this.satdayOperTime,
+    weekendOperTime = this.weekendOperTime,
+
+    clinicType = clinicType
 )
 
 fun SelectiveClinic.mapperToCluster(location: Location) = SelectiveCluster(
@@ -60,25 +58,9 @@ fun SelectiveClinic.mapperToCluster(location: Location) = SelectiveCluster(
 
     lat = location.latitude,
     lng = location.longitude,
-)
 
-/*fun SelectiveClinicXml.mapperToSelective() = SelectiveClinic(
-    addr = this.addr,
-    clinicName = this.clinicName,
-    crate_dt = this.crate_dt,
-    disabledFacility= this.disabledFacility,
-    gubun = this.gubun,
-    satdayOperTime= this.satdayOperTime,
-    satdayYn = this.satdayYn,
-    sido = this.sido,
-    sigungu = this.sigungu,
-    smpcolYn = this.smpcolYn,
-    telNo = this.telNo,
-    weekOperTime = this.weekOperTime,
-    weekYn = this.weekYn,
-    weekendOperTime = this.weekendOperTime,
-    weekendYn = this.weekendYn,
-)*/
+    clinicType = this.clinicType
+)
 
 fun SelectiveCluster.latitude() = lat
 fun SelectiveCluster.longitude() = lng

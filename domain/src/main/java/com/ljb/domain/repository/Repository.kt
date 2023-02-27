@@ -15,6 +15,7 @@ interface CovidRepository {
 interface RemoteClinicRepository{
     fun getMapsPolygon(sido:String, sigungu:String): Flow<NetworkState<MapsPolygon>>
     fun getRemoteSelectiveClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>>
+    fun getRemoteTemporaryClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>>
 }
 
 interface LocalClinicRepository{

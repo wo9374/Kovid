@@ -67,4 +67,26 @@ class RemoteClinicRepositoryImpl @Inject constructor(
                 emit(NetworkState.Error(result.message()))
         }
     }
+
+    override fun getRemoteTemporaryClinic(sido: String, sigungu: String): Flow<NetworkState<List<SelectiveClinic>>> {
+        return flow {
+            val result = if (sigungu.isEmpty() || sigungu == "전체")
+                remoteSource.getTemporaryClinic(sido)
+            else{
+                var temp = sido
+                if (temp.contains("제주"))
+                    temp = "제주"
+                remoteSource.getTemporaryClinic(temp, sigungu)
+            }
+
+            if (result.isSuccessful){
+                Log.d(TAG, "${result.body()}")
+                val data= result.body()?.items?.map {
+                    it.mapperToSelective()
+                }?: emptyList()
+                emit(NetworkState.Success(data))
+            }else
+                emit(NetworkState.Error(result.message()))
+        }
+    }
 }
