@@ -96,7 +96,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.example.korearegion.KoreaRegionSpinner
+        <com.ljb.koreaarea.KoreaAreaSpinner
             android:id="@+id/region_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
