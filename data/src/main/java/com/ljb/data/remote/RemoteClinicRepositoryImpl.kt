@@ -28,11 +28,15 @@ class RemoteClinicRepositoryImpl @Inject constructor(
                 if (osmId.isNotEmpty()){
                     val result = getPolygonData(osmId[0].osm_id) //polygon Data get
                     if (result.isSuccessful){
-                        val polygon = result.body()?.geometry?.polygonLatLng?.get(0) ?: emptyList()
-                        val centerLatLng = result.body()?.centroid?.centerLatLng ?: emptyList()
-                        emit(
-                            NetworkState.Success(MapsPolygon(centerLatLng, polygon))
-                        )
+                        result.body()?.let {
+                            val centerLatLng = it.centroid.centerLatLng
+                            val mapsPolygon = it.geometry.mapsPolygon
+                            val polygonType = it.geometry.type
+                            val rankAddress = it.rank_address
+                            emit(
+                                NetworkState.Success(MapsPolygon(centerLatLng, mapsPolygon, polygonType, rankAddress))
+                            )
+                        }
                     } else
                         emit(NetworkState.Error(result.message()))
                 }else

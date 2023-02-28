@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.model.PolygonData

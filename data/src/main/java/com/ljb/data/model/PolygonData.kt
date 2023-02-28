@@ -25,6 +25,7 @@ data class PolygonOsmId(
 data class PolyGonResponse(
     @SerializedName("centroid") val centroid: PolygonCenter,
     @SerializedName("geometry") val geometry: PolygonGeoJson,
+    @SerializedName("rank_address") val rank_address: Int,
 )
 
 data class PolygonCenter(
@@ -34,10 +35,12 @@ data class PolygonCenter(
 
 data class PolygonGeoJson(
     @SerializedName("type") val type: String,
-    @SerializedName("coordinates") val polygonLatLng: List<List<List<Double>>>
+    @SerializedName("coordinates") val mapsPolygon: Any,
 )
 
 data class PolygonData(
     val centerLatLng: LatLng,
-    val polygonLatLng: List<LatLng>
+    val mapsPolygon: Any,
+    val type:String,
+    val rankAddress : Int,
 )

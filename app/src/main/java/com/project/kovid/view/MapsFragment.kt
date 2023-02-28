@@ -132,6 +132,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         binding.regionSpinner.apply {
             searchBtn.setOnClickListener {
                 getSelectedItemPair().run {
+                    mGoogleMap.clear()
                     clusterManager.clearItems()
                     mapsViewModel.getDbData(first, second)
                 }
@@ -189,20 +190,37 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
             //Maps Polygon
             launch {
-                mapsViewModel.polygonData.collectLatest {
+                mapsViewModel.polygonData.collectLatest { data ->
                     if (::mPolygon.isInitialized)
                         mPolygon.remove()
 
-                    mPolygon =  mGoogleMap.addPolygon(PolygonOptions()
-                        .addAll(it.polygonLatLng)
-                        .fillColor(Color.argb(100, 255, 240, 255))
-                        .strokeColor(R.color.purple_700)
-                        .strokeWidth(5.0f))
+                    when(data.type){
+                        "MultiPolygon" -> {
+                            (data.mapsPolygon as List<List<LatLng>>).forEach { list ->
+                                val polygon = PolygonOptions()
+                                    .addAll(list)
+                                    .fillColor(Color.argb(100, 255, 240, 255))
+                                    .strokeColor(R.color.purple_700)
+                                    .strokeWidth(5.0f)
+                                mGoogleMap.addPolygon(polygon)
+                            }
+                        }
+                        "Polygon" ->{
+                            val polygon = (data.mapsPolygon as List<LatLng>)
+                            mGoogleMap.addPolygon(PolygonOptions()
+                                .addAll(polygon)
+                                .fillColor(Color.argb(100, 255, 240, 255))
+                                .strokeColor(R.color.purple_700)
+                                .strokeWidth(5.0f))
+                        }
+                    }
 
-                    if (it.polygonLatLng.size >= 1000)
-                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.centerLatLng, 11F))
-                    else
-                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.centerLatLng, 12F))
+                    val zoom = when(data.rankAddress){
+                        in 13..16 -> 10.5F
+                        in 17..18 -> 11F
+                        else -> 12F
+                    }
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(data.centerLatLng, zoom))
                 }
             }
         }

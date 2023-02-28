@@ -40,9 +40,10 @@ interface HospitalAPI {
     suspend fun getPolygonGeoJson(
         @Query("osmtype") osmtype: String = "R",
         @Query("osmid") osmid: Long,
-        //@Query("addressdetails") addressdetails: Int = 1,
-        //@Query("hierarchy") hierarchy: Int = 0,
-        //@Query("group_hierarchy") group_hierarchy: Int = 1,
+        @Query("class") boundary: String = "boundary",
+        @Query("addressdetails") addressdetails: Int = 1,
+        @Query("hierarchy") hierarchy: Int = 0,
+        @Query("group_hierarchy") group_hierarchy: Int = 1,
         @Query("format") format: String = ApiInfo.json_format,
         @Query("polygon_geojson") polygon_geojson: Int = 1,
     ): Response<PolyGonResponse>
