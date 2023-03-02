@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polygon
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.model.PolygonData
@@ -77,11 +75,11 @@ class MapsViewModel @Inject constructor(
         override fun onLocationResult(locationResult: LocationResult) {
             locationResult.lastLocation?.let {
                 viewModelScope.launch {
-                    val sido = locationManager.getReverseGeocoding(it)
-                    detailAddress = sido
+                    val currentRegion = locationManager.getReverseGeocoding(it)
+                    detailAddress = currentRegion
                     _currentLocation.emit(it)
 
-                    getDbData(sido.first, sido.second)
+                    getDbData(currentRegion.first, currentRegion.second)
                 }
             }
         }

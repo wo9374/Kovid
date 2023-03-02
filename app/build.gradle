@@ -129,5 +129,5 @@ dependencies {
     //인디케이터 라이브러리
     implementation 'com.tbuonomo:dotsindicator:4.2'
 
-    implementation 'com.github.wo9374:KoreaAreaSpinner:0.0.3'
+    implementation 'com.github.wo9374:KoreaAreaSpinner:0.0.4'
 }

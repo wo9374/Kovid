@@ -13,7 +13,7 @@ interface LocalClinicSource {
 class LocalClinicSourceImpl @Inject constructor(private val selectiveClinicDao: SelectiveClinicDao):
     LocalClinicSource {
     override fun getClinic(sido : String, sigungu: String, clinicType: Int): List<SelectiveClinicJson> {
-        return if (sigungu.isEmpty() || sigungu == "전체")
+        return if (sigungu == "전체")
             selectiveClinicDao.getClinic(sido, clinicType)
         else
             selectiveClinicDao.getClinicSigungu(sido, sigungu, clinicType)

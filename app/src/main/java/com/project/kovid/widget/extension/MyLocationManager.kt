@@ -9,6 +9,7 @@ import android.os.Looper
 import com.google.android.gms.location.*
 import com.ljb.data.util.containsMetropolitanCity
 import com.ljb.data.util.splitSi
+import com.ljb.koreaarea.KoreaAreaSpinner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -80,7 +81,7 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
                     Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1) {
                         with(it.first()) {
                             pair = if (adminArea.containsMetropolitanCity())
-                                Pair(adminArea.splitSi(), "")
+                                Pair(adminArea.splitSi(), KoreaAreaSpinner.regionAll)
                             else
                                 Pair(adminArea, locality)
                         }
@@ -88,7 +89,7 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
                 } else {
                     Geocoder(context, Locale.KOREA).getFromLocation(location.latitude, location.longitude, 1)?.first()?.apply {
                         pair = if (adminArea.containsMetropolitanCity())
-                            Pair(adminArea.splitSi(), "")
+                            Pair(adminArea.splitSi(), KoreaAreaSpinner.regionAll)
                         else
                             Pair(adminArea, locality)
                     }

@@ -19,7 +19,7 @@ class RemoteClinicRepositoryImpl @Inject constructor(
     override fun getMapsPolygon(sido: String, sigungu:String): Flow<NetworkState<MapsPolygon>> {
         return flow {
             remoteSource.apply {
-                val addr = if (sigungu.isEmpty() || sigungu == "전체")
+                val addr = if (sigungu == "전체")
                     sido
 
                 else "$sido+$sigungu"
@@ -47,7 +47,7 @@ class RemoteClinicRepositoryImpl @Inject constructor(
 
     override fun getRemoteSelectiveClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (sigungu.isEmpty() || sigungu == "전체")
+            val result = if (sigungu == "전체")
                 remoteSource.getSelectiveClinic(sido)
             else{
                 var temp = sido
@@ -74,7 +74,7 @@ class RemoteClinicRepositoryImpl @Inject constructor(
 
     override fun getRemoteTemporaryClinic(sido: String, sigungu: String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (sigungu.isEmpty() || sigungu == "전체")
+            val result = if (sigungu == "전체")
                 remoteSource.getTemporaryClinic(sido)
             else{
                 var temp = sido

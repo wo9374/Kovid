@@ -39,14 +39,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), OnMapReadyCallback {
     var TAG = MapsFragment::class.java.simpleName
 
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var clusterManager: ClusterManager<SelectiveCluster>
-    private lateinit var mPolygon: Polygon
+    private var mPolygon: ArrayList<Polygon> = arrayListOf()
 
     private val mapsViewModel: MapsViewModel by viewModels()
 
@@ -132,9 +131,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         binding.regionSpinner.apply {
             searchBtn.setOnClickListener {
                 getSelectedItemPair().run {
-                    mGoogleMap.clear()
-                    clusterManager.clearItems()
-                    mapsViewModel.getDbData(first, second)
+                    if (mapsViewModel.detailAddress != this){
+                        clusterManager.clearItems()
+                        mapsViewModel.getDbData(first, second)
+                    }
                 }
             }
         }
@@ -157,8 +157,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 mapsViewModel.progressState.collectLatest {
                     if (it) {
                         mapsViewModel.detailAddress.run {
-                            val addr = if (second.isEmpty()) first else "$first $second"
-                            ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, addr))
+                            ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, "$first $second"))
                         }
                     }else{
                         ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
@@ -191,33 +190,34 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             //Maps Polygon
             launch {
                 mapsViewModel.polygonData.collectLatest { data ->
-                    if (::mPolygon.isInitialized)
-                        mPolygon.remove()
+                    if (mPolygon.isNotEmpty())
+                        mPolygon.forEach { it.remove() } //Polygon 객체의 remove
 
                     when(data.type){
                         "MultiPolygon" -> {
-                            (data.mapsPolygon as List<List<LatLng>>).forEach { list ->
+                            (data.mapsPolygon as List<List<LatLng>>).forEachIndexed { index, list ->
                                 val polygon = PolygonOptions()
                                     .addAll(list)
                                     .fillColor(Color.argb(100, 255, 240, 255))
                                     .strokeColor(R.color.purple_700)
                                     .strokeWidth(5.0f)
-                                mGoogleMap.addPolygon(polygon)
+                                mPolygon.add(index, mGoogleMap.addPolygon(polygon))
                             }
                         }
                         "Polygon" ->{
-                            val polygon = (data.mapsPolygon as List<LatLng>)
-                            mGoogleMap.addPolygon(PolygonOptions()
-                                .addAll(polygon)
+                            val list = (data.mapsPolygon as List<LatLng>)
+                            val polygon = PolygonOptions()
+                                .addAll(list)
                                 .fillColor(Color.argb(100, 255, 240, 255))
                                 .strokeColor(R.color.purple_700)
-                                .strokeWidth(5.0f))
+                                .strokeWidth(5.0f)
+                            mPolygon.add(0, mGoogleMap.addPolygon(polygon))
                         }
                     }
 
                     val zoom = when(data.rankAddress){
-                        in 13..16 -> 10.5F
-                        in 17..18 -> 11F
+                        in 13..16 -> 10.3F
+                        in 17..18-> 11.1F
                         else -> 12F
                     }
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(data.centerLatLng, zoom))
