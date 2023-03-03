@@ -2,12 +2,14 @@ package com.project.kovid.di
 
 import com.ljb.domain.repository.CovidRepository
 import com.ljb.domain.repository.LocalClinicRepository
+import com.ljb.domain.repository.NewRepository
 import com.ljb.domain.repository.RemoteClinicRepository
 import com.ljb.domain.usecase.ClearSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetAreaListUseCase
 import com.ljb.domain.usecase.GetChartListUseCase
 import com.ljb.domain.usecase.GetDbClinicUseCase
 import com.ljb.domain.usecase.GetMapsPolygonUseCase
+import com.ljb.domain.usecase.GetNewUseCase
 import com.ljb.domain.usecase.GetSelectiveClinicUseCase
 import com.ljb.domain.usecase.GetTemporaryClinicUseCase
 import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
@@ -44,4 +46,8 @@ class UseCaseModule {
     fun provideInsertSelectiveClinicUseCase(repository: LocalClinicRepository) = InsertSelectiveClinicUseCase(repository)
     @Provides
     fun provideClearSelectiveClinicUseCase(repository: LocalClinicRepository) = ClearSelectiveClinicUseCase(repository)
+
+
+    @Provides
+    fun provideGetNewsUseCase(repository: NewRepository) = GetNewUseCase(repository)
 }

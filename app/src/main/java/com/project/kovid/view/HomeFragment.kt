@@ -61,62 +61,69 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
             areaRecycler.apply {
                 adapter = listAdapter
-                addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)) //구분선
+                addItemDecoration(
+                    DividerItemDecoration(
+                        context,
+                        LinearLayoutManager.VERTICAL
+                    )
+                ) //구분선
             }
         }
 
-        lifecycleScope.launch {
+        observeData()
+    }
 
-            launch {
-                chartViewModel.covidList
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .collectLatest { uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> {
-                                binding.apply {
-                                    txtCurrentDate.text = getString(R.string.data_loading)
-                                    txtDecideCnt.text = getString(R.string.default_decide)
-                                    chart.setNoDataText(getString(R.string.data_loading))
-                                }
+    private fun observeData() = lifecycleScope.launch {
+        launch {
+            chartViewModel.covidList
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collectLatest { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> {
+                            binding.apply {
+                                txtCurrentDate.text = getString(R.string.data_loading)
+                                txtDecideCnt.text = getString(R.string.default_decide)
+                                chart.setNoDataText(getString(R.string.data_loading))
                             }
-                            is UiState.Complete -> {    //받아온 확진자 데이터 Collect 시작
-                                setChartSetting(binding.chart, uiState.data)
-                            }
-                            is UiState.Fail -> {
-                                binding.apply {
-                                    txtCurrentDate.text = getString(R.string.network_error)
-                                    chart.setNoDataText(getString(R.string.network_error))
-                                }
+                        }
+                        is UiState.Complete -> {    //받아온 확진자 데이터 Collect 시작
+                            setChartSetting(binding.chart, uiState.data)
+                        }
+                        is UiState.Fail -> {
+                            binding.apply {
+                                txtCurrentDate.text = getString(R.string.network_error)
+                                chart.setNoDataText(getString(R.string.network_error))
                             }
                         }
                     }
-            }
+                }
+        }
 
-            launch {
-                chartViewModel.areaList
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .distinctUntilChanged()
-                    .collectLatest {uiState ->
-                        when (uiState) {
-                            is UiState.Loading -> {
-                                binding.areaErrorText.text = getString(R.string.data_loading)
-                            }
-                            is UiState.Complete -> {
-                                binding.areaErrorText.visibility = View.GONE
-                                listAdapter.submitList(uiState.data)
-                            }
-                            is UiState.Fail -> {
-                                binding.apply {
-                                    areaErrorText.visibility = View.VISIBLE
-                                    areaErrorText.text = uiState.message
-                                }
+        launch {
+            chartViewModel.areaList
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .distinctUntilChanged()
+                .collectLatest { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> {
+                            binding.areaErrorText.text = getString(R.string.data_loading)
+                        }
+                        is UiState.Complete -> {
+                            binding.areaErrorText.visibility = View.GONE
+                            listAdapter.submitList(uiState.data)
+                        }
+                        is UiState.Fail -> {
+                            binding.apply {
+                                areaErrorText.visibility = View.VISIBLE
+                                areaErrorText.text = uiState.message
                             }
                         }
-
                     }
-            }
+
+                }
         }
     }
+
 
     private fun setChartSetting(chart: BarChart, dataList: List<WeekCovid>) {
         binding.apply {

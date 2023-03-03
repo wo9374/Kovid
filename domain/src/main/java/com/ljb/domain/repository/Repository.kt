@@ -3,6 +3,7 @@ package com.ljb.domain.repository
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.entity.MapsPolygon
+import com.ljb.domain.entity.News
 import com.ljb.domain.entity.SelectiveClinic
 import com.ljb.domain.entity.WeekCovid
 import kotlinx.coroutines.flow.Flow
@@ -22,4 +23,8 @@ interface LocalClinicRepository{
     fun getLocalClinic(sido: String, sigungu: String, clinicType: Int): List<SelectiveClinic>
     suspend fun insertClinic(selectiveClinic: SelectiveClinic, clinicType: Int)
     suspend fun clearClinics()
+}
+
+interface NewRepository{
+    fun getNaverNews(query: String): Flow<NetworkState<List<News>>>
 }

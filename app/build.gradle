@@ -8,9 +8,6 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 android {
     compileSdk 33
 
@@ -22,15 +19,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField "String", "NAVER_CLIENT_ID", properties['naver.api.client.id']
-        buildConfigField "String", "NAVER_CLIENT_SECRET", properties['naver.api.client.secret']
-        buildConfigField "String", "NEW_API_KEY", properties['news.api.key']
-
-        buildConfigField "String", "DATA_GO_KR_API_KEY_ENCODE", properties['data.go.kr.api.key.encode']
-        buildConfigField "String", "DATA_GO_KR_API_KEY_DECODE", properties['data.go.kr.api.key.decode']
-        
-        buildConfigField "String", "GOODBYE_CORONA_API_KEY", properties['goodbye.corona.api.key']
     }
 
     buildTypes {

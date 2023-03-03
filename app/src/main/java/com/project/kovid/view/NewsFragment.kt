@@ -1,10 +1,12 @@
-package com.project.kovid.function.news
+package com.project.kovid.view
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.kovid.R
@@ -13,33 +15,29 @@ import com.project.kovid.databinding.FragmentNewsBinding
 import com.project.kovid.databinding.FragmentNewsContainerBinding
 import com.project.kovid.newsItemLayout
 import com.project.kovid.viewmodel.NewsViewModel
-import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-//Navigation 스택관리 때문인 Container Fragment
-class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)
+//Navigation 스택 관리 때문인 Container Fragment
+class NewsContainerFragment :
+    BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)
 
+@AndroidEntryPoint
 class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
-
-    lateinit var newsViewModel : NewsViewModel
+    private val newsViewModel: NewsViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        newsViewModel = ViewModelProvider(requireActivity())[NewsViewModel::class.java]
 
-        binding.viewModel = newsViewModel
-        binding.lifecycleOwner = this@NewsFragment
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
+
+        //ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
 
         initLayout()
 
-        subscribe(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        newsViewModel.searchNewsApi()
-        newsViewModel.searchNaverNews()
+        observeData(this)
     }
 
     private fun initLayout() {
@@ -47,44 +45,36 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
         val gridLayoutManager = GridLayoutManager(mContext, 2)
 
         binding.epoxyRecycler.apply {
-            layoutManager = gridLayoutManager
+            layoutManager = linearLayoutManager
             setHasFixedSize(true)
-
             //addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation)) //구분선
+        }
+    }
 
-            withModels {
-                newsViewModel.newsData.value?.forEachIndexed { index, article ->
-                    /* headerLayout {
-                         id("header")
-                         title("Covid News (Month)")
-                         spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
-                     }*/
-
+    private fun observeData(owner: LifecycleOwner) = lifecycleScope.launch {
+        newsViewModel.naverNews.collectLatest { list ->
+            binding.epoxyRecycler.withModels {
+                list.forEachIndexed { index, news ->
                     newsItemLayout {
                         id(index)
-                        newsData(article)
+                        newsData(news)
                         onClickItem { bindingModel, parentView, clickedView, position ->
-                            Log.d("Epoxy", "News 항목 $bindingModel, 부모 뷰 $parentView, 클릭뷰 $clickedView position $position")
-                            newsViewModel.newsDetailData = bindingModel.newsData()
+                            Log.d(
+                                "Epoxy",
+                                "News 항목 $bindingModel, 부모 뷰 $parentView, 클릭뷰 $clickedView position $position"
+                            )
+                            newsViewModel.setNewsDetail(bindingModel.newsData())
                             navController.navigate(R.id.action_news_to_newsDetail)
                         }
 
-                        if (index % 3 == 0) spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
-                        else spanSizeOverride { totalSpanCount, position, itemCount -> 1 }
+                        /*if (index % 3 == 0) spanSizeOverride { totalSpanCount, position, itemCount -> 2 }
+                        else spanSizeOverride { totalSpanCount, position, itemCount -> 1 }*/
                     }
                 }
-            }//withModels
-        }//binding.epoxyRecycler.apply
-    }
-
-    private fun subscribe(owner: LifecycleOwner) {
-        newsViewModel.newsData.observe(owner) {
-            binding.epoxyRecycler.requestModelBuild()
-            ContentsLoadingProgress.hideProgress(this.javaClass.name) //Progress Hide
-        }
-
-        newsViewModel.naverData.observe(owner){
-            //네이버 뉴스 대기
+            }
+            //binding.epoxyRecycler.requestModelBuild()
+            //ContentsLoadingProgress.hideProgress(this.javaClass.name) //Progress Hide
         }
     }
+
 }

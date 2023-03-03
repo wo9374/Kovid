@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.ljb.data.remote.api.ApiInfo
 import com.ljb.data.remote.api.CovidAPI
 import com.ljb.data.remote.api.HospitalAPI
+import com.ljb.data.remote.api.NewsAPI
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -99,6 +100,19 @@ object NetworkModule {
             .build()
     }
 
+    @Provides
+    @Singleton
+    fun provideNewsRetrofit(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory,
+    ): Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(ApiInfo.NEWS_URL)
+            .client(okHttpClient)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
     @ChartType
     @Provides
     @Singleton
@@ -125,6 +139,12 @@ object NetworkModule {
     @Singleton
     fun provideNominatimService(@NominatimType retrofit: Retrofit): HospitalAPI{
         return retrofit.create(HospitalAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsService(retrofit: Retrofit): NewsAPI{
+        return retrofit.create(NewsAPI::class.java)
     }
 
 

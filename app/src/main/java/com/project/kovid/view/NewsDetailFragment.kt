@@ -4,26 +4,26 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.project.kovid.viewmodel.MainViewModel
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsDetailBinding
 import com.project.kovid.viewmodel.NewsViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.fragment_news_detail) {
-
-    lateinit var newsViewModel: NewsViewModel
-
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val newsViewModel: NewsViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navController.popBackStack()
-                mainViewModel.botNaviViewVisibility.postValue(true)
+                bottomNaviEnabled(true)
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -34,20 +34,30 @@ class NewsDetailFragment : BaseFragment<FragmentNewsDetailBinding>(R.layout.frag
 
         initLayout()
 
-        mainViewModel.botNaviViewVisibility.postValue(false)
+        observeData()
     }
 
     private fun initLayout() {
-        newsViewModel = ViewModelProvider(requireActivity())[NewsViewModel::class.java]
-
-        binding.detailNewsData = newsViewModel.newsDetailData
-        binding.lifecycleOwner = this@NewsDetailFragment
-
-        binding.toolBarTitle.isSelected = true  //Marquee 처리
-
-        binding.backBtn.setOnClickListener {
-            navController.popBackStack()
-            mainViewModel.botNaviViewVisibility.postValue(true)
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            toolBarTitle.isSelected = true  //Marquee 처리
+            backBtn.setOnClickListener {
+                navController.popBackStack()
+                bottomNaviEnabled(true)
+            }
         }
+    }
+
+
+    private fun observeData() = lifecycleScope.launch {
+        newsViewModel.newsDetail.collect {
+            binding.detailNewsData = it
+            bottomNaviEnabled(false)
+        }
+    }
+
+
+    private fun bottomNaviEnabled(bool: Boolean) = lifecycleScope.launch {
+        mainViewModel.botNaviViewVisibility.emit(bool)
     }
 }

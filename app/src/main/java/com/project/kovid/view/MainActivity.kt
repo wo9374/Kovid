@@ -14,6 +14,7 @@ import com.project.kovid.base.BaseActivity
 import com.project.kovid.databinding.ActivityMainBinding
 import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
 import com.project.kovid.viewmodel.MainViewModel
+import com.project.kovid.viewmodel.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,6 +23,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private val viewModel: MainViewModel by viewModels()
     //by viewModels() 사용 안할때
     //val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+    private val newsViewModel : NewsViewModel by viewModels()
 
     lateinit var navHostFragment: NavHostFragment
     lateinit var navController: NavController

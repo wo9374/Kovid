@@ -1,58 +1,68 @@
 package com.project.kovid.viewmodel
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ljb.data.mapper.mapperToLatLng
+import com.ljb.data.model.PolygonData
 import com.ljb.data.util.getPast1MonthCovid
-import com.project.kovid.model.Article
-import com.project.kovid.function.repository.NewsRepository
-import com.project.kovid.model.NaverNews
+import com.ljb.domain.NetworkState
+import com.ljb.domain.UiState
+import com.ljb.domain.entity.News
+import com.ljb.domain.usecase.GetNewUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.URLEncoder
 import java.util.*
+import javax.inject.Inject
 
-class NewsViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class NewsViewModel @Inject constructor(
+    private val getNewUseCase: GetNewUseCase,
+) : ViewModel() {
+    private val tag = NewsViewModel::class.java.simpleName
 
-    private val newsRepo: NewsRepository = NewsRepository()
+    private val _naverNews = MutableStateFlow<List<News>>(emptyList())
+    val naverNews get() = _naverNews
 
-    var newsData = MutableLiveData<List<Article>>()
-    lateinit var newsDetailData : Article
+    private val _newsDetail = MutableStateFlow(News("","","","","","",""))
+    val newsDetail get() = _newsDetail
 
-    var naverData = MutableLiveData<NaverNews>()
+    init {
+        getNews()
+    }
 
-    fun searchNewsApi(){
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val result = newsRepo.getNewsData(Date().getPast1MonthCovid())
-
-                if (result.isSuccessful && result.body() != null){
-                    newsData.postValue(result.body()?.articles!!)
-                }else{
-                    Log.d("NewsViewModel", "searchNewsApi() result not Successful or result.body null")
+    private fun getNews(){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                getNewUseCase(URLEncoder.encode("Covid","UTF-8")).catch { exception->
+                    Log.d(tag, "getNewUseCase Exception Error: ${exception.message}")
+                }.collect{ result ->
+                    when (result) {
+                        is NetworkState.Success -> {
+                            Log.d(tag, "getNewUseCase Success: Total${result.data.size} ${result.data}")
+                            _naverNews.emit(result.data)
+                        }
+                        is NetworkState.Error -> {}
+                        is NetworkState.Loading -> {}
+                    }
                 }
-            }catch (e:Exception){
-                Log.d("NewsViewModel", "searchNewsApi() fail...")
             }
         }
     }
 
-    //네이버 검색
-    fun searchNaverNews(){
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val result = newsRepo.getNaverNewsData()
-
-                if (result.isSuccessful && result.body() != null){
-                    naverData.postValue(result.body())
-                }else{
-                    Log.d("NewsViewModel", "searchNaverNews() result not Successful or result.body null")
-                }
-
-            } catch (e: Exception) {
-                Log.d("NewsViewModel", "searchNaverNews() fail...")
-            }
+    fun setNewsDetail(news: News){
+        viewModelScope.launch {
+            _newsDetail.emit(news)
         }
     }
 }

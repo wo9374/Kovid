@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/newsFragment"
-        android:name="com.project.kovid.function.news.NewsFragment"
+        android:name="com.project.kovid.view.NewsFragment"
         android:label="NewsFragment" >
         <action
             android:id="@+id/action_news_to_newsDetail"

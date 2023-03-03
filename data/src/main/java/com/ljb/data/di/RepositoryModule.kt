@@ -3,11 +3,14 @@ package com.ljb.data.di
 import com.ljb.data.remote.CovidRepositoryImpl
 import com.ljb.data.local.LocalClinicRepositoryImpl
 import com.ljb.data.local.datasouce.LocalClinicSource
+import com.ljb.data.remote.NewsRepositoryImpl
 import com.ljb.data.remote.RemoteClinicRepositoryImpl
 import com.ljb.data.remote.datasource.CovidDataSourceImpl
+import com.ljb.data.remote.datasource.NewsDataSourceImpl
 import com.ljb.data.remote.datasource.RemoteClinicSourceImpl
 import com.ljb.domain.repository.CovidRepository
 import com.ljb.domain.repository.LocalClinicRepository
+import com.ljb.domain.repository.NewRepository
 import com.ljb.domain.repository.RemoteClinicRepository
 import dagger.Module
 import dagger.Provides
@@ -37,4 +40,9 @@ class RepositoryModule {
     @Singleton
     fun provideLocalClinicRepository(localClinicSource: LocalClinicSource) : LocalClinicRepository =
         LocalClinicRepositoryImpl(localClinicSource)
+
+    @Provides
+    @Singleton
+    fun provideNewsRepository(newsDataSourceImpl: NewsDataSourceImpl) : NewRepository =
+        NewsRepositoryImpl(newsDataSourceImpl)
 }

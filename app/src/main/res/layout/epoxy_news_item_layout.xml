@@ -8,7 +8,7 @@
 
         <variable
             name="newsData"
-            type="com.project.kovid.model.Article" />
+            type="com.ljb.domain.entity.News" />
 
         <variable
             name="onClickItem"

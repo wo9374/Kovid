@@ -1,25 +1,13 @@
-package com.project.kovid.extenstion
+package com.project.kovid.widget.extension
 
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.ValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.ljb.domain.entity.WeekCovid
 import com.project.kovid.R
-import com.project.kovid.widget.extension.customview.CustomChartMarker
 import java.util.*
-import kotlin.math.pow
 
 @BindingAdapter("binding:setNaviVisible")
 fun setBottomVisible(bottomNavi: BottomNavigationView, boolean: Boolean){

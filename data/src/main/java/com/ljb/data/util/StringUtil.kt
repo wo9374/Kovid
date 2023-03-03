@@ -1,5 +1,6 @@
 package com.ljb.data.util
 
+import android.text.Html
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -37,3 +38,6 @@ fun Int.getDecimalFormatNum() : String {
 
     return result
 }
+
+fun String.removeHtmlTags(): String =
+    Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY).toString()

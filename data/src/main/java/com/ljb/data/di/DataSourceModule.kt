@@ -5,8 +5,11 @@ import com.ljb.data.remote.api.CovidAPI
 import com.ljb.data.remote.api.HospitalAPI
 import com.ljb.data.local.datasouce.LocalClinicSource
 import com.ljb.data.local.datasouce.LocalClinicSourceImpl
+import com.ljb.data.remote.api.NewsAPI
 import com.ljb.data.remote.datasource.CovidDataSource
 import com.ljb.data.remote.datasource.CovidDataSourceImpl
+import com.ljb.data.remote.datasource.NewsDataSource
+import com.ljb.data.remote.datasource.NewsDataSourceImpl
 import com.ljb.data.remote.datasource.RemoteClinicSource
 import com.ljb.data.remote.datasource.RemoteClinicSourceImpl
 import dagger.Module
@@ -42,4 +45,9 @@ class DataSourceModule {
     @Singleton
     fun provideLocalClinicSource(dao: SelectiveClinicDao) : LocalClinicSource =
         LocalClinicSourceImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideNewsDataSource(newsAPI: NewsAPI) : NewsDataSource =
+        NewsDataSourceImpl(newsAPI)
 }
