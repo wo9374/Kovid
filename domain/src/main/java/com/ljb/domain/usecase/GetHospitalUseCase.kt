@@ -8,23 +8,23 @@ import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetMapsPolygonUseCase(private val repository: RemoteClinicRepository) {
-    operator fun invoke(sido: String, sigungu: String): Flow<NetworkState<MapsPolygon>> =
-        repository.getMapsPolygon(sido, sigungu)
+    operator fun invoke(siDo: String, siGunGu: String): Flow<NetworkState<MapsPolygon>> =
+        repository.getMapsPolygon(siDo, siGunGu)
 }
 
 class GetSelectiveClinicUseCase(private val repository: RemoteClinicRepository) {
-    operator fun invoke(sido:String): Flow<NetworkState<List<SelectiveClinic>>> =
-        repository.getRemoteSelectiveClinic(sido)
+    operator fun invoke(siDo:String): Flow<NetworkState<List<SelectiveClinic>>> =
+        repository.getRemoteSelectiveClinic(siDo)
 }
 
 class GetTemporaryClinicUseCase(private val repository: RemoteClinicRepository){
-    operator fun invoke(sido:String): Flow<NetworkState<List<SelectiveClinic>>> =
-        repository.getRemoteTemporaryClinic(sido)
+    operator fun invoke(siDo:String): Flow<NetworkState<List<SelectiveClinic>>> =
+        repository.getRemoteTemporaryClinic(siDo)
 }
 
 class GetDbClinicUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke(sido: String, sigungu: String, clinicType :Int) : List<SelectiveClinic> =
-        repository.getLocalClinic(sido, sigungu, clinicType)
+    operator fun invoke(siDo: String, siGunGu: String, clinicType :Int) : List<SelectiveClinic> =
+        repository.getLocalClinic(siDo, siGunGu, clinicType)
 }
 
 class InsertSelectiveClinicUseCase(private val repository: LocalClinicRepository){

@@ -13,7 +13,6 @@ import com.ljb.data.model.SelectiveCluster
 import com.project.kovid.R
 import com.project.kovid.widget.util.CanvasUtil
 
-
 class HospClusterMarker(private val context: Context, map: GoogleMap, clusterManager: ClusterManager<SelectiveCluster>)
     : DefaultClusterRenderer<SelectiveCluster>(context, map, clusterManager) {
     companion object{

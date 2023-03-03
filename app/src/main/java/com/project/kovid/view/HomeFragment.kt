@@ -61,12 +61,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             chartTabLayout.addOnTabSelectedListener(tabOnTabSelectedListener)
             areaRecycler.apply {
                 adapter = listAdapter
-                addItemDecoration(
-                    DividerItemDecoration(
-                        context,
-                        LinearLayoutManager.VERTICAL
-                    )
-                ) //구분선
+                addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)) //구분선
             }
         }
 
@@ -167,7 +162,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         /**---------------------------- Bar ChartSetting  ------------------------------*/
         chart.run {
             description.isEnabled = false   // 차트 옆 별도로 표시되는 description
-            setMaxVisibleValueCount(dataList?.size ?: 0)   // 최대 표시할 그래프 수
+            setMaxVisibleValueCount(dataList.size)   // 최대 표시할 그래프 수
             //setPinchZoom(false)           // 핀치줌 설정 (기능 안됨)
             setScaleEnabled(false)          // 모든 확대/축소 비활성화
             setDrawBarShadow(false)         // 그래프 그림자
@@ -208,7 +203,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 valueFormatter = MyXAxisFormatter(dataList)
             }
 
-            val customMarker = CustomChartMarker(context, R.layout.custom_mpchart_marker)
+            val customMarker = CustomChartMarker(context, R.layout.layout_custom_mpchart_marker)
             marker = customMarker
         }
 

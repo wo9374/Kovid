@@ -12,21 +12,13 @@ import com.ljb.data.model.PolygonData
 import com.ljb.data.model.SelectiveCluster
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
-import com.ljb.domain.usecase.GetDbClinicUseCase
-import com.ljb.domain.usecase.GetMapsPolygonUseCase
-import com.ljb.domain.usecase.GetSelectiveClinicUseCase
-import com.ljb.domain.usecase.GetTemporaryClinicUseCase
-import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
+import com.ljb.domain.usecase.*
 import com.project.kovid.widget.extension.MyLocationManager
 import com.project.kovid.widget.extension.customview.HospClusterMarker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -66,8 +58,8 @@ class MapsViewModel @Inject constructor(
     //현위치
     private val _currentLocation = MutableSharedFlow<Location>(
         replay = 0,                         //새로운 구독자에게 이전 이벤트를 전달하지 않음
-        extraBufferCapacity = 1,            //추가 버퍼를 생성하여 emit 한 데이터가 버퍼에 유지되도록 함
-        onBufferOverflow = BufferOverflow.DROP_OLDEST   //버퍼가 가득찼을 시 오래된 데이터 제거
+        extraBufferCapacity = 1,            //추가 버퍼를 생성하여 emit 한 데이터가 버퍼에 유지 되도록 함
+        onBufferOverflow = BufferOverflow.DROP_OLDEST   //버퍼가 가득 찼을시 오래된 데이터 제거
     )
     val currentLocation = _currentLocation.asSharedFlow()
 

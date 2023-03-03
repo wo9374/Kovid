@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,15 +11,14 @@ import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentNewsBinding
 import com.project.kovid.databinding.FragmentNewsContainerBinding
-import com.project.kovid.newsItemLayout
+import com.project.kovid.newsLayout
 import com.project.kovid.viewmodel.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 //Navigation 스택 관리 때문인 Container Fragment
-class NewsContainerFragment :
-    BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)
+class NewsContainerFragment : BaseFragment<FragmentNewsContainerBinding>(R.layout.fragment_news_container)
 
 @AndroidEntryPoint
 class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
@@ -37,12 +34,12 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
 
         initLayout()
 
-        observeData(this)
+        observeData()
     }
 
     private fun initLayout() {
         val linearLayoutManager = LinearLayoutManager(mContext)
-        val gridLayoutManager = GridLayoutManager(mContext, 2)
+        //val gridLayoutManager = GridLayoutManager(mContext, 2)
 
         binding.epoxyRecycler.apply {
             layoutManager = linearLayoutManager
@@ -51,11 +48,11 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
         }
     }
 
-    private fun observeData(owner: LifecycleOwner) = lifecycleScope.launch {
-        newsViewModel.naverNews.collectLatest { list ->
+    private fun observeData() = lifecycleScope.launch {
+        newsViewModel.newsList.collectLatest { list ->
             binding.epoxyRecycler.withModels {
                 list.forEachIndexed { index, news ->
-                    newsItemLayout {
+                    newsLayout {
                         id(index)
                         newsData(news)
                         onClickItem { bindingModel, parentView, clickedView, position ->

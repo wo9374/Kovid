@@ -9,13 +9,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.project.kovid.R
 import java.util.*
 
-@BindingAdapter("binding:setNaviVisible")
+@BindingAdapter("setNaviVisible")
 fun setBottomVisible(bottomNavi: BottomNavigationView, boolean: Boolean){
     if (boolean) bottomNavi.visibility = View.VISIBLE
     else bottomNavi.visibility = View.GONE
 }
 
-@BindingAdapter("binding:setImg")
+@BindingAdapter("setImg")
 fun setImg(view: ImageView, imgUri: String?){
 
     if(imgUri != null)
@@ -26,7 +26,7 @@ fun setImg(view: ImageView, imgUri: String?){
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE) //캐싱된 리소스와 로드할 리소스가 같은 리소스일때 캐싱된 리소스 사용, gif 느릴 경우 사용
             .into(view)
     else
-        view.setImageResource(R.drawable.ic_baseline_room_24)
+        view.setImageResource(R.drawable.ic_baseline_newwork_error_24)
 }
 
 /*
@@ -39,7 +39,7 @@ fun setImg(view: ImageView, imgUri: String?){
             .fallback(R.drawable.img_file_no_img)  //load할 url이 null인 경우 등 비어있을 때 보여줄 이미지를 설정
             .asGif() //Gif 로딩시
 
-            //gif 루프 한번돌게
+            //gif 루프 한번 돌게
             .listener(new RequestListener<GifDrawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {

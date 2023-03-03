@@ -11,11 +11,7 @@ import com.ljb.domain.usecase.GetAreaListUseCase
 import com.ljb.domain.usecase.GetChartListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -34,7 +30,7 @@ class HomeViewModel @Inject constructor(
     private lateinit var monthDecide: List<WeekCovid>
     private lateinit var weekDecide: List<WeekCovid>
 
-    //7일, 30일 교체하면서 보여줄 StateFlow
+    //7일, 30일 교체 하면서 보여줄 StateFlow
     private val _covidList = MutableStateFlow<UiState<List<WeekCovid>>>(UiState.Loading)
     val covidList : StateFlow<UiState<List<WeekCovid>>> get() = _covidList
 
@@ -46,7 +42,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO){
                 getChartListUseCase()
-                    .onStart {} //로딩시작때
+                    .onStart {} //로딩 시작때
                     .catch { exception ->
                         Log.d(tag, "CovidChart - Exception Error : ${exception.message}")
                     }

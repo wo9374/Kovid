@@ -5,11 +5,6 @@
         android:icon="@drawable/ic_baseline_analytics_24"
         android:title="@string/string_home" />
 
-    <!--<item
-        android:id="@id/worldFragment"
-        android:icon="@drawable/ic_baseline_country_24"
-        android:title="@string/string_country" />-->
-
     <item
         android:id="@id/mapFragment"
         android:icon="@drawable/ic_baseline_map_24"

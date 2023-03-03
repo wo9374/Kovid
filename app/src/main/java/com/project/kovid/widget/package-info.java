@@ -1,4 +1,4 @@
-@EpoxyDataBindingPattern(rClass = R.class, layoutPrefix = "epoxy")
+@EpoxyDataBindingPattern(rClass = R.class, layoutPrefix = "item_epoxy")
 package com.project.kovid.widget;
 
 import com.airbnb.epoxy.EpoxyDataBindingPattern;

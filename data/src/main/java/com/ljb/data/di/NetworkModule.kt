@@ -76,7 +76,7 @@ object NetworkModule {
     @Singleton
     fun provideHospitalRetrofit(
         okHttpClient: OkHttpClient,
-        tikXmlConverterFactory: TikXmlConverterFactory,
+        //tikXmlConverterFactory: TikXmlConverterFactory,
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit{
         return Retrofit.Builder()

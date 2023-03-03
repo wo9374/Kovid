@@ -12,7 +12,7 @@ import javax.inject.Inject
 class NewsRepositoryImpl @Inject constructor(
     private val newsDataSource: NewsDataSource
 ): NewRepository {
-    override fun getNaverNews(query:String): Flow<NetworkState<List<News>>> {
+    override fun getNewsData(query:String): Flow<NetworkState<List<News>>> {
         return flow {
             val result = newsDataSource.getNewsData(query)
 

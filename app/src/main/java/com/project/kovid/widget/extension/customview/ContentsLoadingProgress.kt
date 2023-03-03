@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.project.kovid.R
-import com.project.kovid.databinding.ContentsLoadingScreenBinding
+import com.project.kovid.databinding.LayoutContentsLoadingBinding
 
 class ContentsLoadingProgress {
 
     companion object {
         const val LOADING_SCREEN_TAG = "contents_loading_screen"
 
-        lateinit var binding: ContentsLoadingScreenBinding
+        lateinit var binding: LayoutContentsLoadingBinding
 
-        val mContentViewHashMap: HashMap<String, ViewGroup> = HashMap()
+        private val mContentViewHashMap: HashMap<String, ViewGroup> = HashMap()
 
         @JvmStatic
         @JvmOverloads
@@ -25,9 +25,7 @@ class ContentsLoadingProgress {
             val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
             mContentViewHashMap[key] = contentView
 
-            binding = ContentsLoadingScreenBinding.inflate(
-                LayoutInflater.from(activity)
-            )
+            binding = LayoutContentsLoadingBinding.inflate(LayoutInflater.from(activity))
 
             binding.root.rootView.let {
                 contentView.addView(it)

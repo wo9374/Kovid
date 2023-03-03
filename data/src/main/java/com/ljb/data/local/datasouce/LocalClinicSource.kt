@@ -5,22 +5,22 @@ import com.ljb.data.model.SelectiveClinicJson
 import javax.inject.Inject
 
 interface LocalClinicSource {
-    fun getClinic(sido: String, sigungu: String, clinicType: Int): List<SelectiveClinicJson>
+    fun getClinic(siDo: String, siGunGu: String, clinicType: Int): List<SelectiveClinicJson>
     suspend fun insertSelectiveClinic(selectiveCluster: SelectiveClinicJson)
     suspend fun clearSelectiveClinics()
 }
 
 class LocalClinicSourceImpl @Inject constructor(private val selectiveClinicDao: SelectiveClinicDao):
     LocalClinicSource {
-    override fun getClinic(sido : String, sigungu: String, clinicType: Int): List<SelectiveClinicJson> {
-        return if (sigungu == "전체")
-            selectiveClinicDao.getClinic(sido, clinicType)
+    override fun getClinic(siDo : String, siGunGu: String, clinicType: Int): List<SelectiveClinicJson> {
+        return if (siGunGu == "전체")
+            selectiveClinicDao.getClinic(siDo, clinicType)
         else
-            selectiveClinicDao.getClinicSigungu(sido, sigungu, clinicType)
+            selectiveClinicDao.getClinicSiGunGu(siDo, siGunGu, clinicType)
     }
 
-    override suspend fun insertSelectiveClinic(selectiveCluster: SelectiveClinicJson) {
-        selectiveClinicDao.insertClinic(selectiveCluster)
+    override suspend fun insertSelectiveClinic(selectiveClinicJson: SelectiveClinicJson) {
+        selectiveClinicDao.insertClinic(selectiveClinicJson)
     }
 
     override suspend fun clearSelectiveClinics() {

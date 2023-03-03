@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ljb.domain.entity.AreaCovid
 import com.project.kovid.R
-import com.project.kovid.databinding.AreaListItemBinding
+import com.project.kovid.databinding.ItemAreaListBinding
 
 class AreaListAdapter : ListAdapter<AreaCovid, AreaViewHolder>(DiffUtil()) {
-    lateinit var binding: AreaListItemBinding
+    lateinit var binding: ItemAreaListBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AreaViewHolder {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.area_list_item, parent, false)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.item_area_list, parent, false)
         return AreaViewHolder(binding)
     }
 
@@ -23,7 +23,7 @@ class AreaListAdapter : ListAdapter<AreaCovid, AreaViewHolder>(DiffUtil()) {
     }
 }
 
-class AreaViewHolder(val binding: AreaListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class AreaViewHolder(val binding: ItemAreaListBinding) : RecyclerView.ViewHolder(binding.root) {
     fun onBind(area: AreaCovid){
         binding.apply {
             areaCountry.text = area.countryName

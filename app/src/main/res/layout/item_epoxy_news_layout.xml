@@ -44,7 +44,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     binding:setImg='@{newsData.urlToImage}'
-                    tools:src="@drawable/ic_launcher_background" />
+                    tools:src="@drawable/png_placeholder" />
 
                 <TextView
                     android:id="@+id/epoxy_title"

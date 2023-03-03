@@ -6,19 +6,19 @@ import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.ljb.data.model.SelectiveCluster
-import com.project.kovid.databinding.CustomInfoWindowLayoutBinding
+import com.project.kovid.databinding.LayoutCustomClusterInfoBinding
 
 internal class HospMapInfoWindow(private val context : Context) : GoogleMap.InfoWindowAdapter{
-    lateinit var binding : CustomInfoWindowLayoutBinding
+    lateinit var binding : LayoutCustomClusterInfoBinding
 
     override fun getInfoContents(marker: Marker): View {
         val hospItem = marker.tag as SelectiveCluster
 
-        binding = CustomInfoWindowLayoutBinding.inflate(LayoutInflater.from(context))
-
-        binding.txtMarkerTitle.text = hospItem.clinicName
-        binding.txtMarkerAddr.text = hospItem.addr
-        binding.txtMarkerTel.text = hospItem.telNo
+        binding = LayoutCustomClusterInfoBinding.inflate(LayoutInflater.from(context)).apply {
+            txtMarkerTitle.text = hospItem.clinicName
+            txtMarkerAddr.text = hospItem.addr
+            txtMarkerTel.text = hospItem.telNo
+        }
 
         return binding.root
     }

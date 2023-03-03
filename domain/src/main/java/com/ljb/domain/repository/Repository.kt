@@ -14,17 +14,17 @@ interface CovidRepository {
 }
 
 interface RemoteClinicRepository{
-    fun getMapsPolygon(sido:String, sigungu:String): Flow<NetworkState<MapsPolygon>>
-    fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>>
-    fun getRemoteTemporaryClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>>
+    fun getMapsPolygon(siDo:String, siGunGu:String): Flow<NetworkState<MapsPolygon>>
+    fun getRemoteSelectiveClinic(siDo:String): Flow<NetworkState<List<SelectiveClinic>>>
+    fun getRemoteTemporaryClinic(siDo:String): Flow<NetworkState<List<SelectiveClinic>>>
 }
 
 interface LocalClinicRepository{
-    fun getLocalClinic(sido: String, sigungu: String, clinicType: Int): List<SelectiveClinic>
+    fun getLocalClinic(siDo: String, siGunGu: String, clinicType: Int): List<SelectiveClinic>
     suspend fun insertClinic(selectiveClinic: SelectiveClinic, clinicType: Int)
     suspend fun clearClinics()
 }
 
 interface NewRepository{
-    fun getNaverNews(query: String): Flow<NetworkState<List<News>>>
+    fun getNewsData(query: String): Flow<NetworkState<List<News>>>
 }

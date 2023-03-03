@@ -16,13 +16,13 @@ class RemoteClinicRepositoryImpl @Inject constructor(
 ) : RemoteClinicRepository {
     private val TAG = RemoteClinicRepositoryImpl::class.java.simpleName
 
-    override fun getMapsPolygon(sido: String, sigungu:String): Flow<NetworkState<MapsPolygon>> {
+    override fun getMapsPolygon(siDo: String, siGunGu:String): Flow<NetworkState<MapsPolygon>> {
         return flow {
             remoteSource.apply {
-                val addr = if (sigungu == "전체")
-                    sido
+                val addr = if (siGunGu == "전체")
+                    siDo
 
-                else "$sido+$sigungu"
+                else "$siDo+$siGunGu"
 
                 val osmId = getPolygonOsmId(addr) //osmId 먼저 get
                 if (osmId.isNotEmpty()){
@@ -45,12 +45,12 @@ class RemoteClinicRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteSelectiveClinic(siDo:String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (sido.contains("제주"))
+            val result = if (siDo.contains("제주"))
                 remoteSource.getSelectiveClinic("제주")
             else
-                remoteSource.getSelectiveClinic(sido)
+                remoteSource.getSelectiveClinic(siDo)
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")
@@ -68,12 +68,12 @@ class RemoteClinicRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRemoteTemporaryClinic(sido: String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteTemporaryClinic(siDo: String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (sido.contains("제주"))
+            val result = if (siDo.contains("제주"))
                 remoteSource.getTemporaryClinic("제주")
             else
-                remoteSource.getTemporaryClinic(sido)
+                remoteSource.getTemporaryClinic(siDo)
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")

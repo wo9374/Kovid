@@ -29,7 +29,7 @@ class MyLocationManager @Inject constructor(@ApplicationContext val context: Con
         mLocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
             .setWaitForAccurateLocation(false)  //위치 요청할 때 정확한 위치를 기다리는 기능 설정
             .setMinUpdateIntervalMillis(2500)   //위치 업데이트를 요청하는데 사용되는 최소 업데이트 간격
-            .setMaxUpdateDelayMillis(1000)       //위치 업데이트를 받기 전에 시스템이 대기하는 최대 시간을 설정
+            .setMaxUpdateDelayMillis(1000)      //위치 업데이트를 받기 전에 시스템이 대기하는 최대 시간을 설정
             .build()
         mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper()!!)
     }
