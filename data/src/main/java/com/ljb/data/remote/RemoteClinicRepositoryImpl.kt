@@ -45,16 +45,12 @@ class RemoteClinicRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRemoteSelectiveClinic(sido:String, sigungu:String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteSelectiveClinic(sido:String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (sigungu == "전체")
+            val result = if (sido.contains("제주"))
+                remoteSource.getSelectiveClinic("제주")
+            else
                 remoteSource.getSelectiveClinic(sido)
-            else{
-                var temp = sido
-                if (temp.contains("제주"))
-                    temp = "제주"
-                remoteSource.getSelectiveClinic(temp, sigungu)
-            }
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")
@@ -72,16 +68,12 @@ class RemoteClinicRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getRemoteTemporaryClinic(sido: String, sigungu: String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteTemporaryClinic(sido: String): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (sigungu == "전체")
+            val result = if (sido.contains("제주"))
+                remoteSource.getTemporaryClinic("제주")
+            else
                 remoteSource.getTemporaryClinic(sido)
-            else{
-                var temp = sido
-                if (temp.contains("제주"))
-                    temp = "제주"
-                remoteSource.getTemporaryClinic(temp, sigungu)
-            }
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")

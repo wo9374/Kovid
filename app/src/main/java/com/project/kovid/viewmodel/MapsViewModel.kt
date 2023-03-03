@@ -137,7 +137,7 @@ class MapsViewModel @Inject constructor(
     }
 
     private suspend fun getSelectiveData(siDo: String, siGunGu: String) {
-        getSelectiveClinicUseCase(siDo, siGunGu).catch { exception ->
+        getSelectiveClinicUseCase(siDo).catch { exception ->
             Log.d(tag, "getSelectiveData Exception Error: ${exception.message}")
         }.collect { result ->
             when (result) {
@@ -170,7 +170,7 @@ class MapsViewModel @Inject constructor(
     }
 
     private suspend fun getTemporaryData(siDo: String, siGunGu: String) {
-        getTemporaryClinicUseCase(siDo, siGunGu).catch { exception ->
+        getTemporaryClinicUseCase(siDo).catch { exception ->
             Log.d(tag, "getTemporaryData Exception Error: ${exception.message}")
         }.collect{ result ->
             when (result) {
