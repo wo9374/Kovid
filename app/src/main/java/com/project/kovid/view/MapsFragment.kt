@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
+import com.ljb.data.model.PolygonData
 import com.ljb.data.model.SelectiveCluster
 import com.ljb.domain.UiState
 import com.project.kovid.R
@@ -194,7 +195,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         mPolygon.forEach { it.remove() } //Polygon 객체의 remove
 
                     when(data.type){
-                        "MultiPolygon" -> {
+                        PolygonData.MULTI_POLYGON -> {
                             (data.mapsPolygon as List<List<LatLng>>).forEachIndexed { index, list ->
                                 val polygon = PolygonOptions()
                                     .addAll(list)
@@ -204,7 +205,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                                 mPolygon.add(index, mGoogleMap.addPolygon(polygon))
                             }
                         }
-                        "Polygon" ->{
+                        PolygonData.POLYGON ->{
                             val list = (data.mapsPolygon as List<LatLng>)
                             val polygon = PolygonOptions()
                                 .addAll(list)

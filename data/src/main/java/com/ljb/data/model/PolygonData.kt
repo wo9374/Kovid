@@ -43,4 +43,9 @@ data class PolygonData(
     val mapsPolygon: Any,
     val type:String,
     val rankAddress : Int,
-)
+){
+    companion object{
+        const val MULTI_POLYGON = "MultiPolygon"
+        const val POLYGON = "Polygon"
+    }
+}

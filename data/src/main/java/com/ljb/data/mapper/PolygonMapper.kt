@@ -7,7 +7,7 @@ import com.ljb.domain.entity.MapsPolygon
 fun MapsPolygon.mapperToLatLng() = PolygonData(
     centerLatLng = LatLng(centerLatLng[1], centerLatLng[0]),
     mapsPolygon = when(type){
-        "MultiPolygon"->{
+        PolygonData.MULTI_POLYGON->{
             (mapsPolygon as List<List<List<List<Double>>>>).map { multi ->
                 multi[0].map {
                     LatLng(it[1], it[0])
