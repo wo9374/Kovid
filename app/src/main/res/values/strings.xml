@@ -21,6 +21,7 @@
     
     <string name="searching_sido">%1s에 위치한 진료소 정보를 찾는중…</string>
     <string name="initial_clinic_data">최초 진료소 정보 수징중…\n다소 시간이 소요될 수 있습니다.</string>
+    <string name="nothing_data">데이터가 존재하지 않습니다.</string>
 
     <string name="general_clinic">종합병원</string>
     <string name="temporary_clinic">임시 선별 진료소</string>

@@ -185,7 +185,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         when (it) {
                             is UiState.Loading -> {}
                             is UiState.Complete -> visibleDisplayCluster(it.data)
-                            is UiState.Fail -> Toast.makeText(mContext, "데이터 오류!", Toast.LENGTH_SHORT).show()
+                            is UiState.Fail -> Toast.makeText(mContext, it.message, Toast.LENGTH_SHORT).show()
                         }
                     }
             }
@@ -195,7 +195,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         when (it) {
                             is UiState.Loading -> {}
                             is UiState.Complete -> visibleDisplayCluster(it.data)
-                            is UiState.Fail -> Toast.makeText(mContext, "데이터 오류!", Toast.LENGTH_SHORT).show()
+                            is UiState.Fail -> Toast.makeText(mContext, it.message, Toast.LENGTH_SHORT).show()
                         }
                     }
             }

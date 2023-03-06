@@ -26,10 +26,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapsViewModel @Inject constructor(
-    private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
-    private val getRemoteClinicUseCase: GetRemoteClinicUseCase,
     private val locationManager: MyLocationManager,
+    private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
 
+    private val getRemoteClinicUseCase: GetRemoteClinicUseCase,
     private val getDbClinicUseCase: GetDbClinicUseCase,
     private val insertClinicUseCase: InsertSelectiveClinicUseCase
 ) : ViewModel() {
@@ -72,8 +72,6 @@ class MapsViewModel @Inject constructor(
                     val currentRegion = locationManager.getReverseGeocoding(it)
                     detailAddress = currentRegion
                     _currentLocation.emit(it)
-
-                    //getDbData(currentRegion.first, currentRegion.second)
                 }
             }
         }
@@ -135,18 +133,26 @@ class MapsViewModel @Inject constructor(
 
                 detailAddress = Pair(siDo, siGunGu)
 
-                getDbClinicUseCase(siDo, siGunGu, Clinic.CLINIC_SELECTIVE).apply {
-                    val cluster = this.map {
-                        it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                getDbClinicUseCase(siDo, siGunGu, Clinic.CLINIC_SELECTIVE).let { list ->
+                    if (list.isEmpty())
+                        _selectiveClusters.emit(UiState.Fail("선별 진료소 정보가 없습니다."))
+                    else{
+                        val cluster = list.map {
+                            it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                        }
+                        _selectiveClusters.emit(UiState.Complete(cluster))
                     }
-                    _selectiveClusters.emit(UiState.Complete(cluster))
                 }
 
-                getDbClinicUseCase(siDo, siGunGu, Clinic.CLINIC_TEMPORARY).apply {
-                    val cluster = this.map {
-                        it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                getDbClinicUseCase(siDo, siGunGu, Clinic.CLINIC_TEMPORARY).let { list ->
+                    if (list.isEmpty())
+                        _temporaryClusters.emit(UiState.Fail("임시 선별 진료소 정보가 없습니다."))
+                    else{
+                        val cluster = list.map {
+                            it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                        }
+                        _temporaryClusters.emit(UiState.Complete(cluster))
                     }
-                    _temporaryClusters.emit(UiState.Complete(cluster))
                 }
 
                 getMapsPolygonUseCase(siDo, siGunGu).catch { exception ->
