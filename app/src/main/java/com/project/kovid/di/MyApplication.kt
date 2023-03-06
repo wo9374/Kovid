@@ -1,6 +1,7 @@
 package com.project.kovid.di
 
 import android.app.Application
+import com.project.kovid.widget.util.PreferenceUtil
 import dagger.hilt.android.HiltAndroidApp
 
 /**
@@ -8,4 +9,13 @@ import dagger.hilt.android.HiltAndroidApp
  * AndroidManifest.xml에서 name에 MyApplication을 적용
  * */
 @HiltAndroidApp
-class MyApplication: Application()
+class MyApplication: Application(){
+    companion object{
+        lateinit var preferences: PreferenceUtil
+    }
+
+    override fun onCreate() {
+        preferences = PreferenceUtil(applicationContext)
+        super.onCreate()
+    }
+}

@@ -44,13 +44,9 @@ class RemoteClinicRepositoryImpl @Inject constructor(
             }
         }
     }
-
-    override fun getRemoteSelectiveClinic(siDo:String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteSelectiveClinic(): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (siDo.contains("제주"))
-                remoteSource.getSelectiveClinic("제주")
-            else
-                remoteSource.getSelectiveClinic(siDo)
+            val result = remoteSource.getSelectiveClinic()
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")
@@ -67,13 +63,9 @@ class RemoteClinicRepositoryImpl @Inject constructor(
                 emit(NetworkState.Error(result.message()))
         }
     }
-
-    override fun getRemoteTemporaryClinic(siDo: String): Flow<NetworkState<List<SelectiveClinic>>> {
+    override fun getRemoteTemporaryClinic(): Flow<NetworkState<List<SelectiveClinic>>> {
         return flow {
-            val result = if (siDo.contains("제주"))
-                remoteSource.getTemporaryClinic("제주")
-            else
-                remoteSource.getTemporaryClinic(siDo)
+            val result = remoteSource.getTemporaryClinic()
 
             if (result.isSuccessful){
                 Log.d(TAG, "${result.body()}")

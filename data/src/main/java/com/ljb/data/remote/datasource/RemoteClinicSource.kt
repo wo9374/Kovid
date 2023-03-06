@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 
 interface RemoteClinicSource {
-    suspend fun getSelectiveClinic(sido:String): Response<SelectiveClinicJsonResponse>
-    suspend fun getTemporaryClinic(sido:String): Response<SelectiveClinicJsonResponse>
+    suspend fun getSelectiveClinic(): Response<SelectiveClinicJsonResponse>
+    suspend fun getTemporaryClinic(): Response<SelectiveClinicJsonResponse>
     suspend fun getPolygonOsmId(adminArea: String): List<PolygonOsmId>
     suspend fun getPolygonData(osm_id : Long): Response<PolyGonResponse>
 }
@@ -20,11 +20,11 @@ class RemoteClinicSourceImpl @Inject constructor(
     @NetworkModule.HospitalType private val hospitalAPI: HospitalAPI,
     @NetworkModule.NominatimType private val polygonAPI: HospitalAPI,
 ) : RemoteClinicSource {
-    override suspend fun getSelectiveClinic(sido:String): Response<SelectiveClinicJsonResponse> =
-        hospitalAPI.getSelectiveClinic(sido = sido)
+    override suspend fun getSelectiveClinic(): Response<SelectiveClinicJsonResponse> =
+        hospitalAPI.getSelectiveClinic()
 
-    override suspend fun getTemporaryClinic(sido: String): Response<SelectiveClinicJsonResponse> =
-        hospitalAPI.getTemporaryClinic(sido = sido)
+    override suspend fun getTemporaryClinic(): Response<SelectiveClinicJsonResponse> =
+        hospitalAPI.getTemporaryClinic()
 
     override suspend fun getPolygonOsmId(adminArea: String): List<PolygonOsmId> =
         polygonAPI.getPolygonOsmId(city = adminArea)

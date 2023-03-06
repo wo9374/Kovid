@@ -32,6 +32,7 @@ import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
+import com.project.kovid.di.MyApplication
 import com.project.kovid.viewmodel.MapsViewModel
 import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
 import com.project.kovid.widget.extension.customview.HospClusterMarker
@@ -49,29 +50,26 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     private var mPolygon: ArrayList<Polygon> = arrayListOf()
 
     private val mapsViewModel: MapsViewModel by viewModels()
-
-    private val permissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+    companion object{
+        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        const val DENIED = "DENIED"
+        const val EXPLAINED = "EXPLAINED"
+    }
 
     private val activityResultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
-        val deniedList: List<String> = result.filter { !it.value }.map {
-            it.key
-        }
+        val deniedList: List<String> = result.filter { !it.value }.map { it.key }
         when {
             deniedList.isNotEmpty() -> {
                 val map = deniedList.groupBy { permission ->
-                    if (shouldShowRequestPermissionRationale(permission)) "DENIED" else "EXPLAINED"
+                    if (shouldShowRequestPermissionRationale(permission))
+                        DENIED
+                    else
+                        EXPLAINED
                 }
-                map["DENIED"]?.let {
-                    showPermissionDialog()
-                }
-                map["EXPLAINED"]?.let {
-                    showPermissionDialog(goSetting = true)
-                }
+                map[DENIED]?.let { showPermissionDialog() }
+                map[EXPLAINED]?.let { showPermissionDialog(goSetting = true) }
             }
             else -> {
                 mapsViewModel.startLocation()
@@ -134,7 +132,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 getSelectedItemPair().run {
                     if (mapsViewModel.detailAddress != this){
                         clusterManager.clearItems()
-                        mapsViewModel.getDbData(first, second)
+                        mapsViewModel.getDbDataLoading(first, second, true)
                     }
                 }
             }
@@ -149,16 +147,31 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             mapsViewModel.currentLocation.collect {
                 val latLng = LatLng(it.latitude, it.longitude)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-                mapsViewModel.stopLocation() //첫 데이터 init 후 정지
+
+                with(mapsViewModel){
+                    stopLocation()
+
+                    if (checkInitialData())
+                        getDbDataLoading(detailAddress.first, detailAddress.second)
+                    else
+                        getInitialRemoteData()
+
+                    progressState.emit(true)
+                }
             }
         }
 
         lifecycleScope.launch {
             launch {
-                mapsViewModel.progressState.collectLatest {
+                mapsViewModel.progressState.collect {
                     if (it) {
-                        mapsViewModel.detailAddress.run {
-                            ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, "$first $second"))
+                        with(mapsViewModel){
+                            if (checkInitialData()){
+                                detailAddress.run {
+                                    ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, "$first $second"))
+                                }
+                            }
+                            else ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.initial_clinic_data))
                         }
                     }else{
                         ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
@@ -173,7 +186,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         when (it) {
                             is UiState.Loading -> {}
                             is UiState.Complete -> visibleDisplayCluster(it.data)
-                            is UiState.Fail -> Toast.makeText(mContext, "네트워크 오류!", Toast.LENGTH_SHORT).show()
+                            is UiState.Fail -> Toast.makeText(mContext, "데이터 오류!", Toast.LENGTH_SHORT).show()
                         }
                     }
             }
@@ -183,7 +196,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         when (it) {
                             is UiState.Loading -> {}
                             is UiState.Complete -> visibleDisplayCluster(it.data)
-                            is UiState.Fail -> Toast.makeText(mContext, "네트워크 오류!", Toast.LENGTH_SHORT).show()
+                            is UiState.Fail -> Toast.makeText(mContext, "데이터 오류!", Toast.LENGTH_SHORT).show()
                         }
                     }
             }

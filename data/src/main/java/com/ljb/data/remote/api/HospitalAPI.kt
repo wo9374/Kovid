@@ -14,18 +14,18 @@ interface HospitalAPI {
     suspend fun getSelectiveClinic(
         @Query("serviceKey") serviceKey: String = BuildConfig.DATA_GO_KR_API_KEY_DECODE,
         @Query("pageNo") pageNo: Int = 1,
-        @Query("numOfRows") numOfRows: Int = 100,
+        @Query("numOfRows") numOfRows: Int = 1000,
         @Query("apiType") apiType: String = ApiInfo.JSON_FORMAT,
-        @Query("sido") sido: String,
+//        @Query("sido") sido: String,
     ): Response<SelectiveClinicJsonResponse>
 
     @GET(ApiInfo.TEMPORARY_CLINIC_END_POINT)
     suspend fun getTemporaryClinic(
         @Query("serviceKey") serviceKey: String = BuildConfig.DATA_GO_KR_API_KEY_DECODE,
         @Query("pageNo") pageNo: Int = 1,
-        @Query("numOfRows") numOfRows: Int = 100,
+        @Query("numOfRows") numOfRows: Int = 1000,
         @Query("apiType") apiType: String = ApiInfo.JSON_FORMAT,
-        @Query("sido") sido: String,
+//        @Query("sido") sido: String,
     ): Response<SelectiveClinicJsonResponse>
 
     @GET(ApiInfo.OSM_ID_END_POINT)
