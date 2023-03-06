@@ -40,7 +40,7 @@ object NetworkModule {
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
-    annotation class NominatimType
+    annotation class PolygonType
 
 
     @ChartType
@@ -86,7 +86,7 @@ object NetworkModule {
             .build()
     }
 
-    @NominatimType
+    @PolygonType
     @Provides
     @Singleton
     fun provideNominatimRetrofit(
@@ -116,36 +116,31 @@ object NetworkModule {
     @ChartType
     @Provides
     @Singleton
-    fun provideCovidChartService(@ChartType retrofit: Retrofit): CovidAPI {
-        return retrofit.create(CovidAPI::class.java)
-    }
+    fun provideCovidChartService(@ChartType retrofit: Retrofit): CovidAPI =
+        retrofit.create(CovidAPI::class.java)
 
     @AreaType
     @Provides
     @Singleton
-    fun provideCovidAreaService(@AreaType retrofit: Retrofit): CovidAPI {
-        return retrofit.create(CovidAPI::class.java)
-    }
+    fun provideCovidAreaService(@AreaType retrofit: Retrofit): CovidAPI =
+        retrofit.create(CovidAPI::class.java)
 
     @HospitalType
     @Provides
     @Singleton
-    fun provideHospitalService(@HospitalType retrofit: Retrofit): HospitalAPI{
-        return retrofit.create(HospitalAPI::class.java)
-    }
+    fun provideHospitalService(@HospitalType retrofit: Retrofit): HospitalAPI =
+        retrofit.create(HospitalAPI::class.java)
 
-    @NominatimType
+    @PolygonType
     @Provides
     @Singleton
-    fun provideNominatimService(@NominatimType retrofit: Retrofit): HospitalAPI{
-        return retrofit.create(HospitalAPI::class.java)
-    }
+    fun provideNominatimService(@PolygonType retrofit: Retrofit): HospitalAPI =
+        retrofit.create(HospitalAPI::class.java)
 
     @Provides
     @Singleton
-    fun provideNewsService(retrofit: Retrofit): NewsAPI{
-        return retrofit.create(NewsAPI::class.java)
-    }
+    fun provideNewsService(retrofit: Retrofit): NewsAPI = retrofit.create(NewsAPI::class.java)
+
 
 
     //공용 Gson
@@ -159,9 +154,7 @@ object NetworkModule {
 
     //공용 TikXml
     @Provides
-    fun provideTikXmlConverterFactory(): TikXmlConverterFactory {
-        return TikXmlConverterFactory.create()
-    }
+    fun provideTikXmlConverterFactory(): TikXmlConverterFactory =TikXmlConverterFactory.create()
 
     //공용 okHttp
     @Provides

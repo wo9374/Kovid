@@ -3,7 +3,7 @@ package com.ljb.data.remote.api
 import com.ljb.data.BuildConfig
 import com.ljb.data.model.PolyGonResponse
 import com.ljb.data.model.PolygonOsmId
-import com.ljb.data.model.SelectiveClinicJsonResponse
+import com.ljb.data.model.ClinicJsonResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,7 +17,7 @@ interface HospitalAPI {
         @Query("numOfRows") numOfRows: Int = 1000,
         @Query("apiType") apiType: String = ApiInfo.JSON_FORMAT,
 //        @Query("sido") sido: String,
-    ): Response<SelectiveClinicJsonResponse>
+    ): Response<ClinicJsonResponse>
 
     @GET(ApiInfo.TEMPORARY_CLINIC_END_POINT)
     suspend fun getTemporaryClinic(
@@ -26,7 +26,7 @@ interface HospitalAPI {
         @Query("numOfRows") numOfRows: Int = 1000,
         @Query("apiType") apiType: String = ApiInfo.JSON_FORMAT,
 //        @Query("sido") sido: String,
-    ): Response<SelectiveClinicJsonResponse>
+    ): Response<ClinicJsonResponse>
 
     @GET(ApiInfo.OSM_ID_END_POINT)
     suspend fun getPolygonOsmId(

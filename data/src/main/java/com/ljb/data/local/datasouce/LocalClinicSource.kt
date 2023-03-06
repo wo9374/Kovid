@@ -1,29 +1,25 @@
 package com.ljb.data.local.datasouce
 
-import com.ljb.data.database.SelectiveClinicDao
-import com.ljb.data.model.SelectiveClinicJson
+import com.ljb.data.database.ClinicDao
+import com.ljb.data.model.ClinicJson
 import javax.inject.Inject
 
 interface LocalClinicSource {
-    fun getClinic(siDo: String, siGunGu: String, clinicType: Int): List<SelectiveClinicJson>
-    suspend fun insertSelectiveClinic(selectiveCluster: SelectiveClinicJson)
-    suspend fun clearSelectiveClinics()
+    fun getClinic(siDo: String, siGunGu: String, clinicType: Int): List<ClinicJson>
+    suspend fun insertClinic(clinicJson: ClinicJson)
+    suspend fun clearClinics()
 }
 
-class LocalClinicSourceImpl @Inject constructor(private val selectiveClinicDao: SelectiveClinicDao):
+class LocalClinicSourceImpl @Inject constructor(private val clinicDao: ClinicDao):
     LocalClinicSource {
-    override fun getClinic(siDo : String, siGunGu: String, clinicType: Int): List<SelectiveClinicJson> {
+    override fun getClinic(siDo : String, siGunGu: String, clinicType: Int): List<ClinicJson> {
         return if (siGunGu == "전체")
-            selectiveClinicDao.getClinic(siDo, clinicType)
+            clinicDao.getClinic(siDo, clinicType)
         else
-            selectiveClinicDao.getClinicSiGunGu(siDo, siGunGu, clinicType)
+            clinicDao.getClinicSiGunGu(siDo, siGunGu, clinicType)
     }
 
-    override suspend fun insertSelectiveClinic(selectiveClinicJson: SelectiveClinicJson) {
-        selectiveClinicDao.insertClinic(selectiveClinicJson)
-    }
+    override suspend fun insertClinic(clinicJson: ClinicJson) = clinicDao.insertClinic(clinicJson)
 
-    override suspend fun clearSelectiveClinics() {
-        selectiveClinicDao.clearSelectiveClinic()
-    }
+    override suspend fun clearClinics() = clinicDao.clearClinic()
 }

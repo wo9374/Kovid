@@ -27,12 +27,11 @@ import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
 import com.ljb.data.model.PolygonData
-import com.ljb.data.model.SelectiveCluster
+import com.ljb.data.model.ClinicCluster
 import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
 import com.project.kovid.databinding.FragmentMapBinding
-import com.project.kovid.di.MyApplication
 import com.project.kovid.viewmodel.MapsViewModel
 import com.project.kovid.widget.extension.customview.ContentsLoadingProgress
 import com.project.kovid.widget.extension.customview.HospClusterMarker
@@ -46,7 +45,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     var TAG = MapsFragment::class.java.simpleName
 
     private lateinit var mGoogleMap: GoogleMap
-    private lateinit var clusterManager: ClusterManager<SelectiveCluster>
+    private lateinit var clusterManager: ClusterManager<ClinicCluster>
     private var mPolygon: ArrayList<Polygon> = arrayListOf()
 
     private val mapsViewModel: MapsViewModel by viewModels()
@@ -98,7 +97,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         val seoul = LatLng(37.554891, 126.970814)
         mGoogleMap = googleMap
 
-        clusterManager = ClusterManager<SelectiveCluster>(mContext, mGoogleMap)
+        clusterManager = ClusterManager<ClinicCluster>(mContext, mGoogleMap)
         clusterManager.apply {
             renderer = HospClusterMarker(mContext, mGoogleMap, clusterManager)
             markerCollection.setInfoWindowAdapter(HospMapInfoWindow(mContext))
@@ -240,7 +239,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
     }
 
-    private fun visibleDisplayCluster(clusterList: List<SelectiveCluster>) {
+    private fun visibleDisplayCluster(clusterList: List<ClinicCluster>) {
         clusterList.forEach { cluster ->
             //현재 화면의 보이는 위도 경도 바운드
             mGoogleMap.projection.visibleRegion.latLngBounds.apply {

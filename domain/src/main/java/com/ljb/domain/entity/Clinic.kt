@@ -1,6 +1,6 @@
 package com.ljb.domain.entity
 
-data class SelectiveClinic(
+data class Clinic(
     val sido: String,               //시도명               //경기
     val sigungu: String,            //시군구명             //하남시
     val clinicName: String,         //선별 진료소명        //하남시보건소
@@ -15,4 +15,10 @@ data class SelectiveClinic(
     val weekendOperTime: String,    //주말,공휴일 운영시간   //09:00~17:00
 
     val clinicType: Int,
-)
+){
+    companion object {
+        const val CLINIC_SELECTIVE = 0
+        const val CLINIC_TEMPORARY = 1
+        const val CLINIC_DOCTOR_OFFICE = 2
+    }
+}

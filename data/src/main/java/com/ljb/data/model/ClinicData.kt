@@ -10,7 +10,7 @@ import com.google.maps.android.clustering.ClusterItem
 /**
  * 선별진료소 JSON 포멧 Response
  * */
-data class SelectiveClinicJsonResponse(
+data class ClinicJsonResponse(
     @SerializedName("resultCode") val resultCode: Int,                  //결과코드
     @SerializedName("resultMsg") val resultMsg: String,                 //결과 메시지
 
@@ -18,12 +18,12 @@ data class SelectiveClinicJsonResponse(
     @SerializedName("pageNo") val pageNo: Int,                          //페이지 번호
     @SerializedName("totalCount") val totalCount: Int,                  //전체 결과 수
 
-    @SerializedName("items") val items: List<SelectiveClinicJson>
+    @SerializedName("items") val items: List<ClinicJson>
 )
 
 
-@Entity(tableName = "selective_clinic")
-data class SelectiveClinicJson(
+@Entity(tableName = "clinic")
+data class ClinicJson(
     @SerializedName("sido") val sido: String,                           //시도명               //경기
     @SerializedName("sigungu") val sigungu: String,                     //시군구명             //하남시
     @SerializedName(value = "clinicName", alternate = ["clinicNm"]) val clinicName: String,               //선별 진료소명        //하남시보건소
@@ -43,7 +43,7 @@ data class SelectiveClinicJson(
     val clinicType: Int = 0,
 )
 
-data class SelectiveCluster(
+data class ClinicCluster(
     val addr: String,
     val sido: String,
     val sigungu: String,

@@ -10,8 +10,7 @@ import com.ljb.domain.usecase.GetChartListUseCase
 import com.ljb.domain.usecase.GetDbClinicUseCase
 import com.ljb.domain.usecase.GetMapsPolygonUseCase
 import com.ljb.domain.usecase.GetNewUseCase
-import com.ljb.domain.usecase.GetSelectiveClinicUseCase
-import com.ljb.domain.usecase.GetTemporaryClinicUseCase
+import com.ljb.domain.usecase.GetRemoteClinicUseCase
 import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
 import dagger.Module
 import dagger.Provides
@@ -35,9 +34,7 @@ class UseCaseModule {
     @Provides
     fun provideGetMapsPolygonUseCase(repository: RemoteClinicRepository) = GetMapsPolygonUseCase(repository)
     @Provides
-    fun provideGetSelectiveClinicUseCase(repository: RemoteClinicRepository) = GetSelectiveClinicUseCase(repository)
-    @Provides
-    fun provideGetTemporaryClinicUseCase(repository: RemoteClinicRepository) = GetTemporaryClinicUseCase(repository)
+    fun provideGetSelectiveClinicUseCase(repository: RemoteClinicRepository) = GetRemoteClinicUseCase(repository)
 
 
     @Provides

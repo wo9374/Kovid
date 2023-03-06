@@ -33,7 +33,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideClinicRepository(remoteClinicSourceImpl: RemoteClinicSourceImpl): RemoteClinicRepository =
+    fun provideRemoteClinicRepository(remoteClinicSourceImpl: RemoteClinicSourceImpl): RemoteClinicRepository =
         RemoteClinicRepositoryImpl(remoteClinicSourceImpl)
 
     @Provides

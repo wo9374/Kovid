@@ -9,13 +9,13 @@ import com.google.android.gms.location.LocationResult
 import com.ljb.data.mapper.mapperToCluster
 import com.ljb.data.mapper.mapperToLatLng
 import com.ljb.data.model.PolygonData
-import com.ljb.data.model.SelectiveCluster
+import com.ljb.data.model.ClinicCluster
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
+import com.ljb.domain.entity.Clinic
 import com.ljb.domain.usecase.*
 import com.project.kovid.di.MyApplication
 import com.project.kovid.widget.extension.MyLocationManager
-import com.project.kovid.widget.extension.customview.HospClusterMarker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -27,8 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MapsViewModel @Inject constructor(
     private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
-    private val getSelectiveClinicUseCase: GetSelectiveClinicUseCase,
-    private val getTemporaryClinicUseCase: GetTemporaryClinicUseCase,
+    private val getRemoteClinicUseCase: GetRemoteClinicUseCase,
     private val locationManager: MyLocationManager,
 
     private val getDbClinicUseCase: GetDbClinicUseCase,
@@ -42,12 +41,12 @@ class MapsViewModel @Inject constructor(
     var detailAddress = Pair("", "")
 
     //선별 진료소
-    private val _selectiveClusters = MutableStateFlow<UiState<List<SelectiveCluster>>>(UiState.Loading)
-    val selectiveClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _selectiveClusters
+    private val _selectiveClusters = MutableStateFlow<UiState<List<ClinicCluster>>>(UiState.Loading)
+    val selectiveClusters: StateFlow<UiState<List<ClinicCluster>>> get() = _selectiveClusters
 
     //임시 선별 진료소
-    private val _temporaryClusters = MutableStateFlow<UiState<List<SelectiveCluster>>>(UiState.Loading)
-    val temporaryClusters: StateFlow<UiState<List<SelectiveCluster>>> get() = _temporaryClusters
+    private val _temporaryClusters = MutableStateFlow<UiState<List<ClinicCluster>>>(UiState.Loading)
+    val temporaryClusters: StateFlow<UiState<List<ClinicCluster>>> get() = _temporaryClusters
 
 
     //검색한 시도 지역의 영역 Polygon, centerPosition
@@ -89,7 +88,7 @@ class MapsViewModel @Inject constructor(
     fun getInitialRemoteData(){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                getSelectiveClinicUseCase().catch {exception ->
+                getRemoteClinicUseCase(Clinic.CLINIC_SELECTIVE).catch { exception ->
                     Log.d(tag, "getInitialRemoteData Selective Exception : ${exception.message}")
                 }.collectLatest { result ->
                     when(result){
@@ -98,7 +97,7 @@ class MapsViewModel @Inject constructor(
                             result.data.filter {
                                 with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
                             }.forEach {
-                                insertClinicUseCase(it, HospClusterMarker.HOSP_SELECTIVE) //이후 DB 저장
+                                insertClinicUseCase(it, Clinic.CLINIC_SELECTIVE) //이후 DB 저장
                             }
                         }
                         is NetworkState.Error -> Log.d(tag, "getSelectiveClinicUseCase Error : ${result.message}")
@@ -106,7 +105,7 @@ class MapsViewModel @Inject constructor(
                     }
                 }
 
-                getTemporaryClinicUseCase().catch {exception ->
+                getRemoteClinicUseCase(Clinic.CLINIC_TEMPORARY).catch { exception ->
                     Log.d(tag, "getInitialRemoteData Temporary Exception : ${exception.message}")
                 }.collectLatest { result ->
                     when(result){
@@ -114,7 +113,7 @@ class MapsViewModel @Inject constructor(
                             result.data.filter {
                                 with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
                             }.forEach {
-                                insertClinicUseCase(it, HospClusterMarker.HOSP_TEMPORARY)
+                                insertClinicUseCase(it, Clinic.CLINIC_TEMPORARY)
                             }
                         }
                         is NetworkState.Error -> Log.d(tag, "getTemporaryClinicUseCase Error : ${result.message}")
@@ -136,14 +135,14 @@ class MapsViewModel @Inject constructor(
 
                 detailAddress = Pair(siDo, siGunGu)
 
-                getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_SELECTIVE).apply {
+                getDbClinicUseCase(siDo, siGunGu, Clinic.CLINIC_SELECTIVE).apply {
                     val cluster = this.map {
                         it.mapperToCluster(locationManager.getGeocoding(it.addr))
                     }
                     _selectiveClusters.emit(UiState.Complete(cluster))
                 }
 
-                getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_TEMPORARY).apply {
+                getDbClinicUseCase(siDo, siGunGu, Clinic.CLINIC_TEMPORARY).apply {
                     val cluster = this.map {
                         it.mapperToCluster(locationManager.getGeocoding(it.addr))
                     }

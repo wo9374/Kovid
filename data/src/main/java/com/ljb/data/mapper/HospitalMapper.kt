@@ -1,15 +1,15 @@
 package com.ljb.data.mapper
 
 import android.location.Location
-import com.ljb.data.model.SelectiveClinicJson
-import com.ljb.data.model.SelectiveCluster
-import com.ljb.domain.entity.SelectiveClinic
+import com.ljb.data.model.ClinicJson
+import com.ljb.data.model.ClinicCluster
+import com.ljb.domain.entity.Clinic
 
 /**
  * domain layer는 data layer를 모르기 때문에 data에서 domain layer의 data class로 자료형을 변환
  * */
 
-fun SelectiveClinicJson.mapperToSelective() = SelectiveClinic(
+fun ClinicJson.mapperToClinic() = Clinic(
     sido = this.sido,
     sigungu = this.sigungu,
     clinicName = this.clinicName,
@@ -26,7 +26,7 @@ fun SelectiveClinicJson.mapperToSelective() = SelectiveClinic(
     clinicType = this.clinicType
 )
 
-fun SelectiveClinic.mapperToSelectiveJson(clinicType : Int) = SelectiveClinicJson(
+fun Clinic.mapperToClinicJson(clinicType : Int) = ClinicJson(
     sido = this.sido,
     sigungu = this.sigungu,
     clinicName = this.clinicName,
@@ -43,7 +43,7 @@ fun SelectiveClinic.mapperToSelectiveJson(clinicType : Int) = SelectiveClinicJso
     clinicType = clinicType
 )
 
-fun SelectiveClinic.mapperToCluster(location: Location) = SelectiveCluster(
+fun Clinic.mapperToCluster(location: Location) = ClinicCluster(
     addr = this.addr,
     clinicName = this.clinicName,
     satdayOperTime= this.satdayOperTime,
@@ -62,5 +62,5 @@ fun SelectiveClinic.mapperToCluster(location: Location) = SelectiveCluster(
     clinicType = this.clinicType
 )
 
-fun SelectiveCluster.latitude() = lat
-fun SelectiveCluster.longitude() = lng
+fun ClinicCluster.latitude() = lat
+fun ClinicCluster.longitude() = lng

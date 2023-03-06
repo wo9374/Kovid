@@ -1,6 +1,6 @@
 package com.ljb.data.di
 
-import com.ljb.data.database.SelectiveClinicDao
+import com.ljb.data.database.ClinicDao
 import com.ljb.data.remote.api.CovidAPI
 import com.ljb.data.remote.api.HospitalAPI
 import com.ljb.data.local.datasouce.LocalClinicSource
@@ -37,13 +37,13 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun provideRemoteClinicSource(
-      @NetworkModule.HospitalType hospitalAPI: HospitalAPI,
-      @NetworkModule.NominatimType nominatimAPI: HospitalAPI,
+        @NetworkModule.HospitalType hospitalAPI: HospitalAPI,
+        @NetworkModule.PolygonType nominatimAPI: HospitalAPI,
     ): RemoteClinicSource = RemoteClinicSourceImpl(hospitalAPI, nominatimAPI)
 
     @Provides
     @Singleton
-    fun provideLocalClinicSource(dao: SelectiveClinicDao) : LocalClinicSource =
+    fun provideLocalClinicSource(dao: ClinicDao) : LocalClinicSource =
         LocalClinicSourceImpl(dao)
 
     @Provides

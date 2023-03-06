@@ -1,24 +1,24 @@
 package com.ljb.data.database
 
 import androidx.room.*
-import com.ljb.data.model.SelectiveClinicJson
+import com.ljb.data.model.ClinicJson
 
-@Database(entities = [SelectiveClinicJson::class], version = 1)
+@Database(entities = [ClinicJson::class], version = 1)
 abstract class ClinicDatabase : RoomDatabase() {
-    abstract fun dao(): SelectiveClinicDao
+    abstract fun dao(): ClinicDao
 }
 
 @Dao
-interface SelectiveClinicDao{
-    @Query("SELECT * From selective_clinic WHERE sido = :siDo AND clinicType = :clinicType")
-    fun getClinic(siDo: String, clinicType: Int): List<SelectiveClinicJson>
+interface ClinicDao{
+    @Query("SELECT * From clinic WHERE sido = :siDo AND clinicType = :clinicType")
+    fun getClinic(siDo: String, clinicType: Int): List<ClinicJson>
 
-    @Query("SELECT * From selective_clinic WHERE sido = :siDo AND sigungu= :siGunGu AND clinicType = :clinicType")
-    fun getClinicSiGunGu(siDo: String, siGunGu: String, clinicType: Int): List<SelectiveClinicJson>
+    @Query("SELECT * From clinic WHERE sido = :siDo AND sigungu= :siGunGu AND clinicType = :clinicType")
+    fun getClinicSiGunGu(siDo: String, siGunGu: String, clinicType: Int): List<ClinicJson>
 
     @Insert
-    suspend fun insertClinic(selectiveClinicJson: SelectiveClinicJson)
+    suspend fun insertClinic(clinicJson: ClinicJson)
 
-    @Query("DELETE FROM selective_clinic")
-    suspend fun clearSelectiveClinic()
+    @Query("DELETE FROM clinic")
+    suspend fun clearClinic()
 }

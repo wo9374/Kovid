@@ -3,7 +3,7 @@ package com.ljb.data.di
 import android.content.Context
 import androidx.room.Room
 import com.ljb.data.database.ClinicDatabase
-import com.ljb.data.database.SelectiveClinicDao
+import com.ljb.data.database.ClinicDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +20,7 @@ object DatabaseModule {
      * */
     @Provides
     @Singleton
-    fun provideLocalClinicDao(database: ClinicDatabase): SelectiveClinicDao = database.dao()
+    fun provideLocalClinicDao(database: ClinicDatabase): ClinicDao = database.dao()
 
     /**
      * Database instance 생성 명시
