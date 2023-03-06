@@ -3,7 +3,7 @@ package com.ljb.data.database
 import androidx.room.*
 import com.ljb.data.model.ClinicJson
 
-@Database(entities = [ClinicJson::class], version = 1)
+@Database(entities = [ClinicJson::class], version = 1, exportSchema = false)
 abstract class ClinicDatabase : RoomDatabase() {
     abstract fun dao(): ClinicDao
 }
