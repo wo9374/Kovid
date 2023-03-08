@@ -131,7 +131,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 getSelectedItemPair().run {
                     if (mapsViewModel.detailAddress != this){
                         clusterManager.clearItems()
-                        mapsViewModel.getDbDataLoading(first, second, true)
+                        mapsViewModel.loadClinicData(siDo = first, siGunGu = second)
                     }
                 }
             }
@@ -150,10 +150,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 with(mapsViewModel){
                     stopLocation()
 
-                    if (checkInitialData())
-                        getDbDataLoading(detailAddress.first, detailAddress.second)
-                    else
-                        getInitialRemoteData()
+                    loadClinicData()
 
                     progressState.emit(true)
                 }
@@ -165,7 +162,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 mapsViewModel.progressState.collect {
                     if (it) {
                         with(mapsViewModel){
-                            if (checkInitialData()){
+                            if (isDataInitialized()){
                                 detailAddress.run {
                                     ContentsLoadingProgress.showProgress(this@MapsFragment.javaClass.name, requireActivity(), true, getString(R.string.searching_sido, "$first $second"))
                                 }

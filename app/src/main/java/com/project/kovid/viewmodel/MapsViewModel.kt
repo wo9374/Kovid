@@ -80,52 +80,91 @@ class MapsViewModel @Inject constructor(
     fun startLocation() = locationManager.startLocationUpdates(mLocationCallback)
     fun stopLocation() = locationManager.stopLocationUpdates(mLocationCallback)
 
-    //병원 정보를 가지고 있는지 check
-    fun checkInitialData() : Boolean = MyApplication.preferences.getBoolean(settingGlobalDataInit, false)
+    /**
+     * 데이터가 초기화 됐는지 확인하고 진료소 데이터를 가져온다.
+     */
+    fun loadClinicData() {
+        if (isDataInitialized()) {
+            getClinicDataFromDatabase(
+                siDo = detailAddress.first,
+                siGunGu = detailAddress.second,
+            )
+        } else {
+            fetchClinicDataFromRemote()
+        }
+    }
 
-    fun getInitialRemoteData(){
+    /**
+     * 데이터 초기화 여부 확인하지 않고 특정 지역의 진료소 데이터를 가져온다.
+     */
+    fun loadClinicData(siDo: String, siGunGu: String) {
+        getClinicDataFromDatabase(
+            siDo = siDo,
+            siGunGu = siGunGu,
+            progressEnabled = true
+        )
+    }
+
+    //병원 정보를 가지고 있는지 check
+    fun isDataInitialized() : Boolean = MyApplication.preferences.getBoolean(settingGlobalDataInit, false)
+
+    /**
+     * Remote에서 진료소 데이터를 가져와 Database에 저장한 후 [getClinicDataFromDatabase]를 호출한다.
+     */
+    private fun fetchClinicDataFromRemote() {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                getRemoteClinicUseCase(Clinic.CLINIC_SELECTIVE).catch { exception ->
-                    Log.d(tag, "getInitialRemoteData Selective Exception : ${exception.message}")
-                }.collectLatest { result ->
-                    when(result){
-                        is NetworkState.Success -> {
-                            //Location 값이 정상 반환일 때를 위한 필터링
-                            result.data.filter {
-                                with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
-                            }.forEach {
-                                insertClinicUseCase(it, Clinic.CLINIC_SELECTIVE) //이후 DB 저장
-                            }
-                        }
-                        is NetworkState.Error -> Log.d(tag, "getSelectiveClinicUseCase Error : ${result.message}")
-                        is NetworkState.Loading -> {}
+                getRemoteClinicUseCase(Clinic.CLINIC_SELECTIVE)
+                    .catch { exception ->
+                        Log.d(tag, "getInitialRemoteData Selective Exception : ${exception.message}")
                     }
-                }
+                    .collectLatest { result ->
+                        when(result){
+                            is NetworkState.Success -> {
+                                //Location 값이 정상 반환일 때를 위한 필터링
+                                result.data.filter {
+                                    with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
+                                }.forEach {
+                                    insertClinicUseCase(it, Clinic.CLINIC_SELECTIVE) //이후 DB 저장
+                                }
+                            }
+                            is NetworkState.Error -> Log.d(tag, "getSelectiveClinicUseCase Error : ${result.message}")
+                            is NetworkState.Loading -> {}
+                        }
+                    }
 
-                getRemoteClinicUseCase(Clinic.CLINIC_TEMPORARY).catch { exception ->
-                    Log.d(tag, "getInitialRemoteData Temporary Exception : ${exception.message}")
-                }.collectLatest { result ->
-                    when(result){
-                        is NetworkState.Success -> {
-                            result.data.filter {
-                                with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
-                            }.forEach {
-                                insertClinicUseCase(it, Clinic.CLINIC_TEMPORARY)
-                            }
-                        }
-                        is NetworkState.Error -> Log.d(tag, "getTemporaryClinicUseCase Error : ${result.message}")
-                        is NetworkState.Loading -> {}
+                getRemoteClinicUseCase(Clinic.CLINIC_TEMPORARY)
+                    .catch { exception ->
+                        Log.d(tag, "getInitialRemoteData Temporary Exception : ${exception.message}")
                     }
-                }
+                    .collectLatest { result ->
+                        when(result){
+                            is NetworkState.Success -> {
+                                result.data.filter {
+                                    with(locationManager.getGeocoding(it.addr)) { latitude != 0.0 && longitude != 0.0 }
+                                }.forEach {
+                                    insertClinicUseCase(it, Clinic.CLINIC_TEMPORARY)
+                                }
+                            }
+                            is NetworkState.Error -> Log.d(tag, "getTemporaryClinicUseCase Error : ${result.message}")
+                            is NetworkState.Loading -> {}
+                        }
+                    }
 
                 MyApplication.preferences.setBoolean(settingGlobalDataInit, true)
-                getDbDataLoading(detailAddress.first, detailAddress.second)
+                getClinicDataFromDatabase(detailAddress.first, detailAddress.second)
             }
         }
     }
 
-    fun getDbDataLoading(siDo: String, siGunGu: String, progressEnabled: Boolean = false){
+    /**
+     * Database에 저장된 진료소 데이터를 읽어온다.
+     */
+    private fun getClinicDataFromDatabase(
+        siDo: String,
+        siGunGu: String,
+        progressEnabled: Boolean = false
+    ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
                 if (progressEnabled)
