@@ -12,6 +12,7 @@ import com.ljb.domain.usecase.GetMapsPolygonUseCase
 import com.ljb.domain.usecase.GetNewUseCase
 import com.ljb.domain.usecase.GetRemoteClinicUseCase
 import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
+import com.ljb.domain.usecase.MapJsonParsingUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,6 +44,8 @@ class UseCaseModule {
     fun provideInsertSelectiveClinicUseCase(repository: LocalClinicRepository) = InsertSelectiveClinicUseCase(repository)
     @Provides
     fun provideClearSelectiveClinicUseCase(repository: LocalClinicRepository) = ClearSelectiveClinicUseCase(repository)
+    @Provides
+    fun provideMapJsonParsingUseCase(repository: LocalClinicRepository) = MapJsonParsingUseCase(repository)
 
 
     @Provides

@@ -3,6 +3,10 @@ package com.ljb.data.model
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 
+/*import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable*/
+
 /**
 * 데이터 찾는 지역 바운더리를 얻어오기 위한 DataClass
 * */
@@ -49,3 +53,46 @@ data class PolygonData(
         const val POLYGON = "Polygon"
     }
 }
+
+const val KOREA_SIDO = "korea_sido.json"
+const val KOREA_SIGUNGU = "korea_sigungu.json"
+data class MapJson(
+    @SerializedName("type") val type: String,
+    @SerializedName("features") val features: ArrayList<Feature> = arrayListOf()
+)
+
+data class Feature(
+    @SerializedName("type") val type: FeatureType,
+    @SerializedName("geometry") val geometry: Geometry,
+    @SerializedName("properties") val properties: Properties
+)
+data class Geometry (
+    @SerializedName("type") val type: GeometryType,
+    @SerializedName("coordinates") val coordinates: ArrayList<ArrayList<ArrayList<Any>>> = arrayListOf()
+)
+
+data class Properties(
+    @SerializedName("CTPRVN_CD")
+    val ctprvnCD: String,
+
+    @SerializedName("CTP_ENG_NM")
+    val ctpEngNm: String,
+
+    @SerializedName("CTP_KOR_NM")
+    val ctpKorNm: String,
+)
+
+enum class GeometryType(val value: String) {
+    @SerializedName("MultiPolygon") MultiPolygon("MultiPolygon"),
+    @SerializedName("Polygon") Polygon("Polygon")
+}
+
+enum class FeatureType(val value: String) {
+    @SerializedName("Feature") Feature("Feature")
+}
+
+data class KoreaPolygon(
+    val polygonType: String,
+    val coordinates: List<List<Any>>,
+    val properties: String,
+)

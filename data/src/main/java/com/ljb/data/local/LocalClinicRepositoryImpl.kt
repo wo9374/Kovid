@@ -1,9 +1,10 @@
 package com.ljb.data.local
 
+import com.ljb.data.local.datasouce.LocalClinicSource
 import com.ljb.data.mapper.mapperToClinic
 import com.ljb.data.mapper.mapperToClinicJson
-import com.ljb.data.local.datasouce.LocalClinicSource
 import com.ljb.domain.entity.Clinic
+import com.ljb.domain.entity.MapsInfo
 import com.ljb.domain.repository.LocalClinicRepository
 import javax.inject.Inject
 
@@ -29,4 +30,7 @@ class LocalClinicRepositoryImpl @Inject constructor(
     override suspend fun clearClinics() {
         localSource.clearClinics()
     }
+
+    override fun mapInfoJsonParsing(jsonString: String) : List<MapsInfo>
+       = localSource.mapInfoJsonParsing(jsonString)
 }

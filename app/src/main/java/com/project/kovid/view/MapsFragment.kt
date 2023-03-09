@@ -28,6 +28,8 @@ import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
 import com.ljb.data.model.PolygonData
 import com.ljb.data.model.ClinicCluster
+import com.ljb.data.model.KOREA_SIDO
+import com.ljb.data.model.KOREA_SIGUNGU
 import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
@@ -143,17 +145,20 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     private fun observeData() {
 
         lifecycleScope.launchWhenStarted {
-            mapsViewModel.currentLocation.collect {
-                val latLng = LatLng(it.latitude, it.longitude)
+            mapsViewModel.currentLocation.collect {location ->
+                val latLng = LatLng(location.latitude, location.longitude)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
 
                 with(mapsViewModel){
                     stopLocation()
 
+                    //openMapJsonFile()
+
                     if (checkInitialData())
                         getDbDataLoading(detailAddress.first, detailAddress.second)
-                    else
+                    else{
                         getInitialRemoteData()
+                    }
 
                     progressState.emit(true)
                 }
@@ -236,6 +241,14 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(data.centerLatLng, zoom))
                 }
             }
+        }
+    }
+    private fun openMapJsonFile(){
+        mContext.assets.open(KOREA_SIDO).bufferedReader().use { it.readText() }.run {
+            mapsViewModel.parsingSiDo(this)
+        }
+        mContext.assets.open(KOREA_SIGUNGU).bufferedReader().use { it.readText() }.run {
+            mapsViewModel.parsingSiGunGu(this)
         }
     }
 

@@ -3,6 +3,7 @@ package com.ljb.domain.usecase
 import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.Clinic
+import com.ljb.domain.entity.MapsInfo
 import com.ljb.domain.repository.LocalClinicRepository
 import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
@@ -28,4 +29,8 @@ class InsertSelectiveClinicUseCase(private val repository: LocalClinicRepository
 
 class ClearSelectiveClinicUseCase(private val repository: LocalClinicRepository){
     suspend operator fun invoke() = repository.clearClinics()
+}
+
+class MapJsonParsingUseCase(private val repository: LocalClinicRepository){
+    operator fun invoke(jsonString : String): List<MapsInfo> = repository.mapInfoJsonParsing(jsonString)
 }

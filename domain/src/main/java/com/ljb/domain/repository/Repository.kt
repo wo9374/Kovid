@@ -5,6 +5,7 @@ import com.ljb.domain.entity.AreaCovid
 import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.News
 import com.ljb.domain.entity.Clinic
+import com.ljb.domain.entity.MapsInfo
 import com.ljb.domain.entity.WeekCovid
 import kotlinx.coroutines.flow.Flow
 
@@ -22,6 +23,8 @@ interface LocalClinicRepository{
     fun getLocalClinic(siDo: String, siGunGu: String, clinicType: Int): List<Clinic>
     suspend fun insertClinic(clinic: Clinic, clinicType: Int)
     suspend fun clearClinics()
+
+    fun mapInfoJsonParsing(jsonString: String): List<MapsInfo>
 }
 
 interface NewRepository{

@@ -13,6 +13,7 @@ import com.ljb.data.model.ClinicCluster
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
 import com.ljb.domain.entity.Clinic
+import com.ljb.domain.entity.MapsInfo
 import com.ljb.domain.usecase.*
 import com.project.kovid.di.MyApplication
 import com.project.kovid.widget.extension.MyLocationManager
@@ -31,7 +32,8 @@ class MapsViewModel @Inject constructor(
 
     private val getRemoteClinicUseCase: GetRemoteClinicUseCase,
     private val getDbClinicUseCase: GetDbClinicUseCase,
-    private val insertClinicUseCase: InsertSelectiveClinicUseCase
+    private val insertClinicUseCase: InsertSelectiveClinicUseCase,
+    private val mapJsonParsingUseCase: MapJsonParsingUseCase,
 ) : ViewModel() {
     private val tag = MapsViewModel::class.java.simpleName
 
@@ -47,6 +49,13 @@ class MapsViewModel @Inject constructor(
     //임시 선별 진료소
     private val _temporaryClusters = MutableStateFlow<UiState<List<ClinicCluster>>>(UiState.Loading)
     val temporaryClusters: StateFlow<UiState<List<ClinicCluster>>> get() = _temporaryClusters
+
+
+    //맵 폴리곤
+    private var koreaSiDo = listOf<MapsInfo>()
+    private var koreaSiGunGu = listOf<MapsInfo>()
+
+    private val _mapsPolygon = MutableSharedFlow<List<Any>>()
 
 
     //검색한 시도 지역의 영역 Polygon, centerPosition
@@ -83,6 +92,15 @@ class MapsViewModel @Inject constructor(
     //병원 정보를 가지고 있는지 check
     fun checkInitialData() : Boolean = MyApplication.preferences.getBoolean(settingGlobalDataInit, false)
 
+
+    fun parsingSiDo(jsonString: String){
+        koreaSiDo = mapJsonParsingUseCase(jsonString)
+    }
+    fun parsingSiGunGu(jsonString: String){
+        koreaSiGunGu = mapJsonParsingUseCase(jsonString)
+    }
+
+
     fun getInitialRemoteData(){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
@@ -118,6 +136,7 @@ class MapsViewModel @Inject constructor(
                         is NetworkState.Loading -> {}
                     }
                 }
+
 
                 MyApplication.preferences.setBoolean(settingGlobalDataInit, true)
                 getDbDataLoading(detailAddress.first, detailAddress.second)
