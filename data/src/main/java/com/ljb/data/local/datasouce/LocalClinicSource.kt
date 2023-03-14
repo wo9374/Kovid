@@ -1,14 +1,12 @@
 package com.ljb.data.local.datasouce
 
+import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.ljb.data.database.ClinicDao
-import com.ljb.data.mapper.mapperToMapsInfo
-import com.ljb.data.mapper.safeCast
 import com.ljb.data.model.ClinicJson
-import com.ljb.data.model.GeometryType
-import com.ljb.data.model.MapJson
-import com.ljb.domain.entity.MapsInfo
+import com.ljb.data.model.FeatureCollection
 import javax.inject.Inject
 
 interface LocalClinicSource {
@@ -16,7 +14,7 @@ interface LocalClinicSource {
     suspend fun insertClinic(clinicJson: ClinicJson)
     suspend fun clearClinics()
 
-    fun mapInfoJsonParsing(jsonString: String) : List<MapsInfo>
+    fun mapInfoJsonParsing(jsonString: String) //: MapsInfo
 }
 
 class LocalClinicSourceImpl @Inject constructor(private val clinicDao: ClinicDao):
@@ -32,16 +30,33 @@ class LocalClinicSourceImpl @Inject constructor(private val clinicDao: ClinicDao
 
     override suspend fun clearClinics() = clinicDao.clearClinic()
 
-    override fun mapInfoJsonParsing(jsonString: String) : List<MapsInfo> {
-        val siDo = Gson().fromJson(jsonString, object : TypeToken<MapJson>() {}.type) as MapJson
-        siDo.features.map {
-            when (it.geometry.type) {
-                GeometryType.MultiPolygon -> it.geometry.coordinates.safeCast<List<List<List<Double>>>>()
-                GeometryType.Polygon -> it.geometry.coordinates.safeCast<List<List<Double>>>()
-            }
+    override fun mapInfoJsonParsing(jsonString: String) /*: MapsInfo*/ {
+        val nogada = Gson().fromJson(jsonString, JsonObject::class.java)
+        val featureObject = nogada.getAsJsonObject("features")
+
+        Log.e("테스트 featureObject?.jsonArray", "${featureObject.asJsonArray}")
+        Log.e("테스트", "${featureObject.asJsonArray.asJsonArray?.get(0)}")
+        Log.e("테스트 type", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("type")}")
+        Log.e("테스트 geometry", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("geometry")}")
+        Log.e("테스트", "---1!----------------------------------------------------------------------------------------")
+        Log.e("테스트 geometry type", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("geometry")?.asJsonObject?.get("type")}")
+        Log.e("테스트 geometry coordinates", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("geometry")?.asJsonObject?.get("coordinates")}")
+        Log.e("테스트", "---2!----------------------------------------------------------------------------------------")
+
+
+        val data = Gson().fromJson(jsonString, object : TypeToken<FeatureCollection>(){}.type) as FeatureCollection
+        data.features.forEach {
+            Log.e("test", "data.type : ${data.type}, name : ${it.properties.ctpKorNm} polygons : ${it.geometry.coordinates}")
         }
 
-
-        return siDo.mapperToMapsInfo()
+        /*val siDo = Gson().fromJson(jsonString, object : TypeToken<MapJson>() {}.type) as MapJson
+        val polygon = siDo.features[0].apply {
+            properties
+            geometry.type
+            when(geometry.type){
+                GeometryType.MultiPolygon -> (geometry.coordinates as Coordinate.MultiPolygonValue).value
+                GeometryType.Polygon -> (geometry.coordinates as Coordinate.PolygonValue).value
+            }
+        }.mapperToKoreaPolygon()*/
     }
 }

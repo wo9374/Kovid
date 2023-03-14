@@ -52,8 +52,8 @@ class MapsViewModel @Inject constructor(
 
 
     //맵 폴리곤
-    private var koreaSiDo = listOf<MapsInfo>()
-    private var koreaSiGunGu = listOf<MapsInfo>()
+    private var koreaSiDo = MapsInfo()
+    private var koreaSiGunGu = MapsInfo()
 
     private val _mapsPolygon = MutableSharedFlow<List<Any>>()
 
@@ -94,10 +94,12 @@ class MapsViewModel @Inject constructor(
 
 
     fun parsingSiDo(jsonString: String){
-        koreaSiDo = mapJsonParsingUseCase(jsonString)
+//        koreaSiDo = mapJsonParsingUseCase(jsonString)
+        mapJsonParsingUseCase(jsonString)
     }
     fun parsingSiGunGu(jsonString: String){
-        koreaSiGunGu = mapJsonParsingUseCase(jsonString)
+//        koreaSiGunGu = mapJsonParsingUseCase(jsonString)
+        mapJsonParsingUseCase(jsonString)
     }
 
 

@@ -32,5 +32,6 @@ class ClearSelectiveClinicUseCase(private val repository: LocalClinicRepository)
 }
 
 class MapJsonParsingUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke(jsonString : String): List<MapsInfo> = repository.mapInfoJsonParsing(jsonString)
+    operator fun invoke(jsonString : String)//: MapsInfo
+    = repository.mapInfoJsonParsing(jsonString)
 }

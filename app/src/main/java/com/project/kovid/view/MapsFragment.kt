@@ -152,7 +152,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 with(mapsViewModel){
                     stopLocation()
 
-                    //openMapJsonFile()
+                    openMapJsonFile()
 
                     if (checkInitialData())
                         getDbDataLoading(detailAddress.first, detailAddress.second)

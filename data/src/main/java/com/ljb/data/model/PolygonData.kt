@@ -56,43 +56,48 @@ data class PolygonData(
 
 const val KOREA_SIDO = "korea_sido.json"
 const val KOREA_SIGUNGU = "korea_sigungu.json"
-data class MapJson(
+/*
+data class KoreaSido (
     @SerializedName("type") val type: String,
     @SerializedName("features") val features: ArrayList<Feature> = arrayListOf()
 )
 
-data class Feature(
+data class Feature (
     @SerializedName("type") val type: FeatureType,
     @SerializedName("geometry") val geometry: Geometry,
     @SerializedName("properties") val properties: Properties
 )
+
 data class Geometry (
     @SerializedName("type") val type: GeometryType,
-    @SerializedName("coordinates") val coordinates: ArrayList<ArrayList<ArrayList<Any>>> = arrayListOf()
+    @SerializedName("coordinates") val coordinates: List<List<List<Coordinate>>>
+)
+*/
+
+
+
+data class FeatureCollection(
+    @SerializedName("type")  val type: String,
+    @SerializedName("features") val features: List<Feature>
 )
 
-data class Properties(
-    @SerializedName("CTPRVN_CD")
-    val ctprvnCD: String,
-
-    @SerializedName("CTP_ENG_NM")
-    val ctpEngNm: String,
-
-    @SerializedName("CTP_KOR_NM")
-    val ctpKorNm: String,
+data class Feature(
+    @SerializedName("type") val type: String,
+    @SerializedName("properties") val properties: Properties,
+    @SerializedName("geometry") val geometry: Geometry,
 )
 
-enum class GeometryType(val value: String) {
-    @SerializedName("MultiPolygon") MultiPolygon("MultiPolygon"),
-    @SerializedName("Polygon") Polygon("Polygon")
+data class Geometry(
+    @SerializedName("type") val type: String,
+    @SerializedName("coordinates") val coordinates: List<Any>
+)
+
+data class Properties (
+    @SerializedName(value = "CTPRVN_CD", alternate=["SIG_CD"]) val ctpRvnCD: String,
+    @SerializedName("CTP_ENG_NM", alternate=["SIG_ENG_NM"]) val ctpEngNm: String,
+    @SerializedName("CTP_KOR_NM", alternate=["SIG_KOR_NM"]) val ctpKorNm: String
+)
+
+enum class GeometryType {
+    MultiPolygon, Polygon
 }
-
-enum class FeatureType(val value: String) {
-    @SerializedName("Feature") Feature("Feature")
-}
-
-data class KoreaPolygon(
-    val polygonType: String,
-    val coordinates: List<List<Any>>,
-    val properties: String,
-)
