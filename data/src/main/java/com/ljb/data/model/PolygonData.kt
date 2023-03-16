@@ -74,7 +74,31 @@ data class Geometry (
 )
 */
 
+data class SiDoModel(
+    val siDoCode : Int,
+    val siDoName : String,
+    val latLngList : List<List<List<Double>>>,
+    val siGunGuList : List<SiGunGuModel>
+){
+    data class SiGunGuModel(
+        val siGunGuCode : Int,
+        val siGunGuName : String,
+        val latLngList : List<List<List<Double>>>
+    )
+}
 
+data class PolygonInfo(
+    val type : String,
+    val code : Int,
+    val name : String,
+    val latLngList : List<List<List<Double>>>
+)
+
+/*data class MultiPolygonModel(
+    val type : GeometryType,
+    val name : String,
+    val latLngList : List<List<List<List<Double>>>>
+)*/
 
 data class FeatureCollection(
     @SerializedName("type")  val type: String,
@@ -89,15 +113,11 @@ data class Feature(
 
 data class Geometry(
     @SerializedName("type") val type: String,
-    @SerializedName("coordinates") val coordinates: List<Any>
+    @SerializedName("coordinates") val coordinates: List<List<List<Double>>>,
 )
 
 data class Properties (
     @SerializedName(value = "CTPRVN_CD", alternate=["SIG_CD"]) val ctpRvnCD: String,
-    @SerializedName("CTP_ENG_NM", alternate=["SIG_ENG_NM"]) val ctpEngNm: String,
-    @SerializedName("CTP_KOR_NM", alternate=["SIG_KOR_NM"]) val ctpKorNm: String
+    @SerializedName(value = "CTP_ENG_NM", alternate=["SIG_ENG_NM"]) val ctpEngNm: String,
+    @SerializedName(value = "CTP_KOR_NM", alternate=["SIG_KOR_NM"]) val ctpKorNm: String
 )
-
-enum class GeometryType {
-    MultiPolygon, Polygon
-}

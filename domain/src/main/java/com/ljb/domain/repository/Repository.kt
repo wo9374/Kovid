@@ -24,7 +24,7 @@ interface LocalClinicRepository{
     suspend fun insertClinic(clinic: Clinic, clinicType: Int)
     suspend fun clearClinics()
 
-    fun mapInfoJsonParsing(jsonString: String)//: MapsInfo
+    fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String)//: MapsInfo
 }
 
 interface NewRepository{

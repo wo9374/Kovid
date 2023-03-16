@@ -60,9 +60,11 @@ dependencies {
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-jaxb:$retrofit_version"
+
+    //Gson
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     //TikXml - SDK32 사용으로 인한 0.8.13 사용
     implementation "com.tickaroo.tikxml:annotation:$tikxml_version"

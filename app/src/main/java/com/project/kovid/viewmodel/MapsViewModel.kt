@@ -93,15 +93,7 @@ class MapsViewModel @Inject constructor(
     fun checkInitialData() : Boolean = MyApplication.preferences.getBoolean(settingGlobalDataInit, false)
 
 
-    fun parsingSiDo(jsonString: String){
-//        koreaSiDo = mapJsonParsingUseCase(jsonString)
-        mapJsonParsingUseCase(jsonString)
-    }
-    fun parsingSiGunGu(jsonString: String){
-//        koreaSiGunGu = mapJsonParsingUseCase(jsonString)
-        mapJsonParsingUseCase(jsonString)
-    }
-
+    fun parsingMapJson(jsonSiDo: String, jsonSiGunGu: String) = mapJsonParsingUseCase(jsonSiDo, jsonSiGunGu)
 
     fun getInitialRemoteData(){
         viewModelScope.launch {

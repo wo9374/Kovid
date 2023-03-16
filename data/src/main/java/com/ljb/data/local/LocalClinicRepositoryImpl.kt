@@ -31,6 +31,6 @@ class LocalClinicRepositoryImpl @Inject constructor(
         localSource.clearClinics()
     }
 
-    override fun mapInfoJsonParsing(jsonString: String) //: MapsInfo
-       = localSource.mapInfoJsonParsing(jsonString)
+    override fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) //: MapsInfo
+       = localSource.mapInfoJsonParsing(jsonSido, jsonSiGungu)
 }

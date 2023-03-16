@@ -152,7 +152,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 with(mapsViewModel){
                     stopLocation()
 
-                    openMapJsonFile()
+                    mapsViewModel.parsingMapJson(
+                        mContext.assets.open(KOREA_SIDO).bufferedReader().use { it.readText() },
+                        mContext.assets.open(KOREA_SIGUNGU).bufferedReader().use { it.readText() }
+                    )
 
                     if (checkInitialData())
                         getDbDataLoading(detailAddress.first, detailAddress.second)
@@ -241,14 +244,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(data.centerLatLng, zoom))
                 }
             }
-        }
-    }
-    private fun openMapJsonFile(){
-        mContext.assets.open(KOREA_SIDO).bufferedReader().use { it.readText() }.run {
-            mapsViewModel.parsingSiDo(this)
-        }
-        mContext.assets.open(KOREA_SIGUNGU).bufferedReader().use { it.readText() }.run {
-            mapsViewModel.parsingSiGunGu(this)
         }
     }
 

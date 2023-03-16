@@ -77,20 +77,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
 
-
-    //Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-jaxb:$retrofit_version"
-
-    //OkHttp: 통신 로그 확인하기 위함
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-    implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
-
-
-
     //코틀린 원형그래프, 파이 그래프
     //https://github.com/PhilJay/MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

@@ -3,10 +3,12 @@ package com.ljb.data.local.datasouce
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.ljb.data.database.ClinicDao
+import com.ljb.data.mapper.parsingMapData
 import com.ljb.data.model.ClinicJson
-import com.ljb.data.model.FeatureCollection
+import com.ljb.data.model.PolygonData.Companion.POLYGON
+import com.ljb.data.model.PolygonInfo
+import com.ljb.data.model.SiDoModel
 import javax.inject.Inject
 
 interface LocalClinicSource {
@@ -14,7 +16,7 @@ interface LocalClinicSource {
     suspend fun insertClinic(clinicJson: ClinicJson)
     suspend fun clearClinics()
 
-    fun mapInfoJsonParsing(jsonString: String) //: MapsInfo
+    fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) //: MapsInfo
 }
 
 class LocalClinicSourceImpl @Inject constructor(private val clinicDao: ClinicDao):
@@ -30,33 +32,27 @@ class LocalClinicSourceImpl @Inject constructor(private val clinicDao: ClinicDao
 
     override suspend fun clearClinics() = clinicDao.clearClinic()
 
-    override fun mapInfoJsonParsing(jsonString: String) /*: MapsInfo*/ {
-        val nogada = Gson().fromJson(jsonString, JsonObject::class.java)
-        val featureObject = nogada.getAsJsonObject("features")
+    override fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) /*: MapsInfo*/ {
+        val siDoObject = Gson().fromJson(jsonSido, JsonObject::class.java)
+        siDoObject.getAsJsonArray("features").forEachIndexed { idx, element ->
+            val siDoPolygon = element.parsingMapData(siDoType = true)
+            Log.e("parsedData", "$siDoPolygon")
 
-        Log.e("테스트 featureObject?.jsonArray", "${featureObject.asJsonArray}")
-        Log.e("테스트", "${featureObject.asJsonArray.asJsonArray?.get(0)}")
-        Log.e("테스트 type", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("type")}")
-        Log.e("테스트 geometry", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("geometry")}")
-        Log.e("테스트", "---1!----------------------------------------------------------------------------------------")
-        Log.e("테스트 geometry type", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("geometry")?.asJsonObject?.get("type")}")
-        Log.e("테스트 geometry coordinates", "${featureObject.asJsonArray.asJsonArray?.get(0)?.asJsonObject?.get("geometry")?.asJsonObject?.get("coordinates")}")
-        Log.e("테스트", "---2!----------------------------------------------------------------------------------------")
-
-
-        val data = Gson().fromJson(jsonString, object : TypeToken<FeatureCollection>(){}.type) as FeatureCollection
-        data.features.forEach {
-            Log.e("test", "data.type : ${data.type}, name : ${it.properties.ctpKorNm} polygons : ${it.geometry.coordinates}")
-        }
-
-        /*val siDo = Gson().fromJson(jsonString, object : TypeToken<MapJson>() {}.type) as MapJson
-        val polygon = siDo.features[0].apply {
-            properties
-            geometry.type
-            when(geometry.type){
-                GeometryType.MultiPolygon -> (geometry.coordinates as Coordinate.MultiPolygonValue).value
-                GeometryType.Polygon -> (geometry.coordinates as Coordinate.PolygonValue).value
+            val siGunGuObject = Gson().fromJson(jsonSiGungu, JsonObject::class.java)
+            val sigunList : List<PolygonInfo> = siGunGuObject.getAsJsonArray("features").map { jsonElement ->
+                jsonElement.parsingMapData(false)
             }
-        }.mapperToKoreaPolygon()*/
+
+            val temp = mutableListOf<PolygonInfo>()
+            when(idx){
+                0 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 0..24 }  //서울 25 (구 25)
+                1 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 25..40 } //부산 16 (구 15 군 1)
+                2 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 41..48 } //대구 8  (구 7 군 1)
+                3 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //인천 10 (구 8 군 2)
+                4 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //광주 5  (구 5)
+                5 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //대전 5  (구 5)
+                6 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //울산 5  (구 4 군 1)
+            }
+        }
     }
 }
