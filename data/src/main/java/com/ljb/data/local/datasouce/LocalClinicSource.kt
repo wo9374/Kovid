@@ -49,10 +49,12 @@ class LocalClinicSourceImpl @Inject constructor(private val clinicDao: ClinicDao
                 1 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 25..40 } //부산 16 (구 15 군 1)
                 2 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 41..48 } //대구 8  (구 7 군 1)
                 3 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //인천 10 (구 8 군 2)
-                4 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //광주 5  (구 5)
-                5 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //대전 5  (구 5)
-                6 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 49..58 } //울산 5  (구 4 군 1)
+                4 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 59..63 } //광주 5  (구 5)
+                5 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 64..68 } //대전 5  (구 5)
+                6 -> sigunList.filterIndexedTo(temp){ index, _ -> index in 69..73 } //울산 5  (구 4 군 1)
             }
+
+            Log.e("시군구", "$temp")
         }
     }
 }
