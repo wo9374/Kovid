@@ -6,6 +6,7 @@ import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.News
 import com.ljb.domain.entity.Clinic
 import com.ljb.domain.entity.MapsInfo
+import com.ljb.domain.entity.SiDo
 import com.ljb.domain.entity.WeekCovid
 import kotlinx.coroutines.flow.Flow
 
@@ -24,7 +25,7 @@ interface LocalClinicRepository{
     suspend fun insertClinic(clinic: Clinic, clinicType: Int)
     suspend fun clearClinics()
 
-    fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String)//: MapsInfo
+    fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : Flow<List<SiDo>>
 }
 
 interface NewRepository{

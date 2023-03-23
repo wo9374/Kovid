@@ -1,13 +1,11 @@
 package com.ljb.data.mapper
 
-import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonElement
-import com.ljb.data.model.Feature
 import com.ljb.data.model.PolygonData
-import com.ljb.data.model.PolygonInfo
-import com.ljb.domain.entity.MapsInfo
+import com.ljb.data.model.SiDoModel
 import com.ljb.domain.entity.MapsPolygon
+import com.ljb.domain.entity.SiDo
 
 fun MapsPolygon.mapperToLatLng() = PolygonData(
     centerLatLng = LatLng(centerLatLng[1], centerLatLng[0]),
@@ -29,29 +27,7 @@ fun MapsPolygon.mapperToLatLng() = PolygonData(
     rankAddress = rankAddress,
 )
 
-inline fun <reified T> Any?.safeCast(): T? = this as? T
-
-/*fun Coordinate.mapperToLatLngAny(): Coordinate? {
-    return safeCast<List<List<List<List<Double>>>>>()?.let { coordinates ->
-        coordinates.forEach { coordinate ->
-            coordinate.forEach { latLngList ->
-                latLngList.map {
-                    LatLng(it[1],it[0])
-                }
-            }
-        }
-        Coordinate.MultiPolygonValue(coordinates)
-    } ?: safeCast<List<List<List<Double>>>>()?.let { coordinates->
-        coordinates.forEach { coordinate ->
-            coordinate.map {
-                LatLng(it[1],it[0])
-            }
-        }
-        Coordinate.PolygonValue(coordinates)
-    }
-}*/
-
-fun JsonElement.parsingMapData(siDoType : Boolean) : PolygonInfo {
+fun JsonElement.parsingMapData(siDoType : Boolean) : SiDoModel.SiGunGuModel {
     val geo = asJsonObject["geometry"]
     val polygonType = geo.asJsonObject["type"].asString
     val properties = asJsonObject["properties"].asJsonObject
@@ -64,9 +40,7 @@ fun JsonElement.parsingMapData(siDoType : Boolean) : PolygonInfo {
         PolygonData.POLYGON -> {
             coordinate.asJsonArray[0].asJsonArray.map {
                 //MultiPolygon 과 동일한 Data Class 를 위한 List 로 한번더 래핑
-                listOf(
-                    listOf(it.asJsonArray[1].asDouble, it.asJsonArray[0].asDouble)
-                )
+                listOf(listOf(it.asJsonArray[1].asDouble, it.asJsonArray[0].asDouble))
             }
         }
         //MULTI_POLYGON
@@ -78,5 +52,21 @@ fun JsonElement.parsingMapData(siDoType : Boolean) : PolygonInfo {
             }
         }
     }
-    return PolygonInfo(type = polygonType, code = code, name, latLngList = latLngList)
+    return SiDoModel.SiGunGuModel(code, name, polygonType, latLngList)
 }
+
+fun SiDoModel.mapperToSiDo() = SiDo(
+    code = code,
+    name = name,
+    polygonType = polygonType,
+    polygon = polygon,
+    siGunList = siGunList.map {
+        it.mapperToSiGunGu()
+    }
+)
+fun SiDoModel.SiGunGuModel.mapperToSiGunGu() = SiDo.SiGunGu(
+    code = code,
+    name = name,
+    polygonType = polygonType,
+    polygon = polygon,
+)

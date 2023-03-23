@@ -56,68 +56,18 @@ data class PolygonData(
 
 const val KOREA_SIDO = "korea_sido.json"
 const val KOREA_SIGUNGU = "korea_sigungu.json"
-/*
-data class KoreaSido (
-    @SerializedName("type") val type: String,
-    @SerializedName("features") val features: ArrayList<Feature> = arrayListOf()
-)
-
-data class Feature (
-    @SerializedName("type") val type: FeatureType,
-    @SerializedName("geometry") val geometry: Geometry,
-    @SerializedName("properties") val properties: Properties
-)
-
-data class Geometry (
-    @SerializedName("type") val type: GeometryType,
-    @SerializedName("coordinates") val coordinates: List<List<List<Coordinate>>>
-)
-*/
 
 data class SiDoModel(
-    val siDoCode : Int,
-    val siDoName : String,
-    val latLngList : List<List<List<Double>>>,
-    val siGunGuList : List<SiGunGuModel>
-){
-    data class SiGunGuModel(
-        val siGunGuCode : Int,
-        val siGunGuName : String,
-        val latLngList : List<List<List<Double>>>
-    )
-}
-
-data class PolygonInfo(
-    val type : String,
     val code : Int,
     val name : String,
-    val latLngList : List<List<List<Double>>>
-)
-
-/*data class MultiPolygonModel(
-    val type : GeometryType,
-    val name : String,
-    val latLngList : List<List<List<List<Double>>>>
-)*/
-
-data class FeatureCollection(
-    @SerializedName("type")  val type: String,
-    @SerializedName("features") val features: List<Feature>
-)
-
-data class Feature(
-    @SerializedName("type") val type: String,
-    @SerializedName("properties") val properties: Properties,
-    @SerializedName("geometry") val geometry: Geometry,
-)
-
-data class Geometry(
-    @SerializedName("type") val type: String,
-    @SerializedName("coordinates") val coordinates: List<List<List<Double>>>,
-)
-
-data class Properties (
-    @SerializedName(value = "CTPRVN_CD", alternate=["SIG_CD"]) val ctpRvnCD: String,
-    @SerializedName(value = "CTP_ENG_NM", alternate=["SIG_ENG_NM"]) val ctpEngNm: String,
-    @SerializedName(value = "CTP_KOR_NM", alternate=["SIG_KOR_NM"]) val ctpKorNm: String
-)
+    val polygonType : String,
+    val polygon : List<List<List<Double>>>,
+    val siGunList : List<SiGunGuModel>
+){
+    data class SiGunGuModel(
+        val code : Int,
+        val name : String,
+        val polygonType : String,
+        val polygon : List<List<List<Double>>>
+    )
+}

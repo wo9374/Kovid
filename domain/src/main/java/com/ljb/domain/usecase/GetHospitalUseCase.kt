@@ -4,6 +4,7 @@ import com.ljb.domain.NetworkState
 import com.ljb.domain.entity.MapsPolygon
 import com.ljb.domain.entity.Clinic
 import com.ljb.domain.entity.MapsInfo
+import com.ljb.domain.entity.SiDo
 import com.ljb.domain.repository.LocalClinicRepository
 import com.ljb.domain.repository.RemoteClinicRepository
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,6 @@ class ClearSelectiveClinicUseCase(private val repository: LocalClinicRepository)
 }
 
 class MapJsonParsingUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke(jsonSido: String, jsonSiGungu: String)//: MapsInfo
+    operator fun invoke(jsonSido: String, jsonSiGungu: String) : Flow<List<SiDo>>
     = repository.mapInfoJsonParsing(jsonSido, jsonSiGungu)
 }

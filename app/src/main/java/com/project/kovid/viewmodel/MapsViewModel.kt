@@ -6,21 +6,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.PolyUtil
 import com.ljb.data.mapper.mapperToCluster
-import com.ljb.data.mapper.mapperToLatLng
-import com.ljb.data.model.PolygonData
 import com.ljb.data.model.ClinicCluster
+import com.ljb.data.model.PolygonData.Companion.MULTI_POLYGON
+import com.ljb.data.model.PolygonData.Companion.POLYGON
 import com.ljb.domain.NetworkState
 import com.ljb.domain.UiState
 import com.ljb.domain.entity.Clinic
-import com.ljb.domain.entity.MapsInfo
-import com.ljb.domain.usecase.*
+import com.ljb.domain.entity.SiDo
+import com.ljb.domain.usecase.GetDbClinicUseCase
+import com.ljb.domain.usecase.GetRemoteClinicUseCase
+import com.ljb.domain.usecase.InsertSelectiveClinicUseCase
+import com.ljb.domain.usecase.MapJsonParsingUseCase
 import com.project.kovid.di.MyApplication
 import com.project.kovid.widget.extension.MyLocationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,7 +38,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MapsViewModel @Inject constructor(
     private val locationManager: MyLocationManager,
-    private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
+    //private val getMapsPolygonUseCase: GetMapsPolygonUseCase,
 
     private val getRemoteClinicUseCase: GetRemoteClinicUseCase,
     private val getDbClinicUseCase: GetDbClinicUseCase,
@@ -48,23 +58,25 @@ class MapsViewModel @Inject constructor(
 
     //임시 선별 진료소
     private val _temporaryClusters = MutableStateFlow<UiState<List<ClinicCluster>>>(UiState.Loading)
-    val temporaryClusters: StateFlow<UiState<List<ClinicCluster>>> get() = _temporaryClusters
+    val temporaryClusters get() = _temporaryClusters
 
-
+    var mapJson = Pair("","")
     //맵 폴리곤
-    private var koreaSiDo = MapsInfo()
-    private var koreaSiGunGu = MapsInfo()
+    private var _mapsPolygon = MutableStateFlow<List<SiDo>>(emptyList())
+    val mapsPolygon get() = _mapsPolygon
+    //private val _mapsPolygon = MutableSharedFlow<List<SiDo>>()
+    //val mapsPolygon = _mapsPolygon.asSharedFlow()
 
-    private val _mapsPolygon = MutableSharedFlow<List<Any>>()
-
+    private val _currentPolygon = MutableSharedFlow<Pair<String, List<List<LatLng>>>>()
+    val currentPolygon = _currentPolygon.asSharedFlow()
 
     //검색한 시도 지역의 영역 Polygon, centerPosition
-    private val _polygonData = MutableSharedFlow<PolygonData>(
+    /*private val _polygonData = MutableSharedFlow<PolygonData>(
         replay = 0,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val polygonData = _polygonData.asSharedFlow()
+    val polygonData = _polygonData.asSharedFlow()*/
 
     //현위치
     private val _currentLocation = MutableSharedFlow<Location>(
@@ -78,8 +90,7 @@ class MapsViewModel @Inject constructor(
         override fun onLocationResult(locationResult: LocationResult) {
             locationResult.lastLocation?.let {
                 viewModelScope.launch {
-                    val currentRegion = locationManager.getReverseGeocoding(it)
-                    detailAddress = currentRegion
+                    detailAddress = locationManager.getReverseGeocoding(it)
                     _currentLocation.emit(it)
                 }
             }
@@ -92,12 +103,42 @@ class MapsViewModel @Inject constructor(
     //병원 정보를 가지고 있는지 check
     fun checkInitialData() : Boolean = MyApplication.preferences.getBoolean(settingGlobalDataInit, false)
 
+    fun parsingMapJson(jsonSiDo: String, jsonSiGunGu: String){
+        mapJson = Pair(jsonSiDo, jsonSiGunGu)
+    }
 
-    fun parsingMapJson(jsonSiDo: String, jsonSiGunGu: String) = mapJsonParsingUseCase(jsonSiDo, jsonSiGunGu)
+    fun isInPolygon(cameraPosition: LatLng) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                if (mapsPolygon.value.isNotEmpty()){
+                    mapsPolygon.value.forEach { siDo ->
+                        when(siDo.polygonType){
+                            POLYGON -> {
+                                val boundary = siDo.polygon[0].map { LatLng(it[0], it[1]) }
+                                if (PolyUtil.containsLocation(cameraPosition, boundary, true))
+                                    _currentPolygon.emit(Pair(siDo.polygonType, listOf(boundary)))
+                            }
+                            MULTI_POLYGON -> {
+                                val boundary = siDo.polygon.map { multi -> multi.map { LatLng(it[0], it[1]) } }
+                                boundary.forEach {
+                                    if (PolyUtil.containsLocation(cameraPosition, it, true))
+                                        _currentPolygon.emit(Pair(siDo.polygonType, boundary))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun getInitialRemoteData(){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
+                mapJsonParsingUseCase(mapJson.first, mapJson.second).collectLatest {
+                    _mapsPolygon.emit(it)
+                }
+
                 getRemoteClinicUseCase(Clinic.CLINIC_SELECTIVE).catch { exception ->
                     Log.d(tag, "getInitialRemoteData Selective Exception : ${exception.message}")
                 }.collectLatest { result ->
@@ -141,6 +182,10 @@ class MapsViewModel @Inject constructor(
     fun getDbDataLoading(siDo: String, siGunGu: String, progressEnabled: Boolean = false){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
+                mapJsonParsingUseCase(mapJson.first, mapJson.second).collectLatest {
+                    _mapsPolygon.emit(it)
+                }
+
                 if (progressEnabled)
                     progressState.emit(true)
 
@@ -168,7 +213,7 @@ class MapsViewModel @Inject constructor(
                     }
                 }
 
-                getMapsPolygonUseCase(siDo, siGunGu).catch { exception ->
+                /*getMapsPolygonUseCase(siDo, siGunGu).catch { exception ->
                     Log.d(tag, "getMapsPolygonUseCase Exception Error: ${exception.message}")
                 }.collect { result ->
                     when (result) {
@@ -176,7 +221,7 @@ class MapsViewModel @Inject constructor(
                         is NetworkState.Error -> {}
                         is NetworkState.Loading -> {}
                     }
-                }
+                }*/
                 progressState.emit(false)
             }
         }

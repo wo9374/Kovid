@@ -23,13 +23,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.maps.android.PolyUtil
 import com.google.maps.android.clustering.ClusterManager
 import com.ljb.data.mapper.latitude
 import com.ljb.data.mapper.longitude
-import com.ljb.data.model.PolygonData
 import com.ljb.data.model.ClinicCluster
 import com.ljb.data.model.KOREA_SIDO
 import com.ljb.data.model.KOREA_SIGUNGU
+import com.ljb.data.model.PolygonData.Companion.MULTI_POLYGON
+import com.ljb.data.model.PolygonData.Companion.POLYGON
 import com.ljb.domain.UiState
 import com.project.kovid.R
 import com.project.kovid.base.BaseFragment
@@ -48,9 +50,9 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClinicCluster>
-    private var mPolygon: ArrayList<Polygon> = arrayListOf()
 
     private val mapsViewModel: MapsViewModel by viewModels()
+    private var mPolygon: ArrayList<Polygon> = arrayListOf()
     companion object{
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         const val DENIED = "DENIED"
@@ -91,13 +93,22 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
         else
             activityResultLauncher.launch(permissions)
+
+        mapsViewModel.parsingMapJson(
+            mContext.assets.open(KOREA_SIDO).bufferedReader().use { it.readText() },
+            mContext.assets.open(KOREA_SIGUNGU).bufferedReader().use { it.readText() }
+        )
     }
 
+    //private lateinit var geoJsonLayer : GeoJsonLayer
 
     @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         val seoul = LatLng(37.554891, 126.970814)
         mGoogleMap = googleMap
+
+        /*geoJsonLayer = GeoJsonLayer(mGoogleMap, R.raw.korea_sido, mContext)
+        geoJsonLayer.addLayerToMap()*/
 
         clusterManager = ClusterManager<ClinicCluster>(mContext, mGoogleMap)
         clusterManager.apply {
@@ -112,6 +123,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))
 
             setOnCameraIdleListener {
+                val latLng = LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)
+                if (mapsViewModel.mapsPolygon.value.isNotEmpty())
+                    mapsViewModel.isInPolygon(latLng)
+
                 mapsViewModel.selectiveClusters.value.let {
                     if (it is UiState.Complete)
                         visibleDisplayCluster(it.data)
@@ -151,11 +166,6 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
                 with(mapsViewModel){
                     stopLocation()
-
-                    mapsViewModel.parsingMapJson(
-                        mContext.assets.open(KOREA_SIDO).bufferedReader().use { it.readText() },
-                        mContext.assets.open(KOREA_SIGUNGU).bufferedReader().use { it.readText() }
-                    )
 
                     if (checkInitialData())
                         getDbDataLoading(detailAddress.first, detailAddress.second)
@@ -207,9 +217,38 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         }
                     }
             }
+            launch {
+                mapsViewModel.currentPolygon.collectLatest { polygonPair ->
+                    if (mPolygon.isNotEmpty())
+                        mPolygon.forEach { it.remove() } //Polygon 객체의 remove
+
+                    val type = polygonPair.first
+                    val latLng = polygonPair.second
+                    when(type){
+                        POLYGON -> {
+                            val polygon = PolygonOptions()
+                                .addAll(latLng[0])
+                                .fillColor(Color.argb(100, 255, 240, 255))
+                                .strokeColor(R.color.purple_700)
+                                .strokeWidth(5.0f)
+                            mPolygon.add(0, mGoogleMap.addPolygon(polygon))
+                        }
+                        MULTI_POLYGON ->{
+                            latLng.forEachIndexed { index, list ->
+                                val polygon = PolygonOptions()
+                                    .addAll(list)
+                                    .fillColor(Color.argb(100, 255, 240, 255))
+                                    .strokeColor(R.color.purple_700)
+                                    .strokeWidth(5.0f)
+                                mPolygon.add(index, mGoogleMap.addPolygon(polygon))
+                            }
+                        }
+                    }
+                }
+            }
 
             //Maps Polygon
-            launch {
+            /*launch {
                 mapsViewModel.polygonData.collectLatest { data ->
                     if (mPolygon.isNotEmpty())
                         mPolygon.forEach { it.remove() } //Polygon 객체의 remove
@@ -243,7 +282,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                     }
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(data.centerLatLng, zoom))
                 }
-            }
+            }*/
         }
     }
 
