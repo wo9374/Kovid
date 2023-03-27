@@ -33,6 +33,6 @@ class ClearSelectiveClinicUseCase(private val repository: LocalClinicRepository)
 }
 
 class MapJsonParsingUseCase(private val repository: LocalClinicRepository){
-    operator fun invoke(jsonSido: String, jsonSiGungu: String) : Flow<List<SiDo>>
+    operator fun invoke(jsonSido: String, jsonSiGungu: String) : List<SiDo>
     = repository.mapInfoJsonParsing(jsonSido, jsonSiGungu)
 }

@@ -25,7 +25,7 @@ interface LocalClinicRepository{
     suspend fun insertClinic(clinic: Clinic, clinicType: Int)
     suspend fun clearClinics()
 
-    fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : Flow<List<SiDo>>
+    fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : List<SiDo>
 }
 
 interface NewRepository{

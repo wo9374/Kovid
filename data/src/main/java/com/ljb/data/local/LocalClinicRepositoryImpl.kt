@@ -3,6 +3,7 @@ package com.ljb.data.local
 import com.ljb.data.local.datasouce.LocalClinicSource
 import com.ljb.data.mapper.mapperToClinic
 import com.ljb.data.mapper.mapperToClinicJson
+import com.ljb.data.mapper.mapperToSiDo
 import com.ljb.data.model.SiDoModel
 import com.ljb.domain.entity.Clinic
 import com.ljb.domain.entity.MapsInfo
@@ -36,11 +37,9 @@ class LocalClinicRepositoryImpl @Inject constructor(
         localSource.clearClinics()
     }
 
-    override fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : Flow<List<SiDo>> {
-        return flow {
-            localSource.mapInfoJsonParsing(jsonSido, jsonSiGungu).map {
-                it.mapperToSido()
-            }
+    override fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : List<SiDo> {
+        return localSource.mapInfoJsonParsing(jsonSido, jsonSiGungu).map {
+            it.mapperToSiDo()
         }
     }
 }
