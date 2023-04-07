@@ -135,8 +135,6 @@ class MapsViewModel @Inject constructor(
     fun getInitialRemoteData(){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                _mapsPolygon.emit(mapJsonParsingUseCase(mapJson.first, mapJson.second))
-
                 getRemoteClinicUseCase(Clinic.CLINIC_SELECTIVE).catch { exception ->
                     Log.d(tag, "getInitialRemoteData Selective Exception : ${exception.message}")
                 }.collectLatest { result ->
@@ -180,7 +178,9 @@ class MapsViewModel @Inject constructor(
     fun getDbDataLoading(siDo: String, siGunGu: String, progressEnabled: Boolean = false){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                _mapsPolygon.emit(mapJsonParsingUseCase(mapJson.first, mapJson.second))
+                mapJsonParsingUseCase(mapJson.first, mapJson.second).collectLatest {
+                    _mapsPolygon.emit(it)
+                }
 
                 if (progressEnabled)
                     progressState.emit(true)

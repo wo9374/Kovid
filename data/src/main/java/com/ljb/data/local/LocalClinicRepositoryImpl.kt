@@ -4,14 +4,11 @@ import com.ljb.data.local.datasouce.LocalClinicSource
 import com.ljb.data.mapper.mapperToClinic
 import com.ljb.data.mapper.mapperToClinicJson
 import com.ljb.data.mapper.mapperToSiDo
-import com.ljb.data.model.SiDoModel
 import com.ljb.domain.entity.Clinic
-import com.ljb.domain.entity.MapsInfo
 import com.ljb.domain.entity.SiDo
 import com.ljb.domain.repository.LocalClinicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -37,9 +34,13 @@ class LocalClinicRepositoryImpl @Inject constructor(
         localSource.clearClinics()
     }
 
-    override fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : List<SiDo> {
-        return localSource.mapInfoJsonParsing(jsonSido, jsonSiGungu).map {
-            it.mapperToSiDo()
+    override fun mapInfoJsonParsing(jsonSido: String, jsonSiGungu: String) : Flow<List<SiDo>> {
+        return flow {
+            emit(
+                localSource.mapInfoJsonParsing(jsonSido, jsonSiGungu).map {
+                    it.mapperToSiDo()
+                }
+            )
         }
     }
 }
