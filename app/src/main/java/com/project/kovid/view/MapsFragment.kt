@@ -87,29 +87,29 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mapView.onCreate(savedInstanceState)
 
+        //위치 권한 확인
         if (checkLocationPermission()){
-            binding.mapView.getMapAsync(this)
-            mapsViewModel.startLocation()
+            binding.mapView.getMapAsync(this) //MapView 에 OnMapReadyCallback 지정
+            mapsViewModel.startLocation()               //ViewModel 에 있는 LocationCallback 으로 인한 위치 권한 받기 시작
         }
-        else
+        else //권한 없을시 권한 요청
             activityResultLauncher.launch(permissions)
 
+        //Context 사용을 위한 Fragment 에서 bufferedReader 를 이용해 json 파일 읽기
         mapsViewModel.parsingMapJson(
             mContext.assets.open(KOREA_SIDO).bufferedReader().use { it.readText() },
             mContext.assets.open(KOREA_SIGUNGU).bufferedReader().use { it.readText() }
         )
     }
 
-    //private lateinit var geoJsonLayer : GeoJsonLayer
-
     @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         val seoul = LatLng(37.554891, 126.970814)
+
+        //OnMapReadyCallback 에서 받아 오는 googleMap 객체 init
         mGoogleMap = googleMap
 
-        /*geoJsonLayer = GeoJsonLayer(mGoogleMap, R.raw.korea_sido, mContext)
-        geoJsonLayer.addLayerToMap()*/
-
+        //Custom Marker 클러스터링 표시를 위한 클러스터 매니저 init
         clusterManager = ClusterManager<ClinicCluster>(mContext, mGoogleMap)
         clusterManager.apply {
             renderer = HospClusterMarker(mContext, mGoogleMap, clusterManager)
@@ -120,13 +120,18 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
 
         mGoogleMap.apply {
+            //초기 카메라 위치 서울역 이동
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F))
 
+            //카메라 이동 후 정지할 때 위치 리스너
             setOnCameraIdleListener {
                 val latLng = LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)
+
+                //해당 위치 지역의 폴리곤 표시
                 if (mapsViewModel.mapsPolygon.value.isNotEmpty())
                     mapsViewModel.isInPolygon(latLng)
 
+                //해당 위치 화면 내의 마커 표시
                 mapsViewModel.selectiveClusters.value.let {
                     if (it is UiState.Complete)
                         visibleDisplayCluster(it.data)
@@ -139,8 +144,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
             setOnMarkerClickListener(clusterManager)
 
             isMyLocationEnabled = true
-            uiSettings.isMyLocationButtonEnabled = true
-            uiSettings.isZoomControlsEnabled = true
+            uiSettings.isMyLocationButtonEnabled = true     //현재 내위치 버튼 visible
+            uiSettings.isZoomControlsEnabled = true         //화면 줌 버튼 visible
         }
 
         binding.regionSpinner.apply {
@@ -160,6 +165,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     private fun observeData() {
 
         lifecycleScope.launchWhenStarted {
+            //현재 내위치 subscribe
             mapsViewModel.currentLocation.collect {location ->
                 val latLng = LatLng(location.latitude, location.longitude)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
@@ -167,11 +173,10 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                 with(mapsViewModel){
                     stopLocation()
 
-                    if (checkInitialData())
+                    if (checkInitialData())     //초기 데이터 체크 후 주소에 해당 하는 Db Data get
                         getDbDataLoading(detailAddress.first, detailAddress.second)
-                    else{
+                    else
                         getInitialRemoteData()
-                    }
 
                     progressState.emit(true)
                 }
@@ -180,6 +185,8 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
 
         lifecycleScope.launch {
             launch {
+
+                //검색시 progress 표시를 위한 subscribe
                 mapsViewModel.progressState.collect {
                     if (it) {
                         with(mapsViewModel){
@@ -307,7 +314,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
     private fun checkLocationPermission(): Boolean =
         ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-
+    
     private fun showPermissionDialog(goSetting: Boolean = false) {
         Snackbar.make(binding.root, if (goSetting) getString(R.string.permission_setting) else getString(R.string.permission_check), Snackbar.LENGTH_INDEFINITE).setAction(
             if (goSetting) getString(R.string.move_setting)
