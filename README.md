@@ -16,6 +16,8 @@
 - 보건복지부_코로나19 선별진료소 운영현황     <https://www.data.go.kr/data/15098774/openapi.do>
 - 보건복지부_코로나19 임시선별진료소 운영현황  <https://www.data.go.kr/data/15098778/openapi.do>
 
+<img src="https://github.com/wo9374/Kovid/assets/55440637/339b4a02-be2b-46c1-966f-c046faff63aa" width="260" height="500"> <img src="https://github.com/wo9374/Kovid/assets/55440637/cbf211d1-b754-4cc8-8dd6-36dec19b3c35" width="260" height="500"> <img src="https://github.com/wo9374/Kovid/assets/55440637/63f0d941-4ab9-4ba8-8b69-01c2d7136a27" width="260" height="500">
+
 코로나 뉴스 \<News>
 - News API <https://newsapi.org/>
 
