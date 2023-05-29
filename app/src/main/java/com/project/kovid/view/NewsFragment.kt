@@ -29,7 +29,6 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-
         //ContentsLoadingProgress.showProgress(this.javaClass.name, requireActivity(), true)
 
         initLayout()
@@ -43,6 +42,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>(R.layout.fragment_news) {
 
         binding.epoxyRecycler.apply {
             layoutManager = linearLayoutManager
+            //layoutManager = gridLayoutManager
             setHasFixedSize(true)
             //addItemDecoration(DividerItemDecoration(mContext, linearLayoutManager.orientation)) //구분선
         }

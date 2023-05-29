@@ -54,8 +54,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -64,70 +65,36 @@
                 android:layout_height="match_parent"
                 android:background="?android:attr/colorBackground">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/detail_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="@{detailNewsData.title}"
-                            android:textSize="18sp"
-                            android:textStyle="italic"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/detail_image"
-                            tools:text="Epoxy Test This Epoxy Title, Bottom to Top of ImageView" />
-
-                        <ImageView
-                            android:id="@+id/detail_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            binding:setImg='@{detailNewsData.urlToImage}'
-                            tools:src="@drawable/ic_launcher_background" />
-
-                        <TextView
-                            android:id="@+id/detail_desc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="@{detailNewsData.description}"
-                            android:textSize="15sp"
-                            app:layout_constraintStart_toStartOf="@id/detail_title"
-                            app:layout_constraintTop_toBottomOf="@id/detail_title"
-                            tools:text='코로나19 확산 방지를 위하여 서울시내 한 영화관을 찾은 관람객이 떨어져 앉아 있다. 연합뉴스503명의 영화인이 현 정부와 각 정당 대선후보에게 한국영화 위기극복을 위한 비상정책을 제안했다.' />
-
-                        <TextView
-                            android:id="@+id/detail_author"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:gravity="end"
-                            android:text="@{detailNewsData.author}"
-                            android:textSize="12sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/detail_desc"
-                            tools:text="이선명 기자 57km@kyunghyang.com" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
+                <WebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@id/nestedScroll"
+            app:layout_anchorGravity="center"/>
+
+        <TextView
+            android:id="@+id/topBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/purple_700"
+            android:text="TOP"
+            android:textStyle="bold"
+            android:textColor="@color/widjet_bg_color"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:layout_marginBottom="30dp"
+            app:layout_anchor="@id/nestedScroll"
+            app:layout_anchorGravity="bottom|end"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
