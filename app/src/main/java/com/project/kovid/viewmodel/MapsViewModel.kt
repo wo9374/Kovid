@@ -35,7 +35,7 @@ class MapsViewModel @Inject constructor(
 ) : ViewModel() {
     private val tag = MapsViewModel::class.java.simpleName
 
-    var progressState = MutableStateFlow(false)
+    //var progressState = MutableStateFlow(false)
     var detailAddress = Pair("", "")
 
     //선별 진료소
@@ -81,11 +81,11 @@ class MapsViewModel @Inject constructor(
     fun stopLocation() = locationManager.stopLocationUpdates(mLocationCallback)
 
     fun getDbData(siDo: String, siGunGu: String) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
 
             withContext(Dispatchers.IO) {
                 detailAddress = Pair(siDo, siGunGu)
-                progressState.emit(true)
+                //progressState.emit(true)
 
                 with(getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_SELECTIVE)) {
                     if (isEmpty())
@@ -123,8 +123,54 @@ class MapsViewModel @Inject constructor(
                     }
                 }
 
-                progressState.emit(false)
+                //progressState.emit(false)
             }
+        }*/
+
+        viewModelScope.apply {
+            detailAddress = Pair(siDo, siGunGu)
+            //progressState.emit(true)
+
+            launch(Dispatchers.IO){
+                with(getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_SELECTIVE)) {
+                    if (isEmpty())
+                        getSelectiveData(siDo, siGunGu) //DB Data 없을시 Remote API 호출
+                    else {
+                        _selectiveClusters.emit(
+                            UiState.Complete(map {
+                                it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                            })
+                        )
+                    }
+                }
+            }
+            launch(Dispatchers.IO){
+                with(getDbClinicUseCase(siDo, siGunGu, HospClusterMarker.HOSP_TEMPORARY)) {
+                    if (isEmpty())
+                        getTemporaryData(siDo, siGunGu)
+                    else {
+                        _temporaryClusters.emit(
+                            UiState.Complete(map {
+                                it.mapperToCluster(locationManager.getGeocoding(it.addr))
+                            })
+                        )
+                    }
+                }
+            }
+            launch(Dispatchers.IO){
+                getMapsPolygonUseCase(siDo, siGunGu).catch { exception ->
+                    Log.d(tag, "getMapsPolygonUseCase Exception Error: ${exception.message}")
+                }.collect { result ->
+                    when (result) {
+                        is NetworkState.Success -> {
+                            _polygonData.emit(result.data.mapperToLatLng())
+                        }
+                        is NetworkState.Error -> {}
+                        is NetworkState.Loading -> {}
+                    }
+                }
+            }
+            //progressState.emit(false)
         }
     }
 

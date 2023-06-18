@@ -153,7 +153,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
         }
 
         lifecycleScope.launch {
-            launch {
+            /*launch {
                 mapsViewModel.progressState.collectLatest {
                     if (it) {
                         mapsViewModel.detailAddress.run {
@@ -163,7 +163,7 @@ class MapsFragment : BaseFragment<FragmentMapBinding>(R.layout.fragment_map), On
                         ContentsLoadingProgress.hideProgress(this@MapsFragment.javaClass.name)
                     }
                 }
-            }
+            }*/
 
             //Clinic Marker
             launch {
